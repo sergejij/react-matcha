@@ -1,10 +1,12 @@
 import React from 'react';
 import StyledButton from './styled';
 
-const Button = ({ children }) => (
-  <StyledButton>
-    {children}
-  </StyledButton>
+const Button = ({ children, onClick, view }) => (
+  <>
+    <StyledButton view={view} onClick={onClick}>
+      {children}
+    </StyledButton>
+  </>
 );
 
 export default Button;

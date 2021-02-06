@@ -3,9 +3,12 @@ import Button from '../../components/Button';
 
 export default () => (
   <div>
-    <h2>Headline2</h2>
-    <Button>
-      buttonRed
+    <Button view="main" onClick={() => alert('Main btn')}>
+      Привет Мир
+    </Button>
+
+    <Button view="out" onClick={() => alert('Out btn')}>
+      Привет Мир
     </Button>
   </div>
 );

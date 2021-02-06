@@ -12,5 +12,7 @@ parserOptions:
 plugins:
   - react
 rules: {
-  react/prop-types: warn
+  react/prop-types: warn,
+  import/no-named-as-default: warn,
+  import/no-named-as-default-member: warn
 }
