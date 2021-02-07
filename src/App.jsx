@@ -7,13 +7,14 @@ import Search from './pages/Search/Search';
 import Pairs from './pages/Pairs/Pairs';
 import Settings from './pages/Settings/Settings';
 import Login from './pages/Login/Login';
+import Menu from './components/Menu/Menu';
 
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      {/* <aside /> */}
+      <Menu />
       <div className="content">
         <Route path="/" exact component={Profile} />
         <Route path="/chats" exact component={Chats} />
