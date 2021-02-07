@@ -8,6 +8,6 @@ export default () => (
     <li><Link to="/login">Login</Link></li>
     <li><Link to="/pairs">Pairs</Link></li>
     <li><Link to="/search">Search</Link></li>
-    <li><Link to="/settings">Settings</Link></li>
+    <li><Link to="/settings">Settings </Link></li>
   </div>
 );
