@@ -31,7 +31,7 @@ const Menu = () => (
     </MenuIcon>
 
     <MenuIcon to="/settings" activeClassName="active">
-      <SettingsIcon style={{ width: 55, height: 55 }} />
+      <SettingsIcon style={{ width: 50, height: 50 }} />
       <Text>Настройки</Text>
     </MenuIcon>
   </BoxMenu>
