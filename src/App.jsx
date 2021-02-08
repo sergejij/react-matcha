@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, useRouteMatch } from 'react-router-dom';
 
 import Profile from './pages/Profile/Profile';
 import Chats from './pages/Chats/Chats';
@@ -12,17 +12,17 @@ import Menu from './components/Menu/Menu';
 import './App.css';
 
 function App() {
+  const match = useRouteMatch('/login');
+
   return (
     <div className="App">
-      <Menu />
-      <div className="content">
-        <Route path="/" exact component={Profile} />
-        <Route path="/chats" exact component={Chats} />
-        <Route path="/search" exact component={Search} />
-        <Route path="/pairs" exact component={Pairs} />
-        <Route path="/settings" exact component={Settings} />
-        <Route path="/login" exact component={Login} />
-      </div>
+      {!match && <Menu />}
+      <Route path="/" exact component={Profile} />
+      <Route path="/chats" component={Chats} />
+      <Route path="/search" component={Search} />
+      <Route path="/pairs" component={Pairs} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/login" component={Login} />
     </div>
   );
 }

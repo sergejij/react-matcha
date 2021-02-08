@@ -1,9 +1,11 @@
 import React from 'react';
 import StyledButton from './styled';
 
-const Button = ({ children, onClick, view }) => (
+const Button = ({
+  children, onClick, view, size = 'M',
+}) => (
   <>
-    <StyledButton view={view} onClick={onClick}>
+    <StyledButton view={view} size={size} onClick={onClick}>
       {children}
     </StyledButton>
   </>

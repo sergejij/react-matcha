@@ -5,34 +5,34 @@ import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import Text from '../Text/Text';
+import Text from '../../styled';
 import { BoxMenu, MenuIcon } from './styled';
 
 const Menu = () => (
   <BoxMenu>
     <MenuIcon to="/" exact activeClassName="active">
       <PersonIcon style={{ width: 60, height: 60 }} />
-      <Text>Профиль</Text>
+      <Text size="15px">Профиль</Text>
     </MenuIcon>
 
     <MenuIcon to="/chats" activeClassName="active">
       <ChatBubbleIcon style={{ width: 45, height: 45 }} />
-      <Text>Чаты</Text>
+      <Text size="15px">Чаты</Text>
     </MenuIcon>
 
     <MenuIcon to="/search" activeClassName="active">
       <LocationSearchingIcon style={{ width: 50, height: 50 }} />
-      <Text>Поиск пары</Text>
+      <Text size="15px">Поиск пары</Text>
     </MenuIcon>
 
     <MenuIcon to="/pairs" activeClassName="active">
       <SupervisorAccountIcon style={{ width: 60, height: 60 }} />
-      <Text>Пары</Text>
+      <Text size="15px">Пары</Text>
     </MenuIcon>
 
     <MenuIcon to="/settings" activeClassName="active">
       <SettingsIcon style={{ width: 50, height: 50 }} />
-      <Text>Настройки</Text>
+      <Text size="15px">Настройки</Text>
     </MenuIcon>
   </BoxMenu>
 );

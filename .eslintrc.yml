@@ -14,5 +14,6 @@ plugins:
 rules: {
   react/prop-types: warn,
   import/no-named-as-default: warn,
-  import/no-named-as-default-member: warn
+  import/no-named-as-default-member: warn,
+  no-nested-ternary: warn
 }

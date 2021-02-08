@@ -7,15 +7,16 @@ const Button = styled.button`
   border-width: 1px;
   border-style: solid;
   border-radius: 13px;
-  padding: 13px 40px;
+  padding: ${(props) => (props.size === 'S' ? '8px 25px' : props.size === 'M' ? '13px 50px' : '18px 70px')};
   outline: none;
   transition: 0.2s ease-out;
   
-  font-size: 20px;
+  font-size: ${(props) => (props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
   
   &:hover {
-    color: ${(props) => (props.view === 'main' ? '#FFF' : '#FFF')};
+    color: #FFF;
     background-color: ${(props) => (props.view === 'main' ? '#e0909e' : '#EC96A4')};
+    cursor: pointer;
   }
   
   &:active {
