@@ -28,7 +28,6 @@ export const Content = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 10vh;
   width: 100vw;
 `;
 

@@ -4,7 +4,7 @@ const Button = styled.button`
   color: ${(props) => (props.view === 'main' ? '#FFF' : '#EC96A4')};
   background-color: ${(props) => (props.view === 'main' ? '#EC96A4' : 'transparent')};
   border-color: ${(props) => (props.view === 'main' ? 'transparent' : '#EC96A4')};
-  width: ${(props) => (props.size === 'S' ? '150px' : props.size === 'M' ? '170px' : '200px')};
+  width: ${(props) => (props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '300px')};
   height: ${(props) => (props.size === 'S' ? '40px' : props.size === 'M' ? '45px' : '55px')};
   font-size: ${(props) => (props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
     
