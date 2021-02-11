@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="App">
       {!match && <Menu />}
-      <Route path="/" exact component={Profile} />
+      <Route path="/profile" component={Profile} />
       <Route path="/chats" component={Chats} />
       <Route path="/search" component={Search} />
       <Route path="/pairs" component={Pairs} />

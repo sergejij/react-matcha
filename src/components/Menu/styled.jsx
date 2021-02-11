@@ -13,7 +13,8 @@ export const BoxMenu = styled.div`
   height: 100vh;
   width: 130px;
   top: 0;
-  padding-top: 50px;
+  
+  
 `;
 
 export const MenuIcon = styled(NavLink)`
@@ -25,6 +26,10 @@ export const MenuIcon = styled(NavLink)`
   margin: 20px;
   text-decoration:none;
   color: ${COLORS.GRAY};
+  
+  &:last-child {
+    margin-top: auto;
+  }
   
   svg {
     margin-bottom: 3px;

@@ -1,7 +1,12 @@
 import React from 'react';
 
+import ProfilePage from './styled';
+import ProfileHeader from './ProfileHeader/ProfileHeader';
+import ProfileTabs from './ProfileTabs/ProfileTabs';
+
 export default () => (
-  <div>
-    <h2>Profile</h2>
-  </div>
+  <ProfilePage>
+    <ProfileHeader />
+    <ProfileTabs />
+  </ProfilePage>
 );
