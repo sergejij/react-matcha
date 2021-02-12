@@ -1,7 +1,11 @@
 import React from 'react';
+import ChatsAside from './ChatsAside/ChatsAside';
+import Chat from './Chat/Chat';
+import ChatsStyled from './styled';
 
 export default () => (
-  <div>
-    <h2>Chats</h2>
-  </div>
+  <ChatsStyled>
+    <ChatsAside />
+    <Chat />
+  </ChatsStyled>
 );

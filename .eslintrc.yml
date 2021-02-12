@@ -15,5 +15,6 @@ rules: {
   react/prop-types: warn,
   import/no-named-as-default: warn,
   import/no-named-as-default-member: warn,
-  no-nested-ternary: warn
+  no-nested-ternary: warn,
+  react/jsx-props-no-spreading: warn
 }

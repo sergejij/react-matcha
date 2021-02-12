@@ -1,6 +1,6 @@
 import React from 'react';
 import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
-import ProfileImg from '../../../assets/images/Profile/richi1.jpeg';
+import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
 
 const ProfileHeader = () => (

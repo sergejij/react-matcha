@@ -6,6 +6,7 @@ import {
 // import { Route } from 'react-router-dom';
 import { ProfileTabsLink, ProfileTabsStyled } from './styled';
 import ProfilePhotos from '../ProfilePhotos/ProfilePhotos';
+import ProfileInfo from '../ProfileInfo/ProfileInfo';
 // import ProfilePage from '../styled';
 
 const tabs = [
@@ -42,7 +43,7 @@ const ProfileTabs = () => {
       </TabPanel>
 
       <TabPanel>
-        222
+        <ProfileInfo />
       </TabPanel>
 
       <TabPanel>
