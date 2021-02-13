@@ -10,7 +10,7 @@ export const ChatsAsideStyled = styled.div`
 
 export const ChatsAsideHeader = styled.div`
   background-color: ${COLORS.YELLOW};
-  height: 80px;
+  height: 8vh;
   font-size: 26px;
   display: flex;
   justify-content: center;

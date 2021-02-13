@@ -7,7 +7,7 @@ export const ChatsAsideItem = styled.div`
   align-items: center;
   padding: 10px 0 5px 8%;
   width: 100%;
-  height: 40%;
+  height: 8vh;
 
   transition: .2s ease-in-out;
   cursor: pointer;
