@@ -1,39 +1,62 @@
 import React from 'react';
-import Gallery from 'react-photo-gallery';
-import ProfilePhotosStyled from './styled';
+// import Gallery from 'react-photo-gallery';
+import Slider from 'react-slick';
+import { ProfilePhotosStyled } from './styled';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+import zero from '../../../assets/images/Profile/0.jpeg';
+import first from '../../../assets/images/Profile/1.jpg';
+import second from '../../../assets/images/Profile/2.jpg';
+import third from '../../../assets/images/Profile/3.jpg';
+import fourth from '../../../assets/images/Profile/4.jpg';
 
 const PHOTO_SET = [
   {
-    src: 'https://www.ecartelera.com/images/sets/9000/9004.jpg',
+    src: first,
     width: 4,
     height: 3,
   },
   {
-    src: 'https://i.ytimg.com/vi/NpsI_KG9WJA/maxresdefault.jpg',
+    src: second,
     width: 2,
     height: 1,
   },
   {
-    src: 'https://avatars.mds.yandex.net/get-zen_doc/1581919/pub_5dfcfc60b477bf00af3fc129_5dfcfdddaad43600aefe783d/scale_1200',
+    src: third,
     width: 3,
     height: 2,
   },
   {
-    src: 'https://image.tmdb.org/t/p/original/uOuh66L1sHpWrbBpB9KvwACEwyl.jpg',
+    src: fourth,
     width: 3,
     height: 2,
   },
   {
-    src: 'https://avatars.mds.yandex.net/get-zen_doc/1581919/pub_5dfcfc60b477bf00af3fc129_5dfcfdddaad43600aefe783d/scale_1200',
+    src: zero,
     width: 3,
     height: 2,
   },
 ];
 
-const ProfilePhotos = () => (
-  <ProfilePhotosStyled>
-    <Gallery photos={PHOTO_SET} />
-  </ProfilePhotosStyled>
-);
+const ProfilePhotos = () => {
+  const settings = {
+    centerMode: true,
+    infinite: true,
+    centerPadding: '60px',
+    slidesToShow: 3,
+    speed: 500,
+    variableWidth: false,
+  };
+  return (
+    <ProfilePhotosStyled>
+      <Slider {...settings}>
+        {
+          PHOTO_SET.map(({ src }) => <img src={src} alt="" />)
+        }
+      </Slider>
+    </ProfilePhotosStyled>
+  );
+};
 
 export default ProfilePhotos;

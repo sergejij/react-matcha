@@ -8,6 +8,10 @@ export const ChatMessagesStyled = styled.div`
   padding: 50px 100px;
   overflow-y: auto;
   height: 83vh;
+  
+  &::-webkit-scrollbar { 
+    width: 0;
+  }
 `;
 
 export const MessageStyled = styled.div`

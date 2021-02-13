@@ -5,7 +5,6 @@ import { ChatInputStyled, TA, SendIconStyled } from './styled';
 const ChatInput = () => {
   const [message, setMessage] = React.useState('');
   return (
-
     <ChatInputStyled>
       <TA
         onChange={(e) => setMessage(e.target.value)}
@@ -15,9 +14,8 @@ const ChatInput = () => {
       >
         {message}
       </TA>
-
-      <SendIconStyled to="/chats" activeClassName="active">
-        <SendIcon style={{ width: 40, height: 40 }} />
+      <SendIconStyled>
+        <SendIcon style={{ width: 35, height: 35 }} />
       </SendIconStyled>
     </ChatInputStyled>
   );
