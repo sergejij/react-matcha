@@ -3,18 +3,28 @@ import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
 import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
 
-const ProfileHeader = () => (
+const ProfileHeader = ({ user }) => (
   <ProfileHeaderBox>
     <ProfileHeaderPhoto src={ProfileImg} alt="Фото профиля" />
 
     <div>
-      <h2>Ричард Хендрикс</h2>
-      <p>
-        <b>Программист</b>
+      <h2>
+        {user.name}
         {' '}
-        - Кремниевая долина
+        {user.surname}
+      </h2>
+      <p>
+        <b>{user.profession}</b>
+        {' '}
+        -
+        {' '}
+        {user.place_of_living}
         {'   '}
-        <span>27 лет</span>
+        <span>
+          {user.age}
+          {' '}
+          лет
+        </span>
       </p>
 
       <Buttons>

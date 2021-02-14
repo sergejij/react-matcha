@@ -15,7 +15,7 @@ const ChatsAside = () => (
     <ChatsAsideItems>
       {
         users.map((user, index) => (
-          <ChatsUser isActive={index === 0} name={user} img={ProfileImg} />))
+          <ChatsUser key={`${user}_${index}`} isActive={index === 0} name={user} img={ProfileImg} />))
       }
     </ChatsAsideItems>
 

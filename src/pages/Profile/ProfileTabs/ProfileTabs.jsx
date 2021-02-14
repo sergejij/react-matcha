@@ -16,7 +16,7 @@ const tabs = [
   'Лайки',
 ];
 
-const ProfileTabs = () => {
+const ProfileTabs = ({ user }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
 
   const tabClick = (e, index) => {
@@ -29,6 +29,7 @@ const ProfileTabs = () => {
         {
           tabs.map((tab, index) => (
             <ProfileTabsLink
+              key={`${tab}_${index}`}
               onClick={(e) => tabClick(e, index)}
               className={activeTabs === index && 'active'}
             >
@@ -43,7 +44,7 @@ const ProfileTabs = () => {
       </TabPanel>
 
       <TabPanel>
-        <ProfileInfo />
+        <ProfileInfo user={user} />
       </TabPanel>
 
       <TabPanel>

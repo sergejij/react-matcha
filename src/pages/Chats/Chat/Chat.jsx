@@ -5,9 +5,9 @@ import { ChatStyled } from './styled';
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatInput from './ChatInput/ChatInput';
 
-const Chat = () => (
+const Chat = ({ clickUserChat }) => (
   <ChatStyled>
-    <ChatHeader />
+    <ChatHeader clickUserChat={clickUserChat} />
     <ChatMessages />
     <ChatInput />
   </ChatStyled>

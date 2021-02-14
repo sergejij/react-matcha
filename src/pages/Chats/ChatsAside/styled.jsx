@@ -3,9 +3,11 @@ import COLORS from '../../../constants';
 
 export const ChatsAsideStyled = styled.div`
   width: 300px;
+  position: sticky;
   height: 100vh;
-  box-shadow: 0 0 4px 0px rgba(93, 83, 94, 0.32);
+  box-shadow: 0 0 4px 0 rgba(93, 83, 94, 0.32);
   background-color: ${COLORS.LIGHT_GRAY};
+  top: 0;
 `;
 
 export const ChatsAsideHeader = styled.div`

@@ -2,9 +2,9 @@ import React from 'react';
 import { ChatsAsideItem, ChatsAsidePhoto } from './styled';
 
 const ChatsUser = ({
-  name, img, isActive, isHeader,
+  name, img, isActive, isHeader, clickUserChat,
 }) => (
-  <ChatsAsideItem isHeader={isHeader} className={isActive && 'active'}>
+  <ChatsAsideItem onClick={clickUserChat} isHeader={isHeader} className={isActive && 'active'}>
     <ChatsAsidePhoto src={img} alt="Фото профиля" />
     <p>{name}</p>
   </ChatsAsideItem>

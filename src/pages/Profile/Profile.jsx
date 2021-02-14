@@ -4,9 +4,9 @@ import ProfilePage from './styled';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 import ProfileTabs from './ProfileTabs/ProfileTabs';
 
-export default () => (
+export default ({ user }) => (
   <ProfilePage>
-    <ProfileHeader />
-    <ProfileTabs />
+    <ProfileHeader user={user} />
+    <ProfileTabs user={user} />
   </ProfilePage>
 );

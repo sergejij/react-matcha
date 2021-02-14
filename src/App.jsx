@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Route, useRouteMatch } from 'react-router-dom';
 
 import Profile from './pages/Profile/Profile';
@@ -13,12 +14,20 @@ import './App.css';
 
 function App() {
   const match = useRouteMatch('/login');
+  const [users, setUsers] = React.useState([]);
+
+  React.useEffect(() => {
+    axios.get('http://localhost:3000/db.json')
+      .then(({ data }) => {
+        setUsers(data.users);
+      });
+  }, []);
 
   return (
     <div className="App">
       {!match && <Menu />}
-      <Route path="/profile" component={Profile} />
-      <Route path="/chats" component={Chats} />
+      <Route path="/profile" render={() => <Profile user={users[0]} />} />
+      <Route path="/chats" render={() => <Chats users={users} />} />
       <Route path="/search" component={Search} />
       <Route path="/pairs" component={Pairs} />
       <Route path="/settings" component={Settings} />

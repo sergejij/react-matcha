@@ -261,8 +261,8 @@ const messages = [
 const ChatMessages = () => (
   <ChatMessagesStyled>
     {
-      messages.map(({ isMyMessage, text }) => (
-        <Message isMyMessage={isMyMessage} text={text} />
+      messages.map(({ isMyMessage, text }, index) => (
+        <Message key={`${text}_${index}`} isMyMessage={isMyMessage} text={text} />
       ))
     }
   </ChatMessagesStyled>
