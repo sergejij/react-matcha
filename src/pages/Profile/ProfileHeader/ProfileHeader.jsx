@@ -3,36 +3,43 @@ import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
 import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
 
-const ProfileHeader = ({ user }) => (
-  <ProfileHeaderBox>
-    <ProfileHeaderPhoto src={ProfileImg} alt="Фото профиля" />
+const ProfileHeader = ({ currentUser }) => {
+  console.log(currentUser);
+  if (!currentUser) {
+    return null;
+  }
 
-    <div>
-      <h2>
-        {user.name}
-        {' '}
-        {user.surname}
-      </h2>
-      <p>
-        <b>{user.profession}</b>
-        {' '}
-        -
-        {' '}
-        {user.place_of_living}
-        {'   '}
-        <span>
-          {user.age}
+  return (
+    <ProfileHeaderBox>
+      <ProfileHeaderPhoto src={ProfileImg} alt="Фото профиля" />
+
+      <div>
+        <h2>
+          {currentUser.name}
           {' '}
-          лет
-        </span>
-      </p>
+          {currentUser.surname}
+        </h2>
+        <p>
+          <b>{currentUser.profession}</b>
+          {' '}
+          -
+          {' '}
+          {currentUser.place_of_living}
+          {'   '}
+          <span>
+            {currentUser.age}
+            {' '}
+            лет
+          </span>
+        </p>
 
-      <Buttons>
-        <Button size="S" view="out">Не нравится</Button>
-        <Button size="S" view="main">Нравится</Button>
-      </Buttons>
-    </div>
-  </ProfileHeaderBox>
-);
+        <Buttons>
+          <Button size="S" view="out">Не нравится</Button>
+          <Button size="S" view="main">Нравится</Button>
+        </Buttons>
+      </div>
+    </ProfileHeaderBox>
+  );
+};
 
 export default ProfileHeader;

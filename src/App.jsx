@@ -26,11 +26,11 @@ function App() {
   return (
     <div className="App">
       {!match && <Menu />}
-      <Route path="/profile" render={() => <Profile user={users[0]} />} />
+      <Route path="/profile" render={() => <Profile id={0} />} />
       <Route path="/chats" render={() => <Chats users={users} />} />
       <Route path="/search" component={Search} />
-      <Route path="/pairs" component={Pairs} />
-      <Route path="/settings" component={Settings} />
+      <Route path="/pairs" render={() => <Pairs users={users} />} />
+      <Route path="/settings" render={() => <Settings user={users[0]} />} />
       <Route path="/login" component={Login} />
     </div>
   );

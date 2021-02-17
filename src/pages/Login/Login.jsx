@@ -5,7 +5,7 @@ import {
 } from './styled';
 import COLORS from '../../constants';
 import Button from '../../components/Button';
-import Text from '../../styled';
+import { Text } from '../../styled';
 import { MenuIcon } from '../../components/Menu/styled';
 
 export default () => (

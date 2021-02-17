@@ -1,7 +1,7 @@
 import React from 'react';
 
-export default () => (
-  <div>
-    <h2>Pairs</h2>
-  </div>
+import Carts from '../../components/Carts/Carts';
+
+export default ({ users }) => (
+  <Carts users={users} buttonText="Общаться" />
 );

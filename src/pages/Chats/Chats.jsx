@@ -1,10 +1,10 @@
 import React from 'react';
-import ChatsAside from './ChatsAside/ChatsAside';
 import Chat from './Chat/Chat';
-import ChatsStyled from './styled';
 import Profile from '../Profile/Profile';
+import Aside from '../../components/Aside/Aside';
+import { Content } from '../../styled';
 
-export default ({ users }) => {
+export default () => {
   const [isShownUserPage, setIsShownUserPage] = React.useState(false);
 
   const clickUserChat = () => {
@@ -12,9 +12,9 @@ export default ({ users }) => {
   };
 
   return (
-    <ChatsStyled>
-      <ChatsAside />
-      {isShownUserPage ? <Profile user={users[0]} /> : <Chat clickUserChat={clickUserChat} />}
-    </ChatsStyled>
+    <Content>
+      <Aside isSettings={false} headline="Чаты" />
+      {isShownUserPage ? <Profile id={1} /> : <Chat clickUserChat={clickUserChat} />}
+    </Content>
   );
 };

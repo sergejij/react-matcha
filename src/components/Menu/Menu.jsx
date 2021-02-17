@@ -7,7 +7,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import Text from '../../styled';
+import { Text } from '../../styled';
 import { BoxMenu, MenuIcon } from './styled';
 
 const Menu = () => (

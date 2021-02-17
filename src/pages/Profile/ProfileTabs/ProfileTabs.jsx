@@ -3,11 +3,11 @@ import {
   Tabs, TabPanel,
 } from 'react-tabs';
 
-// import { Route } from 'react-router-dom';
 import { ProfileTabsLink, ProfileTabsStyled } from './styled';
 import ProfilePhotos from '../ProfilePhotos/ProfilePhotos';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
-// import ProfilePage from '../styled';
+import ProfileVisitors from '../ProfileVisitors/ProfileVisitors';
+import ProfileLikes from '../ProfileLikes/ProfileLikes';
 
 const tabs = [
   'Фото',
@@ -16,7 +16,7 @@ const tabs = [
   'Лайки',
 ];
 
-const ProfileTabs = ({ user }) => {
+const ProfileTabs = ({ users, currentUser }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
 
   const tabClick = (e, index) => {
@@ -44,15 +44,15 @@ const ProfileTabs = ({ user }) => {
       </TabPanel>
 
       <TabPanel>
-        <ProfileInfo user={user} />
+        <ProfileInfo user={currentUser} />
       </TabPanel>
 
       <TabPanel>
-        333
+        <ProfileVisitors users={users} />
       </TabPanel>
 
       <TabPanel>
-        444
+        <ProfileLikes users={users} />
       </TabPanel>
     </Tabs>
   );
