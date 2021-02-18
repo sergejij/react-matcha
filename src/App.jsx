@@ -30,7 +30,7 @@ function App() {
       <Route path="/chats" render={() => <Chats users={users} />} />
       <Route path="/search" component={Search} />
       <Route path="/pairs" render={() => <Pairs users={users} />} />
-      <Route path="/settings" render={() => <Settings user={users[0]} />} />
+      <Route path="/settings/user-info" render={() => <Settings user={users[0]} />} />
       <Route path="/login" component={Login} />
     </div>
   );

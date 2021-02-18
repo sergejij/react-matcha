@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import COLORS from '../../../constants';
 
-const AsideItem = styled.div`
+const AsideItem = styled(NavLink)`
   display: flex;
   justify-content: flex-start;
   align-items: center;

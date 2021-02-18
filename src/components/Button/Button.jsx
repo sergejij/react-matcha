@@ -2,10 +2,10 @@ import React from 'react';
 import StyledButton from './styled';
 
 const Button = ({
-  children, onClick, view, size = 'M',
+  children, onClick, view, size = 'M', color = 'PINK',
 }) => (
   <>
-    <StyledButton view={view} size={size} onClick={onClick}>
+    <StyledButton color={color} view={view} size={size} onClick={onClick}>
       {children}
     </StyledButton>
   </>

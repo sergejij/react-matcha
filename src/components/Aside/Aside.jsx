@@ -19,10 +19,10 @@ const Aside = ({ isSettings, headline }) => (
       {
         isSettings ? (
           <>
-            <SettingsItem isActive textSetting="Данные пользователя">
+            <SettingsItem to="/settings/user-info" isActive textSetting="Данные пользователя">
               <PersonOutlineIcon />
             </SettingsItem>
-            <SettingsItem textSetting="Фото пользователя">
+            <SettingsItem to="/settings/user-photos" textSetting="Фото пользователя">
               <CropOriginalIcon />
             </SettingsItem>
           </>

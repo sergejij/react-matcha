@@ -2,9 +2,9 @@ import React from 'react';
 import AsideItem from './styled';
 
 const SettingsItem = ({
-  textSetting, isActive, clickSettingsItem, children,
+  textSetting, isActive, clickSettingsItem, children, to,
 }) => (
-  <AsideItem onClick={clickSettingsItem} className={isActive && 'active'}>
+  <AsideItem to={to} onClick={clickSettingsItem} className={isActive && 'active'}>
     {children}
     <p>{textSetting}</p>
   </AsideItem>

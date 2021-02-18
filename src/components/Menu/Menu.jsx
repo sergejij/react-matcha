@@ -32,7 +32,7 @@ const Menu = () => (
       <Text size="15px">Пары</Text>
     </MenuIcon>
 
-    <MenuIcon to="/settings" activeClassName="active">
+    <MenuIcon to="/settings/user-info" activeClassName="active">
       <SettingsIcon style={{ width: 45, height: 45 }} />
       <Text size="15px">Настройки</Text>
     </MenuIcon>
