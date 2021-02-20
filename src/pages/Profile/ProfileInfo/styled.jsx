@@ -10,11 +10,11 @@ export const ProfileInfoStyled = styled.div`
 `;
 
 export const ProfileInfoPairs = styled.div`
-box-sizing: border-box;
+  box-sizing: border-box;
   width: 35%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   
   & div {
     display: flex;

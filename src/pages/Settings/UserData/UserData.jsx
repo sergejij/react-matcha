@@ -5,7 +5,7 @@ import {
   SettingsDataHeaderBoxStyled,
   SettingsDataHeaderPhotoImg,
   SettingsDataRow, ShareLocationStyled,
-  SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit,
+  SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit, UserDataStyled,
 } from './styled';
 import Button from '../../../components/Button';
 
@@ -117,7 +117,7 @@ const UserData = ({ user }) => {
   console.log(user);
 
   return (
-    <>
+    <UserDataStyled>
       <SettingsDataHeaderBoxStyled>
         <SettingsDataHeaderPhotoContainer>
           <SettingsDataHeaderPhotoImg src={ProfileImg} alt="Фото профиля" />
@@ -126,7 +126,7 @@ const UserData = ({ user }) => {
         <SettingsDataHeaderBox user={user} />
       </SettingsDataHeaderBoxStyled>
       <SettingsData />
-    </>
+    </UserDataStyled>
   );
 };
 

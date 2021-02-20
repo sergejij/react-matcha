@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 export const CartsStyled = styled.div`
   display: flex;
@@ -8,11 +9,12 @@ export const CartsStyled = styled.div`
   padding: 5% 10%;
 `;
 
-export const Cart = styled.div`
+export const Cart = styled(NavLink)`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   
+  text-decoration: none;
   background: linear-gradient(0deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.3) 100%), url(${(props) => props.img}) center center no-repeat;
   background-size: 100%; 
   border-radius: 13px;

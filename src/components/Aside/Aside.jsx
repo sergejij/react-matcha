@@ -1,38 +1,49 @@
 import React from 'react';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import ProfileImg from '../../assets/images/Chats/liza.png';
 import {
-  ChatsAsideHeader, ChatsAsideItems, ChatsAsideStyled,
+  ChatsAsideHeader, ChatsAsideItems, ChatsAsideStyled, FilterBox,
 } from './styled';
 import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
-const users = ['Елизавета', 'Настя', 'Александра', 'Полина', 'Лана', 'Екатерина', 'Серафима', 'Анастасия', 'Даша'];
-
-const Aside = ({ isSettings, headline }) => (
+const Aside = ({
+  match, isSettings, headline, isSearch, activeSetting, users, setCurrentUserId,
+}) => (
   <ChatsAsideStyled>
     <ChatsAsideHeader>
       <span>{headline}</span>
     </ChatsAsideHeader>
-    <ChatsAsideItems>
+    {
+      isSearch && (
+        <FilterBox>
+          <FilterListIcon />
+        </FilterBox>
+      )
+    }
+    <ChatsAsideItems isSearch={isSearch}>
       {
         isSettings ? (
           <>
-            <SettingsItem to="/settings/user-info" isActive textSetting="Данные пользователя">
+            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting="Данные пользователя">
               <PersonOutlineIcon />
             </SettingsItem>
-            <SettingsItem to="/settings/user-photos" textSetting="Фото пользователя">
+            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 1} textSetting="Фото пользователя">
               <CropOriginalIcon />
             </SettingsItem>
+
           </>
         ) : (
           users.map((user, index) => (
             <User
               key={`${user}_${index}`}
               isActive={index === 0}
-              name={user}
+              name={user.name}
               img={ProfileImg}
+              id={user.id}
+              chooseConversation={() => setCurrentUserId(user.id)}
             />
           ))
         )

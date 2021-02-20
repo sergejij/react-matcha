@@ -3,6 +3,11 @@ import { darken } from 'polished';
 import COLORS from '../../../constants';
 
 export const SettingsPage = styled.div`
+  width: calc(100% - 300px);
+  margin: 3% auto 0;
+`;
+
+export const UserDataStyled = styled.div`
   width: 50%;
   margin: 3% auto 0;
 `;

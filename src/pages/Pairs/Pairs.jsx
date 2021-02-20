@@ -1,7 +1,10 @@
 import React from 'react';
 
-import Carts from '../../components/Carts/Carts';
+import UsersCarts from '../../components/Carts/UsersCarts';
+import { Content } from '../../styled';
 
 export default ({ users }) => (
-  <Carts users={users} buttonText="Общаться" />
+  <Content>
+    <UsersCarts users={users} buttonText="Общаться" />
+  </Content>
 );

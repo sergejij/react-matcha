@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Route, useRouteMatch } from 'react-router-dom';
+import { Route, useRouteMatch, Switch } from 'react-router-dom';
 
 import Profile from './pages/Profile/Profile';
 import Chats from './pages/Chats/Chats';
@@ -26,12 +26,14 @@ function App() {
   return (
     <div className="App">
       {!match && <Menu />}
-      <Route path="/profile" render={() => <Profile id={0} />} />
-      <Route path="/chats" render={() => <Chats users={users} />} />
-      <Route path="/search" component={Search} />
-      <Route path="/pairs" render={() => <Pairs users={users} />} />
-      <Route path="/settings/user-info" render={() => <Settings user={users[0]} />} />
-      <Route path="/login" component={Login} />
+      <Switch>
+        <Route path="/profile/:id" render={() => <Profile />} />
+        <Route path="/chats" render={() => <Chats users={users} />} />
+        <Route path="/search" component={Search} />
+        <Route path="/pairs" render={() => <Pairs users={users} />} />
+        <Route path="/settings" render={() => <Settings user={users[0]} />} />
+        <Route path="/login" component={Login} />
+      </Switch>
     </div>
   );
 }

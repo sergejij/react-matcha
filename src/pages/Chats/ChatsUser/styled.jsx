@@ -1,13 +1,16 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import COLORS from '../../../constants';
 
-export const ChatsAsideItem = styled.div`
+export const ChatsAsideItem = styled(NavLink)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 10px 0 5px 8%;
   width: 100%;
   height: 8vh;
+  text-decoration: none;
+  color: black;
 
   transition: .2s ease-in-out;
   cursor: pointer;

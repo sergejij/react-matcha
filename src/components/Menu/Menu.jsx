@@ -12,7 +12,7 @@ import { BoxMenu, MenuIcon } from './styled';
 
 const Menu = () => (
   <BoxMenu>
-    <MenuIcon to="/profile" exact activeClassName="active">
+    <MenuIcon to="/profile/0" exact activeClassName="active">
       <PersonIcon style={{ width: 50, height: 50 }} />
       <Text size="15px">Профиль</Text>
     </MenuIcon>
@@ -32,7 +32,7 @@ const Menu = () => (
       <Text size="15px">Пары</Text>
     </MenuIcon>
 
-    <MenuIcon to="/settings/user-info" activeClassName="active">
+    <MenuIcon to="/settings" activeClassName="active">
       <SettingsIcon style={{ width: 45, height: 45 }} />
       <Text size="15px">Настройки</Text>
     </MenuIcon>

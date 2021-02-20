@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const ChatStyled = styled.div`
-  width: 100%;
+  width: calc(100% - 300px);
 `;
 
 export const ChatHeaderStyled = styled.div`

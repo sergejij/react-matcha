@@ -13,8 +13,6 @@ export const BoxMenu = styled.div`
   height: 100vh;
   width: 130px;
   top: 0;
-  
-  
 `;
 
 export const MenuIcon = styled(NavLink)`

@@ -25,5 +25,11 @@ export const ChatsAsideItems = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 50px;
+  margin-top: ${(props) => !props.isSearch && '50px'};
+`;
+
+export const FilterBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px 10px 0;
 `;

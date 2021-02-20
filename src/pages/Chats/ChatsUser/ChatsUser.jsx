@@ -2,11 +2,16 @@ import React from 'react';
 import { ChatsAsideItem, ChatsAsidePhoto } from './styled';
 
 const ChatsUser = ({
-  name, img, isActive, isHeader, clickUserChat,
+  img, isActive, isHeader, clickUserChat, user,
 }) => (
-  <ChatsAsideItem onClick={clickUserChat} isHeader={isHeader} className={isActive && 'active'}>
+  <ChatsAsideItem
+    onClick={clickUserChat}
+    isHeader={isHeader}
+    className={isActive && 'active'}
+    to={`/profile/${user.id}`}
+  >
     <ChatsAsidePhoto src={img} alt="Фото профиля" />
-    <p>{name}</p>
+    <p>{user.name}</p>
   </ChatsAsideItem>
 );
 
