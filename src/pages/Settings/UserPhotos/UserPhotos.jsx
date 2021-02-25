@@ -19,9 +19,6 @@ const AddPhoto = ({ children, hasImg }) => (
 const UserPhotos = () => (
   <UserPhotosStyled>
     <UserPhotoRow>
-      <AddPhoto hasImg>
-        {first && <UserPhotoChange src={first} />}
-      </AddPhoto>
       {first ? <UserPhotoChange src={first} /> : <AddPhoto />}
       {second ? <UserPhotoChange src={second} /> : <AddPhoto />}
     </UserPhotoRow>

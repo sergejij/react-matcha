@@ -9,31 +9,27 @@ import {
 } from './styled';
 import Button from '../../../components/Button';
 
-const SettingsDataHeaderBox = ({ user }) => {
-  console.log(user);
-
-  return (
-    <div>
-      <h2>
-        {user.name}
+const SettingsDataHeaderBox = ({ user }) => (
+  <div>
+    <h2>
+      {user.name}
+      {' '}
+      {user.surname}
+    </h2>
+    <p>
+      <b>{user.profession}</b>
+      {' '}
+      -
+      {' '}
+      {user.place_of_living}
+      <span>
+        {user.age}
         {' '}
-        {user.surname}
-      </h2>
-      <p>
-        <b>{user.profession}</b>
-        {' '}
-        -
-        {' '}
-        {user.place_of_living}
-        <span>
-          {user.age}
-          {' '}
-          лет
-        </span>
-      </p>
-    </div>
-  );
-};
+        лет
+      </span>
+    </p>
+  </div>
+);
 
 const ShareLocation = ({ isSharedLocation, setIsSharedLocation }) => (
   <ShareLocationStyled>
@@ -113,21 +109,17 @@ const SettingsData = () => {
   );
 };
 
-const UserData = ({ user }) => {
-  console.log(user);
-
-  return (
-    <UserDataStyled>
-      <SettingsDataHeaderBoxStyled>
-        <SettingsDataHeaderPhotoContainer>
-          <SettingsDataHeaderPhotoImg src={ProfileImg} alt="Фото профиля" />
-          <SettingsDataHeaderPhotoEdit><EditIcon /></SettingsDataHeaderPhotoEdit>
-        </SettingsDataHeaderPhotoContainer>
-        <SettingsDataHeaderBox user={user} />
-      </SettingsDataHeaderBoxStyled>
-      <SettingsData />
-    </UserDataStyled>
-  );
-};
+const UserData = ({ user }) => (
+  <UserDataStyled>
+    <SettingsDataHeaderBoxStyled>
+      <SettingsDataHeaderPhotoContainer>
+        <SettingsDataHeaderPhotoImg src={ProfileImg} alt="Фото профиля" />
+        <SettingsDataHeaderPhotoEdit><EditIcon /></SettingsDataHeaderPhotoEdit>
+      </SettingsDataHeaderPhotoContainer>
+      <SettingsDataHeaderBox user={user} />
+    </SettingsDataHeaderBoxStyled>
+    <SettingsData />
+  </UserDataStyled>
+);
 
 export default UserData;

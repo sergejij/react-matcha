@@ -29,6 +29,10 @@ export const ProfileHeaderPhoto = styled.img`
 
 export const Buttons = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-top: 10%;
+  
+  & :first-child {
+    margin-right: 30px;
+  }
 `;

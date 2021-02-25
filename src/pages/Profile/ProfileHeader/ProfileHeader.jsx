@@ -4,7 +4,6 @@ import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
 
 const ProfileHeader = ({ currentUser }) => {
-  console.log(currentUser);
   if (!currentUser) {
     return null;
   }

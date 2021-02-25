@@ -10,27 +10,28 @@ export const UserPhotosStyled = styled.div`
 `;
 
 export const UserPhotoRow = styled.div`
-  width: 100%;
+  width: 60%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   flex-wrap: nowrap;
 `;
 
 export const UserPhotoChange = styled.img`
-  width: 286px;
-  height: 399px;
+  width: 250px;
+  height: 349px;
   border-radius: 13px;
   transition: .2s ease-in-out;
+  cursor: pointer;
   
   &:hover {
-    opacity: 0.4;  
+    opacity: 0.7;  
   }
 `;
 
 export const AddPhotoStyled = styled.div`
   position: relative;
-  width: 286px;
-  height: 399px;
+  width: 250px;
+  height: 349px;
   border-radius: 13px;
   border: 3px dotted ${COLORS.GRAY};
   display:flex;

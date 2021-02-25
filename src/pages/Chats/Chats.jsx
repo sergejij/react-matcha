@@ -17,14 +17,13 @@ export default () => {
   }, []);
   const [currentUser] = users.filter((user) => user.id === Number(currentUserId));
 
-  console.log('111111111111', currentUserId);
-
   return (
     <Content>
       <Aside
         setCurrentUserId={setCurrentUserId}
         headline="Чаты"
         users={users}
+        isChat
       />
       <Route path={`/chats/${currentUserId}`}>
         <Chat user={currentUser} />

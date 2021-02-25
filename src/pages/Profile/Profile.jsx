@@ -8,9 +8,9 @@ import ProfilePage from './styled';
 import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 
-export default () => {
+export default ({ identifier }) => {
   const [users, setUsers] = React.useState([]);
-  const { id } = useParams();
+  const id = identifier === undefined ? useParams().id : identifier;
 
   React.useEffect(() => {
     axios.get('http://localhost:3000/db.json')
@@ -19,8 +19,6 @@ export default () => {
       });
   }, []);
   const [currentUser] = users.filter((user) => user.id === Number(id));
-
-  console.log(users, 'bbb', id);
 
   return (
     <ProfilePage>

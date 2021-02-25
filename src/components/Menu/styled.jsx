@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { lighten } from 'polished';
 
-import { NavLink } from 'react-router-dom';
 import COLORS from '../../constants';
 
 export const BoxMenu = styled.div`
@@ -15,7 +14,7 @@ export const BoxMenu = styled.div`
   top: 0;
 `;
 
-export const MenuIcon = styled(NavLink)`
+export const MenuIcon = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

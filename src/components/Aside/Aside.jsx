@@ -10,7 +10,7 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, activeSetting, users, setCurrentUserId,
+  match, isSettings, headline, isSearch, activeSetting, users, setCurrentUserId, isChat,
 }) => (
   <ChatsAsideStyled>
     <ChatsAsideHeader>
@@ -44,6 +44,7 @@ const Aside = ({
               img={ProfileImg}
               id={user.id}
               chooseConversation={() => setCurrentUserId(user.id)}
+              isChat={isChat}
             />
           ))
         )
