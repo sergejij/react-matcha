@@ -71,15 +71,24 @@ export const LoginStyled = styled.div`
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
   
+  & svg {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    transition: .2s ease-in-out;
+    
+    &:hover {
+      color: ${COLORS.DARK};
+      transition: .2s ease-in-out;
+    }
+  }
   & span {
     text-align: center;
     margin-bottom: 10%;
   }
   
   & input {
-    background: aliceblue;
     margin-bottom: 5%;
-    
   }
   & button {
       margin-top: 10%;    

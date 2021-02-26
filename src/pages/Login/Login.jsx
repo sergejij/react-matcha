@@ -1,25 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import CloseIcon from '@material-ui/icons/Close';
 import {
   Landing, Header, Content, Footer, Headline, LoginStyled, Modal,
 } from './styled';
 import COLORS from '../../constants';
 import Button from '../../components/Button';
 import { Text } from '../../styled';
-import { MenuIcon } from '../../components/Menu/styled';
+import Input from '../../components/Input/Input';
 
-const Login = () => {
+const Login = ({ onClose }) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   return (
     <LoginStyled>
+      <CloseIcon onClick={onClose} />
       <Text>
         Войдите в свой аккаунт или
         <i>зарегистрируйтесь</i>
       </Text>
-      <input type="email" value={email} name="email" onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" value={password} name="password" onChange={(e) => setPassword(e.target.value)} />
+      <Input
+        type="email"
+        value={email}
+        name="email"
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <Input
+        type="password"
+        value={password}
+        name="password"
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
       <Button view="main">Войти</Button>
     </LoginStyled>
   );
@@ -33,19 +46,21 @@ export default () => {
   // if (isShownLogin) {
   //   modalRoot.appendChild(Login);
   // }
+  const toggleLoginForm = () => {
+    setIsShownLoginForm((prev) => !prev);
+  };
+
   return (
     <Landing>
       {
         isShownLoginForm && ReactDOM.createPortal(
-          <Modal><Login /></Modal>,
+          <Modal><Login onClose={toggleLoginForm} /></Modal>,
           portalRoot,
         )
       }
       <Header>
         <Text size="30px" color={COLORS.PINK}>Matcha</Text>
-        <MenuIcon activeClassName="active">
-          <Button view="second" size="S" onClick={() => setIsShownLoginForm((prev) => !prev)}>Войти</Button>
-        </MenuIcon>
+        <Button view="second" size="S" onClick={toggleLoginForm}>Войти</Button>
       </Header>
       <Content>
         <Headline style={{ color: COLORS.PINK }}>Найди свою судьбу</Headline>
