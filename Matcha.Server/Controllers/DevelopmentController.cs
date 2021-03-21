@@ -11,6 +11,7 @@ namespace Matcha.Server.Controllers
     [Route("dev")]
     public class DevelopmentController : ControllerBase
     {
+        [HttpGet]
         [Route("users_list")]
         public IActionResult GetUsersList()
         {
