@@ -1,0 +1,10 @@
+﻿CREATE TABLE user_data (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    login VARCHAR(128) NOT NULL UNIQUE,
+    email VARCHAR(128) NOT NULL UNIQUE,
+    password BINARY(64) NOT NULL,
+    salt BINARY(16) NOT NULL,
+    need_confirm_email BIT NOT NULL DEFAULT(1),
+
+    PRIMARY KEY(id)
+);

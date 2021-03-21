@@ -1,0 +1,15 @@
+﻿CREATE TABLE user_full_data (
+    id BIGINT NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    surname VARCHAR(128) NOT NULL,
+    number VARCHAR(128),
+    age INT,
+    post VARCHAR(128),
+    sex INT,
+    target_sex INT,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY(id) REFERENCES user_data(id),
+    FOREIGN KEY(sex) REFERENCES sexes(id),
+    FOREIGN KEY(target_sex) REFERENCES sexes(id)
+);
