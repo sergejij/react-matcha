@@ -1,0 +1,7 @@
+﻿CREATE TABLE sessions (
+    user_id BIGINT NOT NULL,
+    cookie BINARY(16) NOT NULL,
+
+    PRIMARY KEY(user_id, cookie),
+    FOREIGN KEY(user_id) REFERENCES user_data(id)
+);

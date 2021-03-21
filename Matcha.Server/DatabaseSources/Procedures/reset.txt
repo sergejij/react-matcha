@@ -1,0 +1,15 @@
+﻿CREATE PROCEDURE RESET()
+
+BEGIN
+
+    SET FOREIGN_KEY_CHECKS = 0;
+
+    TRUNCATE TABLE user_data;
+    TRUNCATE TABLE user_full_data;
+    TRUNCATE TABLE confirmation_codes;
+    TRUNCATE TABLE sessions;
+    TRUNCATE TABLE user_data;
+
+    SET FOREIGN_KEY_CHECKS = 1;
+
+END

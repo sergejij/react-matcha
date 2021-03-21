@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matcha.Server", "Matcha.Server.csproj", "{0FD92778-1B3B-4E64-8208-6EA4ED45D544}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FD92778-1B3B-4E64-8208-6EA4ED45D544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD92778-1B3B-4E64-8208-6EA4ED45D544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD92778-1B3B-4E64-8208-6EA4ED45D544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD92778-1B3B-4E64-8208-6EA4ED45D544}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6333E7B7-9903-4352-A2C1-39C13EE6886B}
+	EndGlobalSection
+EndGlobal

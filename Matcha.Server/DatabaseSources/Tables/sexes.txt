@@ -1,0 +1,10 @@
+﻿CREATE TABLE sexes (
+    id INT NOT NULL AUTO_INCREMENT,
+    sex VARCHAR(32) NOT NULL UNIQUE,
+
+    PRIMARY KEY(id)
+);
+
+INSERT INTO sexes (sex) VALUES ('male');
+INSERT INTO sexes (sex) VALUES ('female');
+INSERT INTO sexes (sex) VALUES ('bisex');

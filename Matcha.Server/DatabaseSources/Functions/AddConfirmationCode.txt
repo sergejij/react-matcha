@@ -1,0 +1,25 @@
+﻿CREATE FUNCTION AddConfirmationCode (
+    email VARCHAR(128),
+    code CHAR(36)
+) RETURNS VARCHAR(256)
+
+BEGIN
+
+    DECLARE code_bin BINARY(16);
+    DECLARE user_id BIGINT;
+
+    IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
+    THEN
+        SET user_id = (SELECT id FROM user_data WHERE user_data.email = email);
+
+        DELETE FROM confirmation_codes WHERE confirmation_codes.user_id = user_id;
+
+        SET code_bin = UUID_TO_BIN(code);
+        INSERT INTO confirmation_codes (user_id, code) VALUES (user_id, code_bin);
+
+        RETURN NULL;
+    ELSE
+        RETURN 'Пользователь с таким email не найден';
+    END IF;
+
+END

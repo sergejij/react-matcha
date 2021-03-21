@@ -1,0 +1,42 @@
+﻿CREATE FUNCTION RegisterUser (
+    login VARCHAR(128),
+    email VARCHAR(128),
+    password VARCHAR(128),
+    name NVARCHAR(128),
+    surname NVARCHAR(128)
+) RETURNS VARCHAR(256)
+
+BEGIN
+
+    DECLARE user_id BIGINT;
+    DECLARE password_hash BINARY(64);
+    DECLARE salt CHAR(36);
+
+    IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
+    THEN
+        RETURN 'Пользователь с таким email уже зарегистрирован';
+    ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = login)
+    THEN
+        RETURN 'Пользователь с таким логином уже зарегистрирован';
+    ELSE
+        SET salt = UUID();
+        CALL HASH_PASSWORD(concat(password, salt), password_hash);
+
+        INSERT INTO user_data (
+            login, email, password, salt
+        ) VALUES (
+            login, email, password_hash, UUID_TO_BIN(salt)
+        );
+
+        SET user_id = (SELECT id FROM user_data WHERE user_data.email = email);
+
+        INSERT INTO user_full_data (
+            id, name, surname
+        ) VALUES (
+            user_id, name, surname
+        );
+    END IF;
+
+    RETURN NULL;
+
+END

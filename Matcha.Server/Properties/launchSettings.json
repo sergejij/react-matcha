@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "server": {
+      "commandName": "Project",
+      "applicationUrl": "https://0.0.0.0:637",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

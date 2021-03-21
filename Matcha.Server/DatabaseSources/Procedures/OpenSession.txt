@@ -1,0 +1,23 @@
+﻿CREATE PROCEDURE OpenSession (
+    email VARCHAR(128),
+    password VARCHAR(128),
+
+    OUT user_id BIGINT,
+    OUT cookie CHAR(36),
+
+    OUT error_message VARCHAR(256)
+)
+
+BEGIN
+
+    IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
+    THEN
+        call LoginByEmail(email, password, user_id, cookie, error_message);
+    ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = email)
+    THEN
+        call LoginByLogin(email, password, user_id, cookie, error_message);
+    ELSE
+        SET error_message = 'Пользователь с таким email не найден';
+    END IF;
+
+END

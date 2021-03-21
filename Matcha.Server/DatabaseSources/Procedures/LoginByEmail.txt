@@ -1,0 +1,37 @@
+﻿CREATE PROCEDURE LoginByEmail (
+    email VARCHAR(128),
+    password VARCHAR(128),
+
+    OUT user_id BIGINT,
+    OUT cookie CHAR(36),
+
+    OUT error_message VARCHAR(256)
+)
+
+BEGIN
+
+    DECLARE salt BINARY(16);
+    DECLARE salted_password VARCHAR(512);
+    DECLARE password_hash BINARY(64);
+
+    SET salt = (SELECT user_data.salt FROM user_data WHERE user_data.email = email);
+    SET salted_password = CONCAT(password, (SELECT UUID_FROM_BIN(salt)));
+
+    CALL HASH_PASSWORD(salted_password, password_hash);
+
+    IF (password_hash = (SELECT user_data.password FROM user_data WHERE user_data.email = email))
+    THEN
+        IF ((SELECT user_data.need_confirm_email FROM user_data WHERE user_data.email = email) = 0)
+        THEN
+            SET user_id = (SELECT id FROM user_data WHERE user_data.email = email);
+            SET cookie = UUID();
+            
+            INSERT INTO sessions (user_id, cookie) VALUES (user_id, UUID_TO_BIN(cookie));
+        ELSE
+            SET error_message = 'Email не подтвержден';
+        END IF;
+    ELSE
+        SET error_message = 'Неверный пароль';
+    END IF;
+
+END
