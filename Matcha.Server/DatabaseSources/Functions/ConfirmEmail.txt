@@ -1,0 +1,24 @@
+﻿CREATE FUNCTION ConfirmEmail(
+    code VARCHAR(36)
+) RETURNS VARCHAR(256)
+
+BEGIN
+    
+    DECLARE code_bin binary(16);
+
+    SET code_bin = UUID_TO_BIN(code);
+
+    IF EXISTS(SELECT * FROM confirmation_codes WHERE confirmation_codes.code = code_bin)
+    THEN
+        UPDATE user_data
+        SET need_confirm_email = 0
+        WHERE id IN (SELECT user_id FROM confirmation_codes WHERE confirmation_codes.code = code_bin);
+
+        DELETE FROM confirmation_codes WHERE confirmation_codes.code = code_bin;
+
+        RETURN NULL;
+    ELSE
+        RETURN 'Ссылка недействительна';
+    END IF;
+
+END

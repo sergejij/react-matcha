@@ -41,6 +41,27 @@ namespace Matcha.Server.Database
                 return ResponseModel.Ok();
             }
 
+            public static ResponseModel ConfirmEmail(Guid code)
+            {
+                using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+                using var command = new MySqlCommand("ConfirmEmail", connection) { CommandType = CommandType.StoredProcedure };
+
+                command.Parameters.AddRange(new[]
+                {
+                    new MySqlParameter("code", code.ToString()),
+                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+                });
+
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                var errorMessage = command.Parameters["error_message"].Value.ToString();
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                    return new ResponseModel(HttpStatusCode.InternalServerError, errorMessage);
+
+                return ResponseModel.Ok();
+            }
+
             #region Вспомогательные методы
 
             private static ResponseModel AddConfirmationCode(string email, Guid code)
