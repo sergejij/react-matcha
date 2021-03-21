@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Matcha.Core": {
+    "Matcha.Server": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

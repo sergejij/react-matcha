@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Matcha.Core
+namespace Matcha.Server
 {
     public class Program
     {

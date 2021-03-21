@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace Matcha.Core
+namespace Matcha.Server
 {
     public class Startup
     {
@@ -23,7 +23,7 @@ namespace Matcha.Core
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Matcha.Core", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Matcha.Server", Version = "v1" });
             });
         }
 
@@ -34,7 +34,7 @@ namespace Matcha.Core
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Matcha.Core v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Matcha.Server v1"));
             }
 
             app.UseHttpsRedirection();
