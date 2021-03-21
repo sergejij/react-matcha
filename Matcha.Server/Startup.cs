@@ -43,9 +43,10 @@ namespace Matcha.Server
 
             app.UseRouting();
 
-            app.UseCors(
-                options => options.WithOrigins("http://example.com").AllowAnyMethod()
-            );
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
 
             app.UseAuthorization();
