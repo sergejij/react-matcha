@@ -73,7 +73,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(ResponseModel.Ok());
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("test_cors")]
         public IActionResult Cors()
         {

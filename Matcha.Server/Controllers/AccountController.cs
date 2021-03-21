@@ -12,11 +12,18 @@ namespace Matcha.Server.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        [ProducesResponseType(typeof(ResponseModel), 200)]
+        [ProducesResponseType(typeof(ResponseModel), 500)]
         [HttpPost]
         [Route("register")]
         public IActionResult Register(AccountRegisterModel registerModel)
         {
             var dbRet = DatabaseApi.Account.Register(registerModel);
+
+            Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            Response.Headers.Add("Access-Control-Allow-Headers", "origin, x-requested-with, content-type");
+            Response.Headers.Add("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+
             return ResponseBuilder.Create(dbRet);
         }
 
