@@ -4,6 +4,7 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using server.Response;
 using System.Collections.Generic;
+using static server.Response.ResponseModel;
 
 namespace Matcha.Server.Controllers
 {
@@ -77,7 +78,8 @@ namespace Matcha.Server.Controllers
             Response.Headers.Add("Access-Control-Allow-Headers", "origin, x-requested-with, content-type");
             Response.Headers.Add("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
 
-            return Ok();
+            
+            return ResponseBuilder.Create(ResponseModel.Ok());
         }
 
         [HttpGet]
@@ -90,7 +92,14 @@ namespace Matcha.Server.Controllers
             string file_type = "image/jpeg";
             // Имя файла - необязательно
             string file_name = "image.jpeg";
-            return File(bytes, file_type, file_name);
+
+            var status = new ResponseStatus(System.Net.HttpStatusCode.OK, null);
+            var model = new ResponseModel(status, new Dictionary<string, object>
+            {
+                { "img", bytes }
+            });
+
+            return ResponseBuilder.Create(model);
         }
     }
 
