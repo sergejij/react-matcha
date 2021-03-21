@@ -20,10 +20,6 @@ namespace Matcha.Server.Controllers
         {
             var dbRet = DatabaseApi.Account.Register(registerModel);
 
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            Response.Headers.Add("Access-Control-Allow-Headers", "origin, x-requested-with, content-type");
-            Response.Headers.Add("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-
             return ResponseBuilder.Create(dbRet);
         }
 

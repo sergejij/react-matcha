@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using server.Response;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static server.Response.ResponseModel;
 
 namespace Matcha.Server.Controllers
 {
@@ -82,6 +78,19 @@ namespace Matcha.Server.Controllers
             Response.Headers.Add("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("img")]
+        public IActionResult Img()
+        {
+            string file_path = @"C:\Users\user\Desktop\jpgs\s.jpg";
+            var bytes = System.IO.File.ReadAllBytes(file_path);
+            // Тип файла - content-type
+            string file_type = "image/jpeg";
+            // Имя файла - необязательно
+            string file_name = "image.jpeg";
+            return File(bytes, file_type, file_name);
         }
     }
 
