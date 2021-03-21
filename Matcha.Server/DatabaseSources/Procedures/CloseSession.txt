@@ -1,0 +1,8 @@
+﻿CREATE PROCEDURE CloseSession (
+    userId BIGINT,
+    cookie CHAR(36)
+)
+
+BEGIN
+    delete from sessions where sessions.user_id = userId and sessions.cookie = UUID_TO_BIN(cookie);
+END
