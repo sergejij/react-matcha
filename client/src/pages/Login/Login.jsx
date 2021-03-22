@@ -8,6 +8,7 @@ import {
 import COLORS from '../../constants';
 import Button from '../../components/Button';
 import { Text } from '../../styled';
+import { usersAPI } from '../../api/api';
 
 const LoginForm = ({ onClose, onRegister }) => {
   const [email, setEmail] = React.useState('');
@@ -47,23 +48,49 @@ const LoginForm = ({ onClose, onRegister }) => {
 
 const RegistrationForm = ({ onClose, onLogin }) => {
   const [email, setEmail] = React.useState('');
-  const [username, setUsername] = React.useState('');
+  const [login, setLogin] = React.useState('');
   const [name, setName] = React.useState('');
   const [surname, setSurname] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  const login = (e) => {
+  const [formNotification, setFormNotification] = React.useState('');
+  const [errorNotification, setErrorNotification] = React.useState('');
+
+  const openLoginForm = (e) => {
     e.preventDefault();
     onClose();
     onLogin();
   };
+
+  const register = () => {
+    if (!email || ! login || !name || !surname || !password) {
+      setErrorNotification("Заполните все поля формы.");
+    } else {
+      setErrorNotification("");
+      usersAPI
+        .register(email, login, name, surname, password)
+        .then(
+          ({ data }) => {
+            if (data.Status.Code === 200) {
+              setFormNotification("Регистрация прошла успешно. Для подтверждения email перейдите по ссылке в письме.");
+            } else {
+              setErrorNotification(data.Status.ErrorMessage);
+            }
+            console.log(data);
+          },
+          (err) => {
+            setErrorNotification("Произошла ошибка. Пожалуйста попробуйте снова.");
+            console.log(err);
+          })
+    }
+  }
 
   return (
     <RegistrationFormStyled>
       <CloseIcon onClick={onClose} />
       <Text>
         Зарегистрируйтесь или
-        <a style={{ cursor: 'pointer', color: COLORS.DARK }} onClick={login}> войдите в свой аккаунт</a>
+        <a style={{ cursor: 'pointer', color: COLORS.DARK }} onClick={openLoginForm}> войдите в свой аккаунт</a>
       </Text>
       <InputStyled
         type="email"
@@ -74,10 +101,10 @@ const RegistrationForm = ({ onClose, onLogin }) => {
       />
       <InputStyled
         type="text"
-        value={username}
+        value={login}
         name="username"
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Имя пользователя"
+        onChange={(e) => setLogin(e.target.value)}
+        placeholder="Логин"
       />
       <InputStyled
         type="text"
@@ -100,7 +127,9 @@ const RegistrationForm = ({ onClose, onLogin }) => {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Пароль"
       />
-      <Button view="main">Регистрация</Button>
+      {errorNotification && <Text size={14} color="red">{errorNotification}</Text>}
+      {formNotification && <Text size={14} color="green">{formNotification}</Text>}
+      <Button onClick={register} view="main">Регистрация</Button>
     </RegistrationFormStyled>
   );
 };

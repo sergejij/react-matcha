@@ -107,16 +107,16 @@ export const LoginFormStyled = styled.div`
 
 export const RegistrationFormStyled = styled.div`
   position: absolute;
-  width: 350px;
-  height: 550px;
+  width: 400px;
+  height: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   left: 50%;
   top: 50%;
-  margin-left: -175px;
-  margin-top: -275px;
+  margin-left: -200px;
+  margin-top: -300px;
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
   
@@ -133,7 +133,7 @@ export const RegistrationFormStyled = styled.div`
   }
   & span {
     text-align: center;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
   }
   
   & input {
@@ -142,6 +142,6 @@ export const RegistrationFormStyled = styled.div`
   }
   
   & button {
-      margin-top: 10%;    
+      margin-top: 3%;    
     }
 `;
