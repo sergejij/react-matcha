@@ -78,6 +78,7 @@ export const LoginFormStyled = styled.div`
   margin-top: -200px;
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
+  padding: 5px;
   
   & svg {
     position: absolute;
@@ -92,7 +93,7 @@ export const LoginFormStyled = styled.div`
   }
   & span {
     text-align: center;
-    margin-bottom: 10%;
+    margin-bottom: 3%;
   }
   
   & input {
@@ -101,7 +102,7 @@ export const LoginFormStyled = styled.div`
   }
   
   & button {
-      margin-top: 10%;    
+      margin-top: 3%;    
     }
 `;
 
@@ -117,6 +118,7 @@ export const RegistrationFormStyled = styled.div`
   top: 50%;
   margin-left: -200px;
   margin-top: -300px;
+  padding: 5px;
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
   

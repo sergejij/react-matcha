@@ -11,6 +11,7 @@ import Login from './pages/Login/Login';
 import Menu from './components/Menu/Menu';
 
 import './App.css';
+import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 
 function App() {
   const match = useRouteMatch('/login');
@@ -27,6 +28,7 @@ function App() {
     <div className="App">
       {!match && <Menu />}
       <Switch>
+        <Route path="/confirm-email" render={() => <ConfirmEmail />} />
         <Route path="/profile/:id" render={() => <Profile />} />
         <Route path="/chats" render={() => <Chats users={users} />} />
         <Route path="/search" component={Search} />
