@@ -37,7 +37,7 @@ namespace Matcha.Server.Controllers
         {
             var dbRet = DatabaseApi.Account.OpenSession(authModel);
 
-            if (dbRet.Status.Ok)
+            if (dbRet.Ok)
             {
                 var cookie = dbRet.Content[ResponseContentConstants.Cookie].ToString();
                 var userId = dbRet.Content[ResponseContentConstants.UserId].ToString();
@@ -62,7 +62,7 @@ namespace Matcha.Server.Controllers
             Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
             Response.Headers.Remove(ResponseContentConstants.UserId);
 
-            return ResponseBuilder.Create(ResponseModel.Ok());
+            return ResponseBuilder.Create(ResponseModel.OK());
         }
 
         #region Вспомогательные методы
