@@ -48,7 +48,6 @@ namespace Matcha.Server
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
