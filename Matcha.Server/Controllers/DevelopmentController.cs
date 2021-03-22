@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Matcha.Server.Models.Response;
+using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using server.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +53,23 @@ namespace Matcha.Server.Controllers
             }
 
             return Ok(users);
+        }
+
+        [HttpGet]
+        [Route("reset")]
+        public IActionResult Reset()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("call reset;", connection);
+
+            connection.Open();
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch { }
+
+            return ResponseBuilder.Create(ResponseModel.Ok());
         }
     }
 
