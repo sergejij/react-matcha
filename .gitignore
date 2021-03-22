@@ -23,3 +23,9 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+# build data
+Matcha.Server/.vs/
+Matcha.Server/bin/
+Matcha.Server/obj/
+Matcha.Server/Debug/
