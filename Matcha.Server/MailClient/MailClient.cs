@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Mail;
 
 namespace Matcha.Server.MailClient
@@ -20,7 +21,7 @@ namespace Matcha.Server.MailClient
                 Host = "smtp.gmail.com",
                 Port = 587,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("mishayagudin2012@gmail.com", "*Itoses80*"),
+                Credentials = new NetworkCredential(AppConfig.Constants.GmailLogin, AppConfig.Constants.GmailPassword),
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };

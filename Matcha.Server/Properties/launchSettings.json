@@ -1,11 +1,14 @@
-﻿{
+{
   "profiles": {
     "server": {
       "commandName": "Project",
-      "applicationUrl": "https://0.0.0.0:637",
       "environmentVariables": {
+        "GmailPassword": "*Itoses80*",
+        "GmailLogin": "mishayagudin2012@gmail.com",
+        "DbConnectionString": "server=81.177.141.123; port=3306; user id=dbendu; password=Itoses80; database=matcha;",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://0.0.0.0:637"
     }
   }
 }
