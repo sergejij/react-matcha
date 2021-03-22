@@ -6,8 +6,10 @@ namespace server.Response
 {
     public partial class ResponseModel
     {
+        [JsonIgnore]
         public readonly bool Ok;
 
+        [JsonIgnore]
         public readonly HttpStatusCode Code;
 
         [JsonProperty(PropertyName = "ErrorMessage")]
