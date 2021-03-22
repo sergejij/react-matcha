@@ -4,26 +4,34 @@ using System.Net;
 
 namespace server.Response
 {
-    public sealed partial class ResponseModel
+    public partial class ResponseModel
     {
-        [JsonProperty(PropertyName = "Status")]
-        public readonly ResponseStatus Status;
+        [JsonIgnore]
+        public readonly bool Ok;
+
+        [JsonIgnore]
+        public readonly HttpStatusCode Code;
+
+        [JsonProperty(PropertyName = "ErrorMessage")]
+        public readonly string ErrorMessage;
 
         [JsonProperty(PropertyName = "Content")]
         public Dictionary<string, object> Content { get; set; }
 
-        public ResponseModel(ResponseStatus status, Dictionary<string, object> content)
+        public ResponseModel(HttpStatusCode code, string errorMessage, Dictionary<string, object> content) : this(code, errorMessage)
         {
-            Status = status;
             Content = content;
         }
 
         public ResponseModel(HttpStatusCode code, string errorMessage)
         {
-            Status = new ResponseStatus(code, errorMessage);
+            Code = code;
+            ErrorMessage = errorMessage;
             Content = null;
+
+            Ok = code < HttpStatusCode.BadRequest;
         }
 
-        public static ResponseModel Ok() => new ResponseModel(HttpStatusCode.OK, null);
+        public static ResponseModel OK() => new ResponseModel(HttpStatusCode.OK, null);
     }
 }

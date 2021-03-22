@@ -23,7 +23,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("confirm_email")]
         public IActionResult ConfirmEmail(Guid code)
         {
@@ -31,13 +31,13 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("login")]
         public IActionResult Login(AccountAuthModel authModel)
         {
             var dbRet = DatabaseApi.Account.OpenSession(authModel);
 
-            if (dbRet.Status.Ok)
+            if (dbRet.Ok)
             {
                 var cookie = dbRet.Content[ResponseContentConstants.Cookie].ToString();
                 var userId = dbRet.Content[ResponseContentConstants.UserId].ToString();
@@ -51,7 +51,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("logout")]
         public IActionResult Logout()
         {
@@ -62,7 +62,7 @@ namespace Matcha.Server.Controllers
             Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
             Response.Headers.Remove(ResponseContentConstants.UserId);
 
-            return ResponseBuilder.Create(ResponseModel.Ok());
+            return ResponseBuilder.Create(ResponseModel.OK());
         }
 
         #region Вспомогательные методы

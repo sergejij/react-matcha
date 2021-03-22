@@ -12,7 +12,8 @@ namespace Matcha.Server.Models.Response
 
             return new ContentResult
             {
-                Content = responceBody
+                Content = responceBody,
+                StatusCode = (int)responseModel.Code
             };
         }
     }

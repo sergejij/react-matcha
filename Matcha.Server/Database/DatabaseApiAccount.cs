@@ -41,7 +41,7 @@ namespace Matcha.Server.Database
                 AddConfirmationCode(userRegData.Email, confirmationCode);
                 SendConfirmationCode(userRegData.Email, confirmationCode);
 
-                return ResponseModel.Ok();
+                return ResponseModel.OK();
             }
 
             public static ResponseModel ConfirmEmail(Guid code)
@@ -62,7 +62,7 @@ namespace Matcha.Server.Database
                 if (string.IsNullOrEmpty(errorMessage) == false)
                     return new ResponseModel(HttpStatusCode.InternalServerError, errorMessage);
 
-                return ResponseModel.Ok();
+                return ResponseModel.OK();
             }
 
             public static ResponseModel OpenSession(AccountAuthModel authModel)
@@ -91,7 +91,8 @@ namespace Matcha.Server.Database
                 var cookie = command.Parameters["cookie"].Value;
                 var userId = command.Parameters["user_id"].Value;
 
-                return new ResponseModel(new ResponseStatus(HttpStatusCode.OK, null),
+                return new ResponseModel(HttpStatusCode.OK,
+                                         null,
                                          new Dictionary<string, object> {
                                              { ResponseContentConstants.Cookie, cookie },
                                              { ResponseContentConstants.UserId, userId }
@@ -135,7 +136,7 @@ namespace Matcha.Server.Database
                 if (string.IsNullOrEmpty(errorMessage) == false)
                     return new ResponseModel(HttpStatusCode.NotFound, errorMessage);
 
-                return ResponseModel.Ok();
+                return ResponseModel.OK();
             }
 
             private static void SendConfirmationCode(string email, Guid code)
