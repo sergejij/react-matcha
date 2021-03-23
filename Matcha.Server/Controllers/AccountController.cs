@@ -23,7 +23,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("confirm_email")]
         public IActionResult ConfirmEmail(Guid code)
         {
@@ -31,7 +31,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("login")]
         public IActionResult Login(AccountAuthModel authModel)
         {
@@ -51,7 +51,7 @@ namespace Matcha.Server.Controllers
             return ResponseBuilder.Create(dbRet);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("logout")]
         public IActionResult Logout()
         {
