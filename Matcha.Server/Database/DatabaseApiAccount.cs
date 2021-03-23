@@ -114,6 +114,25 @@ namespace Matcha.Server.Database
                 command.ExecuteNonQuery();
             }
 
+            public static bool SessionExists(long userId, Guid cookie)
+            {
+                using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+                using var command = new MySqlCommand("IsSessionExists", connection) { CommandType = CommandType.StoredProcedure };
+
+                command.Parameters.AddRange(new[]
+                {
+                    new MySqlParameter("user_id", userId),
+                    new MySqlParameter("cookie", cookie),
+
+                    new MySqlParameter("exists", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
+                });
+
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                return command.Parameters["exists"].Value.ToString().Equals("1");
+            }
+
             #region Вспомогательные методы
 
             private static ResponseModel AddConfirmationCode(string email, Guid code)
@@ -143,7 +162,7 @@ namespace Matcha.Server.Database
             {
                 var codestr = code.ToString();
 
-                var body = $"Тык: https://localhost:637/account/confirm_email?code={codestr}";
+                var body = $"Тык: http://localhost:3000/confirm-email?code={codestr}\nhttps://81.177.141.123:637/confirm_email?code={codestr}";
                 MailClient.MailClient.SendMail(email, "Подтверждение регистрации в Matcha", body);
             }
 

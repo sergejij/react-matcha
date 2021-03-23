@@ -1,17 +1,16 @@
-﻿using Matcha.Server.Models.Response;
+﻿using Matcha.Server.Filters;
+using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using server.Response;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using static server.Response.ResponseModel;
 
 namespace Matcha.Server.Controllers
 {
+    [ExceptionHandlerFilter]
     [Route("dev")]
     public class DevelopmentController : ControllerBase
     {
@@ -19,6 +18,8 @@ namespace Matcha.Server.Controllers
         [Route("users_list")]
         public IActionResult GetUsersList()
         {
+            foreach (var cookie in Request.Cookies)
+                Console.WriteLine(cookie.Key + " : " + cookie.Value);
             var users = new List<User>();
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -87,6 +88,21 @@ namespace Matcha.Server.Controllers
             });
 
             return ResponseBuilder.Create(model);
+        }
+
+        [HttpGet]
+        [Route("test")]
+        public void TestEx()
+        {
+            throw new Exception("exception");
+        }
+
+        [HttpGet]
+        [Route("check_session")]
+        [AuthorizeFilter]
+        public IActionResult SessionCheck()
+        {
+            return ResponseBuilder.Create(ResponseModel.OK());
         }
     }
 

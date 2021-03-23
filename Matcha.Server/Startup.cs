@@ -44,7 +44,8 @@ namespace Matcha.Server
             app.UseRouting();
 
             app.UseCors(builder => builder
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:3000")
+                .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 

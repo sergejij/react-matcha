@@ -2,7 +2,10 @@
     id BIGINT NOT NULL,
     name VARCHAR(128) NOT NULL,
     surname VARCHAR(128) NOT NULL,
-    number VARCHAR(128),
+    location VARCHAR(128),
+    relationship_status INT,
+    attitude_to_alcohol INT,
+    attitude_to_smoking INT,
     age INT,
     post VARCHAR(128),
     sex INT,
@@ -11,5 +14,8 @@
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES user_data(id),
     FOREIGN KEY(sex) REFERENCES sexes(id),
-    FOREIGN KEY(target_sex) REFERENCES sexes(id)
+    FOREIGN KEY(target_sex) REFERENCES sexes(id),
+    FOREIGN KEY(attitude_to_alcohol) REFERENCES attitudes(id),
+    FOREIGN KEY(attitude_to_smoking) REFERENCES attitudes(id),
+    FOREIGN KEY(relationship_status) REFERENCES relationship_status(id)
 );
