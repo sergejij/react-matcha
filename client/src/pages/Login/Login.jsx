@@ -9,11 +9,20 @@ import Button from '../../components/Button';
 import { Text } from '../../styled';
 import RegistrationForm from './RegistrationForm';
 import LoginForm from './LoginForm';
+import { useQuery } from '../../hooks';
 
 export default () => {
   const portalRoot = document.getElementById('portal');
   const [isShownLoginForm, setIsShownLoginForm] = React.useState(false);
   const [isShownRegistrationForm, setIsShownRegistrationForm] = React.useState(false);
+  const query = useQuery();
+
+  React.useEffect(() => {
+    if (query.get("openLogin")) {
+      setIsShownLoginForm(true);
+    }
+  }, [])
+
 
   const toggleLoginForm = () => {
     setIsShownLoginForm((prev) => !prev);

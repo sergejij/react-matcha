@@ -1,12 +1,11 @@
 import React from 'react';
 import { usersAPI } from '../../api/api';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Text } from '../../styled';
 import { ConfirmEmailStyled } from './styled';
+import Button from '../../components/Button';
+import { useQuery } from '../../hooks';
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
 
 export default () => {
   const [isConfirmed, setIsConfirmed] = React.useState(false);
@@ -14,7 +13,7 @@ export default () => {
   const query = useQuery();
 
   React.useEffect(() => {
-    usersAPI.confirm(query.get("code"))
+    usersAPI.confirmEmail(query.get("code"))
       .then(
         (data) => {
           console.log(data);
@@ -29,9 +28,13 @@ export default () => {
 
   return (
     <ConfirmEmailStyled>
-      {isConfirmed && <Text size="24px">Регистрация прошла успешна. <Link to="/login"> Вы можете войти на
-        сайт.</Link></Text>}
+      <div>
+      {isConfirmed && <Text size="24px">Регистрация прошла успешна.</Text>}
       {isError && <Text size="24px">Не удалось подтвердить регистрацию.</Text>}
+        <Link to={`/login${isConfirmed && '?openLogin=true'}`} size="L">
+          <Button size="L">{isConfirmed ? 'Войти' : 'На страницу регистрации'}</Button>
+        </Link>
+      </div>
     </ConfirmEmailStyled>
   );
 }

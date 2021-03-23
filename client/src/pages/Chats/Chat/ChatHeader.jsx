@@ -5,7 +5,7 @@ import ProfileImg from '../../../assets/images/Chats/liza.png';
 
 const ChatHeader = ({ user }) => (
   <ChatHeaderStyled>
-    <ChatsUser user={user} isActive img={ProfileImg} />
+    <ChatsUser user={user} isActive img={ProfileImg}  />
   </ChatHeaderStyled>
 );
 

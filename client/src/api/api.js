@@ -3,6 +3,9 @@ import axios from 'axios';
 const instance = axios.create({
     baseURL: 'https://81.177.141.123:637',
     withCredentials: true,
+    headers: {
+      'SameSite': 'None',
+    },
 });
 
 export const usersAPI = {
@@ -30,7 +33,13 @@ export const usersAPI = {
     return instance.post(`/account/logout`);
   },
 
-  confirm(code) {
+  confirmEmail(code) {
     return instance.post(`/account/confirm_email?code=${code}`);
+  },
+}
+
+export const devAPI = {
+  usersList() {
+    return instance.get(`/dev/users_list`);
   },
 }

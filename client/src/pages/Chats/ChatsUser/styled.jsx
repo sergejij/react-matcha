@@ -21,7 +21,6 @@ export const ChatsAsideItem = styled(NavLink)`
   }
   
    &.active {
-    border-right: ${(props) => (props.isHeader ? `8px solid ${COLORS.YELLOW}` : 'transparent')};
     box-shadow: 0 0 6px -1px rgba(93, 83, 94, 0.32);
   }
 `;
