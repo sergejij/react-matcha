@@ -162,7 +162,7 @@ namespace Matcha.Server.Database
             {
                 var codestr = code.ToString();
 
-                var body = $"Тык: http://localhost:3000/confirm-email?code={codestr}\nhttp://81.177.141.123:637/confirm_email?code={codestr}";
+                var body = $"Тык: http://localhost:3000/confirm-email?code={codestr}\nhttps://81.177.141.123:637/confirm_email?code={codestr}";
                 MailClient.MailClient.SendMail(email, "Подтверждение регистрации в Matcha", body);
             }
 
