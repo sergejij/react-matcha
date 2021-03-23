@@ -1,16 +1,19 @@
 import React from 'react';
-import { InputStyled, LoginFormStyled, RegistrationFormStyled } from './styled';
+import { InputStyled, LoginFormStyled } from './styled';
 import CloseIcon from '@material-ui/icons/Close';
 import { Text } from '../../styled';
 import COLORS from '../../constants';
 import Button from '../../components/Button';
 import { usersAPI } from '../../api/api';
+import { Redirect } from 'react-router-dom';
 
 export default ({ onClose, onRegister }) => {
   const [emailOrLogin, setEmailOrLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
 
   const [errorNotification, setErrorNotification] = React.useState('');
+
+  const [redirectTo, setRedirectTo] = React.useState('');
 
   const openRegister = (e) => {
     e.preventDefault();
@@ -26,18 +29,22 @@ export default ({ onClose, onRegister }) => {
       usersAPI
         .login(emailOrLogin, password)
         .then(
-          (data) => {
-            console.log(data);
-            console.log(document.cookie);
+          ({ data }) => {
+            console.log(data.Content['matcha-user-id']);
+            setRedirectTo(`/profile/${data.Content['matcha-user-id']}`);
           },
           (err) => {
-            setErrorNotification("Произошла ошибка. Пожалуйста попробуйте снова.");
-            console.log(err);
+            setErrorNotification(err.response.status === 401 ? "Неверный логин или пароль." :
+              "Произошла ошибка. Пожалуйста попробуйте снова.");
+            console.log('err:', err.response);
           })
+        .catch(err => console.error(err.response));
     }
   }
 
   return (
+    <>
+    {redirectTo && <Redirect to={redirectTo} /> }
     <LoginFormStyled>
       <CloseIcon onClick={onClose} />
       <Text>
@@ -61,5 +68,6 @@ export default ({ onClose, onRegister }) => {
       {errorNotification && <Text size={14} color="red">{errorNotification}</Text>}
       <Button onClick={onLogin} view="main">Войти</Button>
     </LoginFormStyled>
+      </>
   );
 };

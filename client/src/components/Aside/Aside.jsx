@@ -2,6 +2,7 @@ import React from 'react';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import SecurityIcon from '@material-ui/icons/Security';
 import ProfileImg from '../../assets/images/Chats/liza.png';
 import {
   ChatsAsideHeader, ChatsAsideItems, ChatsAsideStyled, FilterBox,
@@ -30,7 +31,10 @@ const Aside = ({
             <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting="Данные пользователя">
               <PersonOutlineIcon />
             </SettingsItem>
-            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 1} textSetting="Фото пользователя">
+            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting="Безопасность пользователя">
+              <SecurityIcon />
+            </SettingsItem>
+            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting="Фото пользователя">
               <CropOriginalIcon />
             </SettingsItem>
 

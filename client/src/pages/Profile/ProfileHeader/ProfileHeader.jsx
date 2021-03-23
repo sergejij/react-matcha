@@ -2,11 +2,19 @@ import React from 'react';
 import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
 import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
+import { devAPI } from '../../../api/api';
 
 const ProfileHeader = ({ currentUser }) => {
+  React.useEffect(() => {
+    devAPI.usersList()
+      .then((data) => console.log(data), (er) => console.error(er));
+  }, []);
+
+
   if (!currentUser) {
     return null;
   }
+
 
   return (
     <ProfileHeaderBox>

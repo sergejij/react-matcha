@@ -5,7 +5,7 @@ const Button = styled.button`
   color: ${(props) => (props.view === 'main' ? '#FFF' : COLORS.PINK)};
   background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? COLORS.PINK : COLORS.YELLOW) : 'transparent')};
   border-color: ${(props) => (props.view === 'main' ? 'transparent' : COLORS.PINK)};
-  width: ${(props) => (props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '300px')};
+  width: ${(props) => (props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '350px')};
   height: ${(props) => (props.size === 'S' ? '40px' : props.size === 'M' ? '45px' : '55px')};
   font-size: ${(props) => (props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
     

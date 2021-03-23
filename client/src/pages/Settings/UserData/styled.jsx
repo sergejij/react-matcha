@@ -95,7 +95,7 @@ export const SettingsDataStyled = styled.div`
 export const SettingsDataRow = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin: 20px 0;
+  margin-bottom: 40px;
   width: 100%;
   
   & label {

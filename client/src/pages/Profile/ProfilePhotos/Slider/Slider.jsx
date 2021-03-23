@@ -32,7 +32,7 @@ export default ({ images }) => {
 
   const renderImageContent = (src, index) => (
     <div onClick={(e) => openModal(e, index)}>
-      <img src={src} key={src} alt="asf" />
+      <img src={src} key={index} alt="asf" />
     </div>
   );
 
