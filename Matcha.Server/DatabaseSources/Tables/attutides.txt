@@ -1,0 +1,10 @@
+﻿CREATE TABLE attitudes (
+	id INT NOT NULL AUTO_INCREMENT,
+	attitude VARCHAR(128) NOT NULL,
+
+	PRIMARY KEY(id)
+);
+
+INSERT INTO attitudes (attitude) VALUES ('Положительное');
+INSERT INTO attitudes (attitude) VALUES ('Нейтральное');
+INSERT INTO attitudes (attitude) VALUES ('Отрицательное');

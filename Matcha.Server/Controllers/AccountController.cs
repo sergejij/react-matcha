@@ -40,12 +40,12 @@ namespace Matcha.Server.Controllers
             if (dbRet.Ok)
             {
                 var cookie = dbRet.Content[ResponseContentConstants.Cookie].ToString();
-                var userId = dbRet.Content[ResponseContentConstants.UserId].ToString();
-
                 Response.Cookies.Append(ResponseContentConstants.Cookie, cookie);
-                Response.Headers.Add(ResponseContentConstants.UserId, userId);
 
-                dbRet.Content = null;
+                var userId = dbRet.Content[ResponseContentConstants.UserId].ToString();
+                Response.Cookies.Append(ResponseContentConstants.UserId, userId);
+
+                dbRet.Content.Remove(ResponseContentConstants.Cookie);
             }
 
             return ResponseBuilder.Create(dbRet);
@@ -60,7 +60,7 @@ namespace Matcha.Server.Controllers
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
             Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
-            Response.Headers.Remove(ResponseContentConstants.UserId);
+            Response.Cookies.Append(ResponseContentConstants.UserId, "", cookieExpiredOption);
 
             return ResponseBuilder.Create(ResponseModel.OK());
         }

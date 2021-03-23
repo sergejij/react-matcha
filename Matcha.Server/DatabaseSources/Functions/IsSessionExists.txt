@@ -1,0 +1,14 @@
+﻿CREATE FUNCTION IsSessionExists (
+    user_id BIGINT,
+    cookie char(36)
+) RETURNS BIT
+
+BEGIN
+
+    RETURN (
+        SELECT EXISTS(
+            SELECT * FROM sessions where sessions.user_id = user_id AND sessions.cookie = UUID_TO_BIN(cookie)
+        )
+    );
+
+END

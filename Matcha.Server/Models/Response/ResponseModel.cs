@@ -33,5 +33,7 @@ namespace server.Response
         }
 
         public static ResponseModel OK() => new ResponseModel(HttpStatusCode.OK, null);
+
+        public static ResponseModel Unauthorized() => new ResponseModel(HttpStatusCode.Unauthorized, null);
     }
 }
