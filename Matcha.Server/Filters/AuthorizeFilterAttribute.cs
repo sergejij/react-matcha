@@ -1,7 +1,6 @@
 ﻿using Matcha.Server.Database;
 using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using server.Response;
 using System;
