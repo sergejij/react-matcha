@@ -11,10 +11,8 @@ namespace Matcha.Server.Controllers
 {
     [Route("account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseMatchaController
     {
-        [ProducesResponseType(typeof(ResponseModel), 200)]
-        [ProducesResponseType(typeof(ResponseModel), 500)]
         [HttpPost]
         [Route("register")]
         public IActionResult Register(AccountRegisterModel registerModel)
@@ -56,8 +54,8 @@ namespace Matcha.Server.Controllers
         [Route("logout")]
         public IActionResult Logout()
         {
-            if (TryGetSessionAttributes(out long userId, out string cookie))
-                DatabaseApi.Account.Logout(userId, cookie);
+            if (UserId != default)
+                DatabaseApi.Account.Logout(UserId, Cookie);
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
             Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
@@ -65,28 +63,5 @@ namespace Matcha.Server.Controllers
 
             return ResponseBuilder.Create(ResponseModel.OK());
         }
-
-        #region Вспомогательные методы
-
-        private bool TryGetSessionAttributes(out long userId, out string cookie)
-        {
-            if (Request.Cookies.ContainsKey(ResponseContentConstants.Cookie) &&
-                Request.Headers.ContainsKey(ResponseContentConstants.UserId))
-            {
-                cookie = Request.Cookies[ResponseContentConstants.Cookie];
-                userId = long.Parse(Request.Headers.GetCommaSeparatedValues(ResponseContentConstants.UserId)[0]);
-
-                return true;
-            }
-            else
-            {
-                cookie = default;
-                userId = default;
-
-                return false;
-            }
-        }
-
-        #endregion
     }
 }

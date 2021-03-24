@@ -7,7 +7,7 @@ namespace Matcha.Server.Controllers
 {
     [Route("profile")]
     [ApiController]
-    public class ProfileController : ControllerBase
+    public class ProfileController : BaseMatchaController
     {
         [HttpPut]
         [Route("update_info")]

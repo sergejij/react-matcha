@@ -12,7 +12,7 @@ namespace Matcha.Server.Controllers
 {
     [ExceptionHandlerFilter]
     [Route("dev")]
-    public class DevelopmentController : ControllerBase
+    public class DevelopmentController : BaseMatchaController
     {
         [HttpGet]
         [Route("users_list")]
