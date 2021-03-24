@@ -1,6 +1,7 @@
 ﻿using Matcha.Server.Models.Profile;
 using MySql.Data.MySqlClient;
 using server.Response;
+using System.Collections.Generic;
 using System.Data;
 using System.Net;
 
@@ -13,7 +14,6 @@ namespace Matcha.Server.Database
             public static ResponseModel UpdateProfileInfo(ProfileInfoModel profileInfo)
             {
                 using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-
                 using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
                 command.Parameters.AddRange(new[]
@@ -41,6 +41,46 @@ namespace Matcha.Server.Database
                     return new ResponseModel(HttpStatusCode.Conflict, errorMessage);
 
                 return ResponseModel.OK();
+            }
+
+            public static ResponseModel GetSexesList()
+            {
+                using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+                using var command = new MySqlCommand("GetSexesList", connection) { CommandType = CommandType.StoredProcedure };
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                var sexes = new HashSet<string>();
+
+                while (reader.Read())
+                    sexes.Add(reader.GetString(0));
+
+                return new ResponseModel(HttpStatusCode.OK, null,
+                                         new Dictionary<string, object>
+                                         {
+                                         { "sexes", sexes }
+                                         });
+            }
+
+            public static ResponseModel GetAttitudesList()
+            {
+                using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+                using var command = new MySqlCommand("GetAttitudesList", connection) { CommandType = CommandType.StoredProcedure };
+
+                connection.Open();
+                using var reader = command.ExecuteReader();
+
+                var attitudes = new HashSet<string>();
+
+                while (reader.Read())
+                    attitudes.Add(reader.GetString(0));
+
+                return new ResponseModel(HttpStatusCode.OK, null,
+                                         new Dictionary<string, object>
+                                         {
+                                         { "attitudes", attitudes }
+                                         });
             }
         }
     }

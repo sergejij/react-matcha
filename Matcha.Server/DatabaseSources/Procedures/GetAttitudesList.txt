@@ -1,0 +1,4 @@
+﻿CREATE PROCEDURE GetAttitudesList()
+BEGIN
+	SELECT attitude FROM attitudes;
+END
