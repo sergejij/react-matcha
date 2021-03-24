@@ -1,0 +1,4 @@
+﻿CREATE PROCEDURE GetSexesList()
+BEGIN
+	SELECT sex FROM sexes;
+END

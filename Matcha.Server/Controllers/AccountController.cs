@@ -5,15 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using server.Response;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matcha.Server.Controllers
 {
     [Route("account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseMatchaController
     {
-        [ProducesResponseType(typeof(ResponseModel), 200)]
-        [ProducesResponseType(typeof(ResponseModel), 500)]
         [HttpPost]
         [Route("register")]
         public IActionResult Register(AccountRegisterModel registerModel)
@@ -25,7 +24,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("confirm_email")]
-        public IActionResult ConfirmEmail(Guid code)
+        public IActionResult ConfirmEmail([Required][FromQuery] Guid code)
         {
             var dbRet = DatabaseApi.Account.ConfirmEmail(code);
             return ResponseBuilder.Create(dbRet);
@@ -55,8 +54,8 @@ namespace Matcha.Server.Controllers
         [Route("logout")]
         public IActionResult Logout()
         {
-            if (TryGetSessionAttributes(out string cookie, out long userId))
-                DatabaseApi.Account.Logout(userId, cookie);
+            if (UserId != default)
+                DatabaseApi.Account.Logout(UserId, Cookie);
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
             Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
@@ -64,28 +63,5 @@ namespace Matcha.Server.Controllers
 
             return ResponseBuilder.Create(ResponseModel.OK());
         }
-
-        #region Вспомогательные методы
-
-        private bool TryGetSessionAttributes(out string cookie, out long userId)
-        {
-            if (Request.Cookies.ContainsKey(ResponseContentConstants.Cookie) &&
-                Request.Headers.ContainsKey(ResponseContentConstants.UserId))
-            {
-                cookie = Request.Cookies[ResponseContentConstants.Cookie];
-                userId = long.Parse(Request.Headers.GetCommaSeparatedValues(ResponseContentConstants.UserId)[0]);
-
-                return true;
-            }
-            else
-            {
-                cookie = default;
-                userId = default;
-
-                return false;
-            }
-        }
-
-        #endregion
     }
 }

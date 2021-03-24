@@ -9,7 +9,9 @@
     age INT,
     post VARCHAR(128),
     sex INT,
-    target_sex INT,
+    sex_preference INT,
+    biography TEXT,
+
 
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES user_data(id),

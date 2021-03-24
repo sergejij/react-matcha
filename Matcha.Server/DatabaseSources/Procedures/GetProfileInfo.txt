@@ -1,0 +1,80 @@
+﻿CREATE PROCEDURE GetProfileInfo(
+    user_id BIGINT,
+
+    OUT error_message VARCHAR(256)
+)
+
+BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS temp;
+    CREATE TEMPORARY TABLE temp (
+        id BIGINT,
+        name VARCHAR(128),
+        surname VARCHAR(128),
+        location VARCHAR(128),
+        relationship_status VARCHAR(128),
+        attitude_to_alcohol VARCHAR(128),
+        attitude_to_smoking VARCHAR(128),
+        age INT,
+        post VARCHAR(128),
+        sex VARCHAR(128),
+        sex_preference VARCHAR(128),
+        biography TEXT
+    );
+
+    IF EXISTS(SELECT * FROM user_full_data WHERE user_full_data.id = user_id)
+    THEN
+        INSERT INTO temp (id, name, surname, location, age, post, biography)
+        SELECT
+            id,
+            name,
+            surname,
+            location,
+            age,
+            post,
+            biography
+        FROM user_full_data where user_full_data.id = user_id;
+
+        UPDATE temp
+        SET relationship_status = 
+            (SELECT status
+            FROM relationship_statuses
+            WHERE relationship_statuses.id = (SELECT relationship_status FROM user_full_data where user_full_data.id = user_id))
+        WHERE temp.id = user_id;
+
+        UPDATE temp
+        SET attitude_to_alcohol = 
+            (SELECT attitude
+            FROM attitudes
+            WHERE attitudes.id = (SELECT attitude_to_alcohol FROM user_full_data where user_full_data.id = user_id))
+        WHERE temp.id = user_id;
+
+        UPDATE temp
+        SET attitude_to_smoking = 
+            (SELECT attitude
+            FROM attitudes
+            WHERE attitudes.id = (SELECT attitude_to_smoking FROM user_full_data where user_full_data.id = user_id))
+        WHERE temp.id = user_id;
+
+        UPDATE temp
+        SET sex = 
+            (SELECT sex
+            FROM sexes
+            WHERE sexes.id = (SELECT sex FROM user_full_data where user_full_data.id = user_id))
+        WHERE temp.id = user_id;
+
+        UPDATE temp
+        SET sex_preference = 
+            (SELECT sex
+            FROM sexes
+            WHERE sexes.id = (SELECT sex_preference FROM user_full_data where user_full_data.id = user_id))
+        WHERE temp.id = user_id;
+
+        SET error_message = NULL;
+
+        SELECT * FROM temp;
+    ELSE
+        SET error_message = 'Пользователь с таким ID не найден';
+    END IF;
+
+END

@@ -114,7 +114,7 @@ namespace Matcha.Server.Database
                 command.ExecuteNonQuery();
             }
 
-            public static bool SessionExists(long userId, Guid cookie)
+            public static bool SessionExists(long userId, string cookie)
             {
                 using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
                 using var command = new MySqlCommand("IsSessionExists", connection) { CommandType = CommandType.StoredProcedure };
