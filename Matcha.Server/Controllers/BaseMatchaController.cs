@@ -41,7 +41,7 @@ namespace Matcha.Server.Controllers
             {
                 userId = default;
                 cookie = default;
-                return true;
+                return false;
             }
         }
     }
