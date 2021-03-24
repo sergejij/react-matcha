@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using server.Response;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matcha.Server.Controllers
 {
@@ -25,7 +26,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("confirm_email")]
-        public IActionResult ConfirmEmail(Guid code)
+        public IActionResult ConfirmEmail([Required][FromQuery] Guid code)
         {
             var dbRet = DatabaseApi.Account.ConfirmEmail(code);
             return ResponseBuilder.Create(dbRet);
@@ -55,7 +56,7 @@ namespace Matcha.Server.Controllers
         [Route("logout")]
         public IActionResult Logout()
         {
-            if (TryGetSessionAttributes(out string cookie, out long userId))
+            if (TryGetSessionAttributes(out long userId, out string cookie))
                 DatabaseApi.Account.Logout(userId, cookie);
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
@@ -67,7 +68,7 @@ namespace Matcha.Server.Controllers
 
         #region Вспомогательные методы
 
-        private bool TryGetSessionAttributes(out string cookie, out long userId)
+        private bool TryGetSessionAttributes(out long userId, out string cookie)
         {
             if (Request.Cookies.ContainsKey(ResponseContentConstants.Cookie) &&
                 Request.Headers.ContainsKey(ResponseContentConstants.UserId))

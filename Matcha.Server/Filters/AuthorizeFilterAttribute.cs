@@ -37,8 +37,8 @@ namespace Matcha.Server.Filters
             }
             else
             {
-                userId = -1;
-                cookie = Guid.Empty;
+                userId = default;
+                cookie = default;
 
                 return false;
             }

@@ -1,13 +1,14 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matcha.Server.Models.Account
 {
     public class AccountAuthModel
     {
-        [JsonProperty(PropertyName = "Email", Required = Required.Always)]
+        [Required]
         public string Email { get; set; }
 
-        [JsonProperty(PropertyName = "Password", Required = Required.Always)]
+        [Required]
         public string Password { get; set; }
     }
 }
