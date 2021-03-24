@@ -30,7 +30,6 @@ export default ({ onClose, onRegister }) => {
         .login(emailOrLogin, password)
         .then(
           ({ data }) => {
-            console.log(data.Content['matcha-user-id']);
             setRedirectTo(`/profile/${data.Content['matcha-user-id']}`);
           },
           (err) => {
