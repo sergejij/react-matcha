@@ -19,5 +19,5 @@
     FOREIGN KEY(sex_preference) REFERENCES sexes(id),
     FOREIGN KEY(attitude_to_alcohol) REFERENCES attitudes(id),
     FOREIGN KEY(attitude_to_smoking) REFERENCES attitudes(id),
-    FOREIGN KEY(relationship_status) REFERENCES relationship_status(id)
+    FOREIGN KEY(relationship_status) REFERENCES relationship_statuses(id)
 );
