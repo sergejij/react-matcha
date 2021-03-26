@@ -1,0 +1,14 @@
+{
+  "Content":
+    {
+      "post": "post",
+      "location": "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "age": 4,
+      "sex": "male",
+      "relationshipStatus": "Alone",
+      "sexPreference": "female",
+      "alcoholAttitude": "Bad",
+      "smokingAttitude": "meh",
+      "biography": "Я родился в Москве в 70-м на краю города. Моча рано ударила в голову"
+    }
+}

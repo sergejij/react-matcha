@@ -24,7 +24,7 @@ const ProfileTabs = ({ users, currentUser }) => {
     setActiveTabs(index);
   };
   return (
-    <Tabs>
+    <Tabs defaultIndex={0}>
       <ProfileTabsStyled>
         {
           tabs.map((tab, index) => (

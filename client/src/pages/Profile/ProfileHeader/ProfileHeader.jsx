@@ -7,7 +7,10 @@ import { devAPI } from '../../../api/api';
 const ProfileHeader = ({ currentUser }) => {
   React.useEffect(() => {
     devAPI.usersList()
-      .then((data) => console.log(data), (er) => console.error(er));
+      .then(
+        (data) => console.log("Request to userList from ProfileHeader:", data),
+        (er) => console.error("Request to userList from ProfileHeader:", er)
+      );
   }, []);
 
 
@@ -21,23 +24,11 @@ const ProfileHeader = ({ currentUser }) => {
       <ProfileHeaderPhoto src={ProfileImg} alt="Фото профиля" />
 
       <div>
-        <h2>
-          {currentUser.name}
-          {' '}
-          {currentUser.surname}
-        </h2>
+        <h2>{`${currentUser.name} ${currentUser.surname}`}</h2>
         <p>
           <b>{currentUser.profession}</b>
-          {' '}
-          -
-          {' '}
-          {currentUser.place_of_living}
-          {'   '}
-          <span>
-            {currentUser.age}
-            {' '}
-            лет
-          </span>
+          {` - ${currentUser.place_of_living}`}
+          <span>{`${currentUser.age} лет`}</span>
         </p>
 
         <Buttons>

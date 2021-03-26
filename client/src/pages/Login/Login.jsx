@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {
   Landing, Header, Content, Footer, Headline,
-  Modal, RegistrationFormStyled, InputStyled,
+  Modal,
 } from './styled';
 import COLORS from '../../constants';
 import Button from '../../components/Button';
@@ -25,11 +25,11 @@ export default () => {
 
 
   const toggleLoginForm = () => {
-    setIsShownLoginForm((prev) => !prev);
+    setIsShownLoginForm((prevState) => !prevState);
   };
 
   const toggleRegistrationForm = () => {
-    setIsShownRegistrationForm((prev) => !prev);
+    setIsShownRegistrationForm((prevState) => !prevState);
   };
 
   return (

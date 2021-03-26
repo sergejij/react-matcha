@@ -10,7 +10,7 @@ const instance = axios.create({
 
 export const usersAPI = {
   getUser(id) {
-    return instance.get(`/account/&id=${id}`);
+    return instance.get(`/profile/profile_info?userId=${id}`);
   },
 
   getPhoto() {

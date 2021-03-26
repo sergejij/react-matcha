@@ -11,7 +11,7 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, activeSetting, users, setCurrentUserId, isChat,
+  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setCurrentUserId, isChat,
 }) => (
   <ChatsAsideStyled>
     <ChatsAsideHeader>
@@ -19,7 +19,7 @@ const Aside = ({
     </ChatsAsideHeader>
     {
       isSearch && (
-        <FilterBox>
+        <FilterBox onClick={onClickFilter}>
           <FilterListIcon />
         </FilterBox>
       )
