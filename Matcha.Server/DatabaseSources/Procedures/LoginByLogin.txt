@@ -14,24 +14,24 @@ BEGIN
     DECLARE salted_password VARCHAR(512);
     DECLARE password_hash BINARY(64);
 
-    SET salt = (SELECT user_data.salt FROM user_data WHERE user_data.login = login);
-    SET salted_password = CONCAT(password, (SELECT UUID_FROM_BIN(salt)));
-
-    CALL HASH_PASSWORD(salted_password, password_hash);
-
-    IF (password_hash = (SELECT user_data.password FROM user_data WHERE user_data.login = login))
+    IF ((SELECT email FROM user_data WHERE user_data.login = login) IS NULL)
     THEN
-        IF ((SELECT user_data.need_confirm_email FROM user_data WHERE user_data.login = login) = 0)
+        SET error_message = 'Email не подтвержден';
+    ELSE
+        SET salt = (SELECT user_data.salt FROM user_data WHERE user_data.login = login);
+        SET salted_password = CONCAT(password, (SELECT UUID_FROM_BIN(salt)));
+
+        SET password_hash = HASH_PASSWORD(salted_password);
+
+        IF (password_hash = (SELECT user_data.password FROM user_data WHERE user_data.login = login))
         THEN
             SET user_id = (SELECT id FROM user_data WHERE user_data.login = login);
             SET cookie = UUID();
             
             INSERT INTO sessions (user_id, cookie) VALUES (user_id, UUID_TO_BIN(cookie));
         ELSE
-            SET error_message = 'Email не подтвержден';
-        END IF;
-    ELSE
-        SET error_message = 'Неверный пароль';
+            SET error_message = 'Неверный пароль';
+        END IF;        
     END IF;
 
 END

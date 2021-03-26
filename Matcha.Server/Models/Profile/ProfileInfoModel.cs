@@ -25,5 +25,7 @@ namespace Matcha.Server.Models.Profile
         public string AlcoholAttitude { get; set; }
 
         public string SmokingAttitude { get; set; }
+
+        public ProfilePhotosModel Photos { get; set; }
     }
 }

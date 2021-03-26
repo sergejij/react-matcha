@@ -1,7 +1,0 @@
-﻿CREATE TABLE confirmation_codes (
-    user_id BIGINT NOT NULL,
-    code BINARY(16) NOT NULL,
-
-    PRIMARY KEY(user_id),
-    FOREIGN KEY(user_id) REFERENCES user_data(id)
-);

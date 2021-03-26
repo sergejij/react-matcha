@@ -1,8 +1,10 @@
-﻿using Matcha.Server.Models.Profile;
+﻿using Matcha.Server.AppConfig;
+using Matcha.Server.Models.Profile;
 using MySql.Data.MySqlClient;
 using server.Response;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Net;
 
 namespace Matcha.Server.Database
@@ -40,8 +42,29 @@ namespace Matcha.Server.Database
                 if (string.IsNullOrEmpty(errorMessage) == false)
                     return new ResponseModel(HttpStatusCode.Conflict, errorMessage);
 
+                //if (profileInfo.Photos is not null)
+                //    return UpdateProfilePhotos(profileInfo.Photos);
+
                 return ResponseModel.OK();
             }
+
+            //static ResponseModel UpdateProfilePhotos(long userId, ProfilePhotosModel profilePhotos)
+            //{
+            //    var userPhotosPath = Path.Combine(Constants.PhotosPath, userId.ToString());
+            //    if (Directory.Exists(userPhotosPath) == false)
+            //        Directory.CreateDirectory(userPhotosPath);
+
+            //    if (profilePhotos.Avatar is not null)
+            //    {
+            //        profilePhotos.Avatar.Rename("avatar");
+
+            //        var avatarPath = Path.Combine(userPhotosPath, profilePhotos.Avatar.Name);
+            //        File.Delete()
+            //    }
+
+
+            //    return default;
+            //}
 
             public static ResponseModel GetSexesList()
             {

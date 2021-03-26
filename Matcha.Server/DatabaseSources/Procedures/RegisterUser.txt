@@ -1,0 +1,45 @@
+﻿CREATE PROCEDURE RegisterUser (
+    login VARCHAR(128),
+    email VARCHAR(128),
+    password VARCHAR(128),
+    name NVARCHAR(128),
+    surname NVARCHAR(128),
+
+    OUT user_id BIGINT,
+    OUT error_message VARCHAR(256)
+)
+
+BEGIN
+
+    DECLARE password_hash BINARY(64);
+    DECLARE salt CHAR(36);
+
+    IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
+    OR EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email)
+    THEN
+        SET error_message = 'Пользователь с таким email уже зарегистрирован';
+    ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = login)
+    THEN
+        SET error_message = 'Пользователь с таким логином уже зарегистрирован';
+    ELSE
+        SET salt = UUID();
+        SET password_hash = HASH_PASSWORD(concat(password, salt));
+
+        INSERT INTO user_data (
+            login, password, salt
+        ) VALUES (
+            login, password_hash, UUID_TO_BIN(salt)
+        );
+
+        SET user_id = (SELECT id FROM user_data WHERE user_data.login = login);
+
+        INSERT INTO user_full_data (
+            id, name, surname
+        ) VALUES (
+            user_id, name, surname
+        );
+
+        SET error_message = NULL;
+    END IF;
+
+END

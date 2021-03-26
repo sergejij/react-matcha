@@ -18,8 +18,6 @@ namespace Matcha.Server.Controllers
         [Route("users_list")]
         public IActionResult GetUsersList()
         {
-            foreach (var cookie in Request.Cookies)
-                Console.WriteLine(cookie.Key + " : " + cookie.Value);
             var users = new List<User>();
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -72,7 +70,7 @@ namespace Matcha.Server.Controllers
             }
             catch { }
 
-            return ResponseBuilder.Create(ResponseModel.OK());
+            return ResponseModel.OK().ToResult();
         }
 
         [HttpGet]
@@ -87,7 +85,7 @@ namespace Matcha.Server.Controllers
                 { "img", bytes }
             });
 
-            return ResponseBuilder.Create(model);
+            return model.ToResult();
         }
 
         [HttpGet]
@@ -102,7 +100,7 @@ namespace Matcha.Server.Controllers
         [AuthorizeFilter]
         public IActionResult SessionCheck()
         {
-            return ResponseBuilder.Create(ResponseModel.OK());
+            return ResponseModel.OK().ToResult();
         }
     }
 

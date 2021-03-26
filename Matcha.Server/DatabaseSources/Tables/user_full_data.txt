@@ -16,7 +16,7 @@
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES user_data(id),
     FOREIGN KEY(sex) REFERENCES sexes(id),
-    FOREIGN KEY(target_sex) REFERENCES sexes(id),
+    FOREIGN KEY(sex_preference) REFERENCES sexes(id),
     FOREIGN KEY(attitude_to_alcohol) REFERENCES attitudes(id),
     FOREIGN KEY(attitude_to_smoking) REFERENCES attitudes(id),
     FOREIGN KEY(relationship_status) REFERENCES relationship_status(id)

@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE OpenSession (
+﻿CREATE PROCEDURE Login (
     email VARCHAR(128),
     password VARCHAR(128),
 
@@ -16,8 +16,11 @@ BEGIN
     ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = email)
     THEN
         call LoginByLogin(email, password, user_id, cookie, error_message);
+    ELSEIF EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email)
+    THEN
+        SET error_message = 'Email не подтвержден';
     ELSE
-        SET error_message = 'Пользователь с таким email не найден';
+        SET error_message = 'Пользователь с таким email/login не найден';
     END IF;
 
 END
