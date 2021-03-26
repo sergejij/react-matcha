@@ -8,6 +8,7 @@ BEGIN
     TRUNCATE TABLE user_full_data;
     TRUNCATE TABLE emails_for_confirm;
     TRUNCATE TABLE sessions;
+    TRUNCATE TABLE visits;
 
     SET FOREIGN_KEY_CHECKS = 1;
 

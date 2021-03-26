@@ -133,5 +133,24 @@ namespace Matcha.Server.Controllers
 
             return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
         }
+
+        [HttpPost]
+        [Route("visit_notification")]
+        public IActionResult ProfileVisitEvent([FromQuery][Required] long visitedProfileId)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("AddProfileVisiter", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("visiter_id", UserId),
+                new MySqlParameter("visited_id", visitedProfileId)
+            });
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            return ResponseModel.OK().ToResult();
+        }
     }
 }
