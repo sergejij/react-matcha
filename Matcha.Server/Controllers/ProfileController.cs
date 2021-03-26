@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
 
@@ -94,11 +95,43 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        //[HttpGet]
-        //[Route("profile_info")]
-        //public IActionResult GetProfileInfo([FromQuery][Required] long userId)
-        //{
-        //    return DatabaseApi.Profile.GetProfileInfo(userId).ToResult();
-        //}
+        [HttpGet]
+        [Route("get_info")]
+        public IActionResult GetProfileInfo([FromQuery][Required] long userId)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                    new MySqlParameter("user_id", userId),
+                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+                });
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            var errorMessage = command.Parameters["error_message"].Value?.ToString();
+            if (string.IsNullOrEmpty(errorMessage) == false)
+                return new ResponseModel(HttpStatusCode.NoContent, errorMessage).ToResult();
+
+            reader.Read();
+            var fields = new Dictionary<string, object>
+            {
+                { "name", reader["name"] },
+                { "surname", reader["surname"] },
+                { "location", reader["location"] },
+                { "relationshipstatus", reader["relationship_status"] },
+                { "attitudeToAlcohol", reader["attitude_to_alcohol"] },
+                { "attitudeToSmoking", reader["attitude_to_smoking"] },
+                { "age", reader["age"] },
+                { "post", reader["post"] },
+                { "sex", reader["sex"] },
+                { "sexPreference", reader["sex_preference"] },
+                { "biography", reader["biography"] }
+            };
+
+            return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
+        }
     }
 }

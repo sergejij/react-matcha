@@ -1,5 +1,4 @@
 ﻿using Matcha.Server.Controllers;
-using Matcha.Server.Database;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MySql.Data.MySqlClient;
 using server.Response;

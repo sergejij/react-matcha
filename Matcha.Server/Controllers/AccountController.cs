@@ -1,5 +1,4 @@
-﻿using Matcha.Server.Database;
-using Matcha.Server.Filters;
+﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Account;
 using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
