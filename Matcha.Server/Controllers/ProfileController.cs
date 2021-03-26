@@ -113,7 +113,7 @@ namespace Matcha.Server.Controllers
 
             var errorMessage = command.Parameters["error_message"].Value?.ToString();
             if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.NoContent, errorMessage).ToResult();
+                return new ResponseModel(HttpStatusCode.NoContent, "Пользователь с таким ID не найден").ToResult();
 
             reader.Read();
             var fields = new Dictionary<string, object>
