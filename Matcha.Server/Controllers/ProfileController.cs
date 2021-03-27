@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
 using Matcha.Server.Extensions;
+using System;
 
 namespace Matcha.Server.Controllers
 {
@@ -159,18 +160,37 @@ namespace Matcha.Server.Controllers
         public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("liker_id", UserId),
-                new MySqlParameter("liked_id", likedProfileId)
-            });
-
             connection.Open();
-            using var reader = command.ExecuteReader();
 
-            return ResponseModel.OK().ToResult();
+            using (var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure })
+            {
+                command.Parameters.AddRange(new[]
+                {
+                    new MySqlParameter("liker_id", UserId),
+                    new MySqlParameter("liked_id", likedProfileId)
+                });
+
+                command.ExecuteNonQuery();
+            }
+
+            using (var command = new MySqlCommand("IsLikesMutuals", connection) { CommandType = CommandType.StoredProcedure })
+            {
+                command.Parameters.AddRange(new[]
+                {
+                    new MySqlParameter("first_id", UserId),
+                    new MySqlParameter("second_id", likedProfileId),
+
+                    new MySqlParameter("mutual", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
+                });
+
+                command.ExecuteNonQuery();
+
+                return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                                  {
+                                                                      { "mutual", Convert.ToBoolean(command.Parameters["mutual"].Value) }
+                                                                  })
+                    .ToResult();
+            }
         }
     }
 }
