@@ -21,6 +21,8 @@ namespace Matcha.Server.MediaClient
 
             private readonly static string AvatarName = "avatar";
 
+            private readonly static int MaxPhotos = 4;
+
             static Image()
             {
                 if (Directory.Exists(BaseDir) == false)
@@ -55,7 +57,9 @@ namespace Matcha.Server.MediaClient
 
             public static IEnumerable<PhotoModel> GetAllPhotos(long userId)
             {
-                var photos = new List<PhotoModel>();
+                var photos = new List<PhotoModel>(MaxPhotos);
+                for (var i = 0; i < MaxPhotos; ++i)
+                    photos.Add(new PhotoModel());
 
                 var userDir = Path.Combine(BaseDir, userId.ToString());
                 if (Directory.Exists(userDir) == false)
@@ -66,14 +70,14 @@ namespace Matcha.Server.MediaClient
                     if (Path.GetFileNameWithoutExtension(file).Equals(AvatarName))
                         continue;
 
-                    photos.Add(new PhotoModel
-                    {
-                        Id = Convert.ToInt32(Path.GetFileNameWithoutExtension(file)),
-                        Content = File.ReadAllBytes(file)
-                    });
+                    var index = Convert.ToInt32(Path.GetFileNameWithoutExtension(file));
+
+                    photos[index].Id = Convert.ToInt32(Path.GetFileNameWithoutExtension(file));
+                    photos[index].Content = File.ReadAllBytes(file);
+
                 }
 
-                return photos.OrderBy(arg => arg.Id);
+                return photos;
             }
 
             public static void UploadPhoto(PhotoUploadModel photoModel, long userId)

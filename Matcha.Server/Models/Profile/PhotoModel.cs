@@ -2,7 +2,7 @@
 {
     public sealed record PhotoModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public byte[] Content { get; set; }
     }
