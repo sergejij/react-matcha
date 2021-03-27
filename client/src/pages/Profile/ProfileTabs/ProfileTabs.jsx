@@ -16,7 +16,7 @@ const tabs = [
   'Лайки',
 ];
 
-const ProfileTabs = ({ users, currentUser }) => {
+const ProfileTabs = ({ userData, id }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
 
   const tabClick = (e, index) => {
@@ -44,16 +44,16 @@ const ProfileTabs = ({ users, currentUser }) => {
       </TabPanel>
 
       <TabPanel>
-        <ProfileInfo user={currentUser} />
+        <ProfileInfo userData={userData} />
       </TabPanel>
 
-      <TabPanel>
-        <ProfileVisitors users={users} />
-      </TabPanel>
+      {/*<TabPanel>*/}
+      {/*  <ProfileVisitors users={users} />*/}
+      {/*</TabPanel>*/}
 
-      <TabPanel>
-        <ProfileLikes users={users} />
-      </TabPanel>
+      {/*<TabPanel>*/}
+      {/*  <ProfileLikes users={users} />*/}
+      {/*</TabPanel>*/}
     </Tabs>
   );
 };

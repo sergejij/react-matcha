@@ -10,12 +10,35 @@ const instance = axios.create({
 
 export const usersAPI = {
   getUser(id) {
-    return instance.get(`/profile/profile_info?userId=${id}`);
+    return instance.get(`/profile/get_info?userId=${id}`);
+  },
+  putUser(body) {
+    console.log(body);
+    return instance.put(`/profile/update_info`, {
+      ...body,
+    });
   },
 
-  getPhoto() {
-    return instance.get(`/dev/img`);
+  getProfileAvatar() {
+    return instance.get(`/profile/get_avatar`);
   },
+
+  getProfilePhotos() {
+    return instance.get(`/profile/get_photos`);
+  },
+
+  // uploadProfileAvatar(avatar) {
+  //   return instance.put(`/profile/upload_avatar`, {
+  //     avatar
+  //   });
+  // },
+  //
+  // uploadProfilePhoto(content, id) {
+  //   return instance.put(`/profile/upload_photo`, {
+  //     id,
+  //     content
+  //   });
+  // },
 
   register(email, login, name, surname, password) {
     return instance.post(`/account/register`, {

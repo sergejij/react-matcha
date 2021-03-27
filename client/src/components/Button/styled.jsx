@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import COLORS from '../../constants';
 
 const Button = styled.button`
+  display:flex;
+  align-items: center;
+  justify-content: center;
   color: ${(props) => (props.view === 'main' ? '#FFF' : COLORS.PINK)};
   background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? COLORS.PINK : COLORS.YELLOW) : 'transparent')};
   border-color: ${(props) => (props.view === 'main' ? 'transparent' : COLORS.PINK)};
@@ -23,6 +26,10 @@ const Button = styled.button`
   
   &:active {
     background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? '#d48794' : '#c9ca5c') : '#e0909e')};
+  }
+  
+  svg {
+    color: ${COLORS.DARK};
   }
 `;
 

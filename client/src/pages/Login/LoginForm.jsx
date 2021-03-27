@@ -30,14 +30,17 @@ export default ({ onClose, onRegister }) => {
         .login(emailOrLogin, password)
         .then(
           ({ data }) => {
-            setRedirectTo(`/profile/${data.Content['matcha-user-id']}`);
+            const id = data.Content.userId;
+            localStorage.setItem('id', id)
+            setRedirectTo(`/profile/${id}`);
           },
           (err) => {
+            console.error("Err", err);
             setErrorNotification(err.response.status === 401 ? "Неверный логин или пароль." :
               "Произошла ошибка. Пожалуйста попробуйте снова.");
             console.log('err:', err.response);
           })
-        .catch(err => console.error(err.response));
+        .catch(err => console.error("Error login:", err.response));
     }
   }
 
