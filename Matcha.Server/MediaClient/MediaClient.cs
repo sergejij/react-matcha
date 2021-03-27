@@ -81,7 +81,7 @@ namespace Matcha.Server.MediaClient
                 if (Directory.Exists(userDir) == false)
                     Directory.CreateDirectory(userDir);
 
-                var photoPath = Path.Combine(userDir, photoModel.Id.ToString());
+                var photoPath = Path.Combine(userDir, "1"/*photoModel.Id.ToString()*/);
 
                 using (var fs = new FileStream(photoPath, FileMode.Create))
                 {
