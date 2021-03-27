@@ -32,8 +32,7 @@ namespace Matcha.Server.Controllers
                     {
                         Id = long.Parse(reader["id"].ToString()),
                         Login = reader["login"].ToString(),
-                        Email = reader["email"].ToString(),
-                        NeedConfirmEmail = reader["need_confirm_email"].ToString().Equals("1")
+                        Email = reader["email"]?.ToString()
                     });
                 }
             }
@@ -46,10 +45,21 @@ namespace Matcha.Server.Controllers
 
                 while (reader.Read())
                 {
-                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? null : int.Parse(reader["age"].ToString());
-                    users[i].Post = string.IsNullOrEmpty(reader["post"].ToString()) ? null : reader["post"].ToString();
                     users[i].Name = reader["name"].ToString();
                     users[i].Surname = reader["surname"].ToString();
+                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? null : int.Parse(reader["age"].ToString());
+                    users[i].Post = reader["post"].ToString();
+                    users[i].Location = reader["location"].ToString();
+                    users[i].RelationshipStatus = reader["relationship_status"].ToString();
+                    users[i].AtttitudeToAlcohol = reader["attitude_to_alcohol"].ToString();
+                    users[i].AtttitudeToSmoking = reader["attitude_to_smoking"].ToString();
+                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? -1 : int.Parse(reader["age"].ToString());
+                    users[i].Post = reader["post"].ToString();
+                    users[i].Sex = reader["sex"].ToString();
+                    users[i].SexPreference = reader["sex_preference"].ToString();
+                    users[i].Biography = reader["biography"].ToString() ?? "";
+
+                    i += 1;
                 }
             }
 
@@ -108,29 +118,20 @@ namespace Matcha.Server.Controllers
 
     public sealed class User
     {
-        [JsonProperty(PropertyName = "Id", Required = Required.Always)]
-        public long Id { get; set; }
-
-        [JsonProperty(PropertyName = "Email", Required = Required.Always)]
-        public string Email { get; set; }
-
-        [JsonProperty(PropertyName = "Login", Required = Required.Always)]
         public string Login { get; set; }
-
-        [JsonProperty(PropertyName = "Name", Required = Required.Always)]
+        public string Email { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
-
-        [JsonProperty(PropertyName = "Surname", Required = Required.Always)]
         public string Surname { get; set; }
-
-        [JsonProperty(PropertyName = "NeedConfirmEmail", Required = Required.Always)]
-        public bool NeedConfirmEmail { get; set; }
-
-        [JsonProperty(PropertyName = "Post")]
-        public string Post { get; set; }
-
-        [JsonProperty(PropertyName = "Age")]
+        public string Location { get; set; }
+        public string RelationshipStatus { get; set; }
+        public string AtttitudeToAlcohol { get; set; }
+        public string AtttitudeToSmoking { get; set; }
         public int? Age { get; set; }
+        public string Post { get; set; }
+        public string Sex { get; set; }
+        public string SexPreference { get; set; }
+        public string Biography { get; set; }
     }
 
     #endregion
