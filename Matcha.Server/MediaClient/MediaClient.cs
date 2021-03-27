@@ -26,7 +26,7 @@ namespace Matcha.Server.MediaClient
                     Directory.CreateDirectory(BaseDir);
             }
 
-            public static void SaveAvatar(IFormFile image, long userId)
+            public static void UploadAvatar(IFormFile image, long userId)
             {
                 var userDir = Path.Combine(BaseDir, userId.ToString());
 
@@ -62,6 +62,9 @@ namespace Matcha.Server.MediaClient
 
                 foreach (var file in Directory.GetFiles(userDir))
                 {
+                    if (Path.GetFileNameWithoutExtension(file).Equals(AvatarName))
+                        continue;
+
                     photos.Add(new PhotoModel
                     {
                         Id = Convert.ToInt32(Path.GetFileNameWithoutExtension(file)),
@@ -70,6 +73,20 @@ namespace Matcha.Server.MediaClient
                 }
 
                 return photos;
+            }
+
+            public static void UploadPhoto(PhotoUploadModel photoModel, long userId)
+            {
+                var userDir = Path.Combine(BaseDir, userId.ToString());
+                if (Directory.Exists(userDir) == false)
+                    Directory.CreateDirectory(userDir);
+
+                var photoPath = Path.Combine(userDir, photoModel.Id.ToString());
+
+                using (var fs = new FileStream(photoPath, FileMode.Create))
+                {
+                    photoModel.Content.CopyTo(fs);
+                }
             }
         }
     }

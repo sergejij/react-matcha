@@ -198,7 +198,7 @@ namespace Matcha.Server.Controllers
         [Route("upload_avatar")]
         public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
         {
-            MediaClient.MediaClient.Image.SaveAvatar(avatar, UserId);
+            MediaClient.MediaClient.Image.UploadAvatar(avatar, UserId);
 
             return ResponseModel.OK().ToResult();
         }
@@ -252,6 +252,22 @@ namespace Matcha.Server.Controllers
             var confirmationCode = Guid.NewGuid();
             AccountController.AddConfirmationCode(UserId, emailChangeModel.NewEmail, confirmationCode);
             AccountController.SendConfirmationCode(emailChangeModel.NewEmail, confirmationCode);
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        //[HttpPost]
+        //[Route("update_interests")]
+        //public IActionResult UpdateInterests(InterestsModel interests)
+        //{
+
+        //}
+
+        [HttpPost]
+        [Route("upload_photo")]
+        public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
+        {
+            MediaClient.MediaClient.Image.UploadPhoto(photo, UserId);
 
             return ResponseModel.OK().ToResult();
         }
