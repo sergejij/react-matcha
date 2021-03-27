@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Matcha.Server.MediaClient
 {
@@ -52,7 +53,7 @@ namespace Matcha.Server.MediaClient
                     return File.ReadAllBytes(avatarPath);
             }
 
-            public static List<PhotoModel> GetAllPhotos(long userId)
+            public static IEnumerable<PhotoModel> GetAllPhotos(long userId)
             {
                 var photos = new List<PhotoModel>();
 
@@ -72,7 +73,7 @@ namespace Matcha.Server.MediaClient
                     });
                 }
 
-                return photos;
+                return photos.OrderBy(arg => arg.Id);
             }
 
             public static void UploadPhoto(PhotoUploadModel photoModel, long userId)
@@ -81,7 +82,7 @@ namespace Matcha.Server.MediaClient
                 if (Directory.Exists(userDir) == false)
                     Directory.CreateDirectory(userDir);
 
-                var photoPath = Path.Combine(userDir, "1"/*photoModel.Id.ToString()*/);
+                var photoPath = Path.Combine(userDir, photoModel.PhotoId.ToString());
 
                 using (var fs = new FileStream(photoPath, FileMode.Create))
                 {
