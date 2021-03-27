@@ -29,6 +29,14 @@ namespace Matcha.Server.Controllers
             }
         }
 
+        protected bool Authorized
+        {
+            get
+            {
+                return UserId != default && Cookie != default;
+            }
+        }
+
         public static bool TryGetSessionAttributes(HttpRequest request, out long userId, out string cookie)
         {
             if (request.Cookies.TryGetValue(ResponseContentConstants.UserId, out var userIdStr) &&

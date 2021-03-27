@@ -8,13 +8,13 @@ BEGIN
 
     SET code_bin = UUID_TO_BIN(code);
 
-    IF EXISTS(SELECT * FROM confirmation_codes WHERE confirmation_codes.code = code_bin)
+    IF EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin)
     THEN
         UPDATE user_data
-        SET need_confirm_email = 0
-        WHERE id IN (SELECT user_id FROM confirmation_codes WHERE confirmation_codes.code = code_bin);
+        SET email = (SELECT email FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin)
+        WHERE id = (SELECT user_id FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin);
 
-        DELETE FROM confirmation_codes WHERE confirmation_codes.code = code_bin;
+        DELETE FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin;
 
         RETURN NULL;
     ELSE

@@ -1,0 +1,6 @@
+﻿CREATE TABLE visits (
+	visiter_id BIGINT NOT NULL,
+	visited_id BIGINT NOT NULL,
+
+	PRIMARY KEY(visiter_id, visited_id)
+);

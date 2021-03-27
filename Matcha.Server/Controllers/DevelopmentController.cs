@@ -1,11 +1,14 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Response;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using server.Response;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Net;
 
 namespace Matcha.Server.Controllers
@@ -18,8 +21,6 @@ namespace Matcha.Server.Controllers
         [Route("users_list")]
         public IActionResult GetUsersList()
         {
-            foreach (var cookie in Request.Cookies)
-                Console.WriteLine(cookie.Key + " : " + cookie.Value);
             var users = new List<User>();
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -34,8 +35,7 @@ namespace Matcha.Server.Controllers
                     {
                         Id = long.Parse(reader["id"].ToString()),
                         Login = reader["login"].ToString(),
-                        Email = reader["email"].ToString(),
-                        NeedConfirmEmail = reader["need_confirm_email"].ToString().Equals("1")
+                        Email = reader["email"]?.ToString()
                     });
                 }
             }
@@ -48,10 +48,21 @@ namespace Matcha.Server.Controllers
 
                 while (reader.Read())
                 {
-                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? null : int.Parse(reader["age"].ToString());
-                    users[i].Post = string.IsNullOrEmpty(reader["post"].ToString()) ? null : reader["post"].ToString();
                     users[i].Name = reader["name"].ToString();
                     users[i].Surname = reader["surname"].ToString();
+                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? null : int.Parse(reader["age"].ToString());
+                    users[i].Post = reader["post"].ToString();
+                    users[i].Location = reader["location"].ToString();
+                    users[i].RelationshipStatus = reader["relationship_status"].ToString();
+                    users[i].AtttitudeToAlcohol = reader["attitude_to_alcohol"].ToString();
+                    users[i].AtttitudeToSmoking = reader["attitude_to_smoking"].ToString();
+                    users[i].Age = string.IsNullOrEmpty(reader["age"].ToString()) ? -1 : int.Parse(reader["age"].ToString());
+                    users[i].Post = reader["post"].ToString();
+                    users[i].Sex = reader["sex"].ToString();
+                    users[i].SexPreference = reader["sex_preference"].ToString();
+                    users[i].Biography = reader["biography"].ToString() ?? "";
+
+                    i += 1;
                 }
             }
 
@@ -72,7 +83,7 @@ namespace Matcha.Server.Controllers
             }
             catch { }
 
-            return ResponseBuilder.Create(ResponseModel.OK());
+            return ResponseModel.OK().ToResult();
         }
 
         [HttpGet]
@@ -87,7 +98,7 @@ namespace Matcha.Server.Controllers
                 { "img", bytes }
             });
 
-            return ResponseBuilder.Create(model);
+            return model.ToResult();
         }
 
         [HttpGet]
@@ -102,7 +113,26 @@ namespace Matcha.Server.Controllers
         [AuthorizeFilter]
         public IActionResult SessionCheck()
         {
-            return ResponseBuilder.Create(ResponseModel.OK());
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPost]
+        [Route("upload_img")]
+        public IActionResult UploadPhoto()
+        {
+            var dir = @"C:\Users\user\Desktop\jpgs";
+
+            foreach (var file in Request.Form.Files)
+            {
+                var filePath = Path.Combine(dir, file.FileName);
+
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+            }
+
+            return ResponseModel.OK().ToResult();
         }
     }
 
@@ -110,29 +140,20 @@ namespace Matcha.Server.Controllers
 
     public sealed class User
     {
-        [JsonProperty(PropertyName = "Id", Required = Required.Always)]
-        public long Id { get; set; }
-
-        [JsonProperty(PropertyName = "Email", Required = Required.Always)]
-        public string Email { get; set; }
-
-        [JsonProperty(PropertyName = "Login", Required = Required.Always)]
         public string Login { get; set; }
-
-        [JsonProperty(PropertyName = "Name", Required = Required.Always)]
+        public string Email { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
-
-        [JsonProperty(PropertyName = "Surname", Required = Required.Always)]
         public string Surname { get; set; }
-
-        [JsonProperty(PropertyName = "NeedConfirmEmail", Required = Required.Always)]
-        public bool NeedConfirmEmail { get; set; }
-
-        [JsonProperty(PropertyName = "Post")]
-        public string Post { get; set; }
-
-        [JsonProperty(PropertyName = "Age")]
+        public string Location { get; set; }
+        public string RelationshipStatus { get; set; }
+        public string AtttitudeToAlcohol { get; set; }
+        public string AtttitudeToSmoking { get; set; }
         public int? Age { get; set; }
+        public string Post { get; set; }
+        public string Sex { get; set; }
+        public string SexPreference { get; set; }
+        public string Biography { get; set; }
     }
 
     #endregion

@@ -1,5 +1,4 @@
-﻿using Matcha.Server.Models.Response;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using MySql.Data.MySqlClient;
 using server.Response;
 using System;
@@ -23,11 +22,9 @@ namespace Matcha.Server.Filters
             SetResult(context, "Необработанная ошибка сервера", HttpStatusCode.InternalServerError);
         }
 
-        private void SetResult(ExceptionContext context, string message, HttpStatusCode code)
+        private static void SetResult(ExceptionContext context, string message, HttpStatusCode code)
         {
-            var response = new ResponseModel(code, message);
-
-            context.Result = ResponseBuilder.Create(response);
+            context.Result = new ResponseModel(code, message).ToResult();
         }
     }
 }

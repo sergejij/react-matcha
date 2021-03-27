@@ -1,0 +1,17 @@
+﻿CREATE PROCEDURE AddConfirmationCode (
+    user_id BIGINT,
+    email VARCHAR(128),
+    code CHAR(36)
+)
+
+BEGIN
+
+    DELETE FROM emails_for_confirm WHERE emails_for_confirm.email = email;
+
+    INSERT INTO emails_for_confirm (
+        user_id, email, confirmation_code
+    ) VALUES (
+        user_id, email, UUID_TO_BIN(code)
+    );
+
+END

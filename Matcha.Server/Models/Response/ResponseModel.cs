@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 
@@ -26,7 +27,7 @@ namespace server.Response
         public ResponseModel(HttpStatusCode code, string errorMessage)
         {
             Code = code;
-            ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage is null ? string.Empty : errorMessage;
             Content = null;
 
             Ok = code < HttpStatusCode.BadRequest;
@@ -35,5 +36,16 @@ namespace server.Response
         public static ResponseModel OK() => new ResponseModel(HttpStatusCode.OK, null);
 
         public static ResponseModel Unauthorized() => new ResponseModel(HttpStatusCode.Unauthorized, null);
+
+        public IActionResult ToResult()
+        {
+            var responceBody = JsonConvert.SerializeObject(this, Formatting.Indented);
+
+            return new ContentResult
+            {
+                Content = responceBody,
+                StatusCode = (int)Code
+            };
+        }
     }
 }

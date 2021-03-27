@@ -1,0 +1,7 @@
+﻿CREATE TABLE emails_for_confirm (
+	user_id BIGINT NOT NULL,
+	email VARCHAR(128) NOT NULL UNIQUE,
+	confirmation_code binary(16) NOT NULL UNIQUE,
+
+	FOREIGN KEY(user_id) REFERENCES user_data(id)
+);

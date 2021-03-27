@@ -1,0 +1,11 @@
+﻿CREATE FUNCTION IsLikesMutuals (
+	first_id BIGINT,
+	second_id BIGINT
+) RETURNS BIT
+
+BEGIN
+
+	RETURN EXISTS((SELECT * FROM likes WHERE likes.liker_id = first_id AND likes.liked_id = second_id))
+	   AND EXISTS((SELECT * FROM likes WHERE likes.liker_id = second_id AND likes.liked_id = first_id));
+
+END

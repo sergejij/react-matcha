@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CloseSession (
+﻿CREATE PROCEDURE Logout (
     userId BIGINT,
     cookie CHAR(36)
 )

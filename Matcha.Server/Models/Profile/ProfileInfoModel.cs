@@ -1,13 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-
-namespace Matcha.Server.Models.Profile
+﻿namespace Matcha.Server.Models.Profile
 {
     public class ProfileInfoModel
     {
-        [Required]
-        public long UserId { get; set; }
-
         public string Sex { get; set; }
 
         public string SexPreference { get; set; }
@@ -22,8 +16,8 @@ namespace Matcha.Server.Models.Profile
 
         public int? Age { get; set; }
 
-        public string AlcoholAttitude { get; set; }
+        public string AttitudeToAlcohol { get; set; }
 
-        public string SmokingAttitude { get; set; }
+        public string AttitudeToSmoking { get; set; }
     }
 }

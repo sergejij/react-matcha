@@ -1,9 +1,9 @@
 ﻿using Matcha.Server.Controllers;
-using Matcha.Server.Database;
-using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Mvc.Filters;
+using MySql.Data.MySqlClient;
 using server.Response;
 using System;
+using System.Data;
 
 namespace Matcha.Server.Filters
 {
@@ -14,12 +14,31 @@ namespace Matcha.Server.Filters
         {
             if (BaseMatchaController.TryGetSessionAttributes(context.HttpContext.Request, out long userId, out string cookie) == false)
             {
-                context.Result = ResponseBuilder.Create(ResponseModel.Unauthorized());
+                context.Result = ResponseModel.Unauthorized().ToResult();
                 return;
             }
 
-            if (DatabaseApi.Account.SessionExists(userId, cookie) == false)
-                context.Result = ResponseBuilder.Create(ResponseModel.Unauthorized());
+            if (SessionExists(userId, cookie) == false)
+                context.Result = ResponseModel.Unauthorized().ToResult();
+        }
+
+        private static bool SessionExists(long userId, string cookie)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("IsSessionExists", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                    new MySqlParameter("user_id", userId),
+                    new MySqlParameter("cookie", cookie),
+
+                    new MySqlParameter("exists", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
+                });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return command.Parameters["exists"].Value.ToString().Equals("1");
         }
     }
 }

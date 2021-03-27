@@ -1,0 +1,6 @@
+﻿CREATE TABLE users_interests (
+	user_id BIGINT NOT NULL,
+	interest_id BIGINT NOT NULL,
+
+	PRIMARY KEY(user_id, interest_id)
+);
