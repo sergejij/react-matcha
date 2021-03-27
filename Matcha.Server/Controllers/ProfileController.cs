@@ -256,18 +256,30 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        //[HttpPost]
-        //[Route("update_interests")]
-        //public IActionResult UpdateInterests(InterestsModel interests)
-        //{
-
-        //}
-
         [HttpPost]
         [Route("upload_photo")]
         public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
         {
             MediaClient.MediaClient.Image.UploadPhoto(photo, UserId);
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPost]
+        [Route("update_interests")]
+        public IActionResult UpdateInterests(InterestsModel interests)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("interests", string.Join(',', interests.Interests))
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
 
             return ResponseModel.OK().ToResult();
         }

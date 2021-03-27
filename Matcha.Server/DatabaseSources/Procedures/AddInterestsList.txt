@@ -1,0 +1,36 @@
+﻿CREATE PROCEDURE AddInterestsList (
+    user_id BIGINT,
+    interests TEXT
+)
+
+BEGIN
+
+    DECLARE value TEXT DEFAULT NULL;
+    DECLARE interest_id BIGINT;
+
+    iterator:
+    LOOP
+  
+        IF CHAR_LENGTH(TRIM(interests)) = 0 OR interests IS NULL
+        THEN
+            LEAVE iterator;
+        END IF;
+ 
+        SET value = SUBSTRING_INDEX(interests, ',', 1);
+
+        IF NOT EXISTS(SELECT * FROM interests_list where interests_list.interest = value)
+        THEN
+            INSERT INTO interests_list (interest) VALUES (value);
+        END IF;
+
+        SET interest_id = (SELECT id FROM interests_list WHERE interests_list.interest = value);
+
+        IF NOT EXISTS(SELECT * FROM users_interests WHERE users_interests.user_id = user_id AND users_interests.interest_id = interest_id)
+        THEN
+            INSERT INTO users_interests (user_id, interest_id) VALUES (user_id, interest_id);
+        END IF;
+
+        SET interests = INSERT(interests, 1, CHAR_LENGTH(value) + 1, '');
+END LOOP;
+
+END

@@ -1,0 +1,6 @@
+﻿CREATE TABLE interests_list (
+	id BIGINT NOT NULL AUTO_INCREMENT,
+	interest VARCHAR(128) NOT NULL UNIQUE,
+
+	PRIMARY KEY(id)
+);
