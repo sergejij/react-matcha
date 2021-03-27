@@ -76,18 +76,6 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-
-
-        ////TODO: change_email, update_email
-        //[AuthorizeFilter]
-        //[HttpPost]
-        //[Route("change_email")]
-        //public IActionResult ChangeEmail([FromQuery] string email)
-        //{
-        //    var dbRet = DatabaseApi.Account.ChangeEmail(UserId, email);
-        //}
-
-
         [HttpPost]
         [Route("login")]
         public IActionResult Login(AccountAuthModel authModel)
@@ -155,7 +143,7 @@ namespace Matcha.Server.Controllers
 
         #region Вспомогательные методы
 
-        private static void AddConfirmationCode(long userId, string email, Guid code)
+        public static void AddConfirmationCode(long userId, string email, Guid code)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("AddConfirmationCode", connection) { CommandType = CommandType.StoredProcedure };
@@ -171,7 +159,7 @@ namespace Matcha.Server.Controllers
             command.ExecuteNonQuery();
         }
 
-        private static void SendConfirmationCode(string email, Guid code)
+        public static void SendConfirmationCode(string email, Guid code)
         {
             var codestr = code.ToString();
 

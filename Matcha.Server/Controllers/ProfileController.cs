@@ -1,15 +1,15 @@
-﻿using Matcha.Server.Filters;
+﻿using Matcha.Server.Extensions;
+using Matcha.Server.Filters;
 using Matcha.Server.Models.Profile;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
-using Matcha.Server.Extensions;
-using System;
-using Microsoft.AspNetCore.Http;
 
 namespace Matcha.Server.Controllers
 {
@@ -214,6 +214,33 @@ namespace Matcha.Server.Controllers
                                                                   { "avatar", avatarBytes }
                                                               })
                 .ToResult();
+        }
+
+        [HttpPost]
+        [Route("change_email")]
+        public IActionResult ChangeEmail(EmailChangeModel emailChangeModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("IsEmailRegistered", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("email", emailChangeModel.NewEmail),
+                new MySqlParameter("registered", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            bool registered = Convert.ToBoolean(command.Parameters["registered"].Value);
+            if (registered)
+                return new ResponseModel(HttpStatusCode.Conflict, "Email уже используется").ToResult();
+
+            var confirmationCode = Guid.NewGuid();
+            AccountController.AddConfirmationCode(UserId, emailChangeModel.NewEmail, confirmationCode);
+            AccountController.SendConfirmationCode(emailChangeModel.NewEmail, confirmationCode);
+
+            return ResponseModel.OK().ToResult();
         }
     }
 }

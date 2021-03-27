@@ -1,0 +1,10 @@
+﻿CREATE FUNCTION IsEmailRegistered (
+	email VARCHAR(128)
+) RETURNS BIT
+
+BEGIN
+
+	RETURN EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
+	    OR EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email);
+
+END
