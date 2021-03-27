@@ -154,23 +154,23 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        //[HttpPost]
-        //[Route("like_notification")]
-        //public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
-        //{
-        //    using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-        //    using var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure };
+        [HttpPost]
+        [Route("like_notification")]
+        public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure };
 
-        //    command.Parameters.AddRange(new[]
-        //    {
-        //        new MySqlParameter("liker_id", UserId),
-        //        new MySqlParameter("liked_id", likedProfileId)
-        //    });
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("liker_id", UserId),
+                new MySqlParameter("liked_id", likedProfileId)
+            });
 
-        //    connection.Open();
-        //    using var reader = command.ExecuteReader();
+            connection.Open();
+            using var reader = command.ExecuteReader();
 
-        //    return ResponseModel.OK().ToResult();
-        //}
+            return ResponseModel.OK().ToResult();
+        }
     }
 }

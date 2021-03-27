@@ -1,0 +1,6 @@
+﻿CREATE TABLE likes (
+	liker_id BIGINT NOT NULL,
+	liked_id BIGINT NOT NULL,
+
+	PRIMARY KEY(liker_id, liked_id)
+);
