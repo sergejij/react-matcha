@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
+using Matcha.Server.Extensions;
 
 namespace Matcha.Server.Controllers
 {
@@ -118,17 +119,17 @@ namespace Matcha.Server.Controllers
             reader.Read();
             var fields = new Dictionary<string, object>
             {
-                { "name", reader["name"] },
-                { "surname", reader["surname"] },
-                { "location", reader["location"] },
-                { "relationshipstatus", reader["relationship_status"] },
-                { "attitudeToAlcohol", reader["attitude_to_alcohol"] },
-                { "attitudeToSmoking", reader["attitude_to_smoking"] },
-                { "age", reader["age"] },
-                { "post", reader["post"] },
-                { "sex", reader["sex"] },
-                { "sexPreference", reader["sex_preference"] },
-                { "biography", reader["biography"] }
+                { "name", reader.StringOrEmpty("name") },
+                { "surname", reader.StringOrEmpty("surname") },
+                { "location", reader.StringOrEmpty("location") },
+                { "relationshipstatus", reader.StringOrEmpty("relationship_status") },
+                { "attitudeToAlcohol", reader.StringOrEmpty("attitude_to_alcohol") },
+                { "attitudeToSmoking", reader.StringOrEmpty("attitude_to_smoking") },
+                { "age", reader.StringOrEmpty("age") },
+                { "post", reader.StringOrEmpty("post") },
+                { "sex", reader.StringOrEmpty("sex") },
+                { "sexPreference", reader.StringOrEmpty("sex_preference") },
+                { "biography", reader.StringOrEmpty("biography") }
             };
 
             return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();

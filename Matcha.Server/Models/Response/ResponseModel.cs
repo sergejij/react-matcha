@@ -27,7 +27,7 @@ namespace server.Response
         public ResponseModel(HttpStatusCode code, string errorMessage)
         {
             Code = code;
-            ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage is null ? string.Empty : errorMessage;
             Content = null;
 
             Ok = code < HttpStatusCode.BadRequest;
