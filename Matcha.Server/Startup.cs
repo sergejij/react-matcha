@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
@@ -55,6 +56,20 @@ namespace Matcha.Server
             {
                 endpoints.MapControllers();
             });
+
+            //app.UseStaticFiles();// For the wwwroot folder
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(@"C:\Users\user\Desktop\jpgs"),
+            //    RequestPath = "/images"
+            //});
+            ////Enable directory browsing
+            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(@"C:\Users\user\Desktop\jpgs"),
+            //    RequestPath = "/images"
+            //});
         }
     }
 }

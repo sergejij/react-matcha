@@ -9,6 +9,7 @@ using System.Data;
 using System.Net;
 using Matcha.Server.Extensions;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Matcha.Server.Controllers
 {
@@ -191,6 +192,28 @@ namespace Matcha.Server.Controllers
                                                                   })
                     .ToResult();
             }
+        }
+
+        [HttpPut]
+        [Route("upload_avatar")]
+        public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
+        {
+            MediaClient.MediaClient.Image.SaveAvatar(avatar, UserId);
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpGet]
+        [Route("get_avatar")]
+        public IActionResult GetAvatar()
+        {
+            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(UserId);
+
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "avatar", avatarBytes }
+                                                              })
+                .ToResult();
         }
     }
 }

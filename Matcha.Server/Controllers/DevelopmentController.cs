@@ -1,11 +1,14 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Response;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using server.Response;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Net;
 
 namespace Matcha.Server.Controllers
@@ -110,6 +113,25 @@ namespace Matcha.Server.Controllers
         [AuthorizeFilter]
         public IActionResult SessionCheck()
         {
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPost]
+        [Route("upload_img")]
+        public IActionResult UploadPhoto()
+        {
+            var dir = @"C:\Users\user\Desktop\jpgs";
+
+            foreach (var file in Request.Form.Files)
+            {
+                var filePath = Path.Combine(dir, file.FileName);
+
+                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+            }
+
             return ResponseModel.OK().ToResult();
         }
     }
