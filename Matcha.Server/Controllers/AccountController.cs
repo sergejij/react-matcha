@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
@@ -119,7 +120,11 @@ namespace Matcha.Server.Controllers
             Response.Cookies.Append(ResponseContentConstants.Cookie, cookie);
             Response.Cookies.Append(ResponseContentConstants.UserId, userId);
 
-            return ResponseModel.OK().ToResult();
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "userId", userId }
+                                                              })
+                .ToResult();
         }
 
         [HttpPost]
