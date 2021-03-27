@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Matcha.Server.Models.Profile;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Matcha.Server.MediaClient
@@ -47,6 +50,26 @@ namespace Matcha.Server.MediaClient
                     return null;
                 else
                     return File.ReadAllBytes(avatarPath);
+            }
+
+            public static List<PhotoModel> GetAllPhotos(long userId)
+            {
+                var photos = new List<PhotoModel>();
+
+                var userDir = Path.Combine(BaseDir, userId.ToString());
+                if (Directory.Exists(userDir) == false)
+                    return photos;
+
+                foreach (var file in Directory.GetFiles(userDir))
+                {
+                    photos.Add(new PhotoModel
+                    {
+                        Id = Convert.ToInt32(Path.GetFileNameWithoutExtension(file)),
+                        Content = File.ReadAllBytes(file)
+                    });
+                }
+
+                return photos;
             }
         }
     }

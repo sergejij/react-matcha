@@ -216,6 +216,19 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
+        [HttpGet]
+        [Route("get_photos")]
+        public IActionResult GetPhotos()
+        {
+            var photos = MediaClient.MediaClient.Image.GetAllPhotos(UserId);
+
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "photos", photos }
+                                                              })
+                .ToResult();
+        }
+
         [HttpPost]
         [Route("change_email")]
         public IActionResult ChangeEmail(EmailChangeModel emailChangeModel)

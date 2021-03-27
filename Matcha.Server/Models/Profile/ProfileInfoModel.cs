@@ -19,7 +19,5 @@
         public string AttitudeToAlcohol { get; set; }
 
         public string AttitudeToSmoking { get; set; }
-
-        public ProfilePhotosModel Photos { get; set; }
     }
 }
