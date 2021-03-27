@@ -78,8 +78,8 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("sex", profileInfo.Sex),
                 new MySqlParameter("rel_status", profileInfo.RelationshipStatus),
                 new MySqlParameter("sex_preference", profileInfo.SexPreference),
-                new MySqlParameter("alcohol_attitude", profileInfo.AlcoholAttitude),
-                new MySqlParameter("smoking_attitude", profileInfo.SmokingAttitude),
+                new MySqlParameter("smoking_attitude", profileInfo.AttitudeToSmoking),
+                new MySqlParameter("alcohol_attitude", profileInfo.AttitudeToAlcohol),
                 new MySqlParameter("biography", profileInfo.Biography),
 
                 new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
@@ -122,7 +122,7 @@ namespace Matcha.Server.Controllers
                 { "name", reader.StringOrEmpty("name") },
                 { "surname", reader.StringOrEmpty("surname") },
                 { "location", reader.StringOrEmpty("location") },
-                { "relationshipstatus", reader.StringOrEmpty("relationship_status") },
+                { "relationshipStatus", reader.StringOrEmpty("relationship_status") },
                 { "attitudeToAlcohol", reader.StringOrEmpty("attitude_to_alcohol") },
                 { "attitudeToSmoking", reader.StringOrEmpty("attitude_to_smoking") },
                 { "age", reader.StringOrEmpty("age") },
@@ -153,5 +153,24 @@ namespace Matcha.Server.Controllers
 
             return ResponseModel.OK().ToResult();
         }
+
+        //[HttpPost]
+        //[Route("like_notification")]
+        //public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
+        //{
+        //    using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+        //    using var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure };
+
+        //    command.Parameters.AddRange(new[]
+        //    {
+        //        new MySqlParameter("liker_id", UserId),
+        //        new MySqlParameter("liked_id", likedProfileId)
+        //    });
+
+        //    connection.Open();
+        //    using var reader = command.ExecuteReader();
+
+        //    return ResponseModel.OK().ToResult();
+        //}
     }
 }

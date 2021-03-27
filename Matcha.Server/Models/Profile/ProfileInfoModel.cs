@@ -16,9 +16,9 @@
 
         public int? Age { get; set; }
 
-        public string AlcoholAttitude { get; set; }
+        public string AttitudeToAlcohol { get; set; }
 
-        public string SmokingAttitude { get; set; }
+        public string AttitudeToSmoking { get; set; }
 
         public ProfilePhotosModel Photos { get; set; }
     }
