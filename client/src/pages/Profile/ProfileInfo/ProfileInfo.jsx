@@ -26,23 +26,51 @@ const ProfileInterests = ({ user }) => (
   </>
 );
 
-const ProfileInfo = ({ user }) => (
+const ProfileInfo = ({ userData }) => (
   <>
     <ProfileInfoStyled>
       <ProfileInfoPairs>
+        <div>
+          <p>Пол:</p>
+          <p className="info-value">{userData.sex}</p>
+        </div>
+        <div>
+          <p>Статус отношений:</p>
+          <p className="info-value">{userData.relationshipStatus}</p>
+        </div>
+        <div>
+          <p>Сексульное предпочтение:</p>
+          <p className="info-value">{userData.sexPreference}</p>
+        </div>
         {
-          user.info.map((item, index) => (
-            <div key={`${user.title}_${index}`}>
-              <p>{`${item.title}:`}</p>
-              <p className="info-value">{item.value}</p>
-            </div>
-          ))
-      }
+          userData.sexPreference && <div>
+            <p>Отношение к алкоголю:</p>
+            <p className="info-value">{userData.sexPreference}</p>
+          </div>
+        }
+        {
+          userData.sexPreference && <div>
+            <p>Отношение к курению:</p>
+            <p className="info-value">{userData.sexPreference}</p>
+          </div>
+        }
+        <div>
+          <p>Рейтинг:</p>
+          <p className="info-value">1234</p>
+        </div>
+      {/*  {*/}
+      {/*    user.info.map((item, index) => (*/}
+      {/*      <div key={`${user.title}_${index}`}>*/}
+      {/*        <p>{`${item.title}:`}</p>*/}
+      {/*        <p className="info-value">{item.value}</p>*/}
+      {/*      </div>*/}
+      {/*    ))*/}
+      {/*}*/}
       </ProfileInfoPairs>
 
       <ProfileInfoBio>
         <p>
-          {user.bio}
+          {userData.biography}
           <IconPencil size="18px">
             <CreateIcon />
           </IconPencil>
@@ -50,7 +78,7 @@ const ProfileInfo = ({ user }) => (
 
       </ProfileInfoBio>
     </ProfileInfoStyled>
-    <ProfileInterests user={user} />
+    {/*<ProfileInterests user={user} />*/}
   </>
 );
 

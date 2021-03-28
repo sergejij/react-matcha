@@ -1,34 +1,32 @@
 import React from 'react';
 import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
-import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import Button from '../../../components/Button';
-import { devAPI } from '../../../api/api';
+import { usersAPI } from '../../../api/api';
 
-const ProfileHeader = ({ currentUser }) => {
+const ProfileHeader = ({ userData, id }) => {
+  const [userAvatar, setUserAvatar] = React.useState({});
+
   React.useEffect(() => {
-    devAPI.usersList()
+    usersAPI.getProfileAvatar()
       .then(
-        (data) => console.log("Request to userList from ProfileHeader:", data),
-        (er) => console.error("Request to userList from ProfileHeader:", er)
-      );
+        (data) => {
+            setUserAvatar('data:image/bmp;base64,' + data.data.Content.avatar);
+        },
+        (err) => {
+          console.error("Error:", err);
+        });
   }, []);
-
-
-  if (!currentUser) {
-    return null;
-  }
-
 
   return (
     <ProfileHeaderBox>
-      <ProfileHeaderPhoto src={ProfileImg} alt="Фото профиля" />
+      <ProfileHeaderPhoto src={userAvatar} alt="Фото профиля" />
 
       <div>
-        <h2>{`${currentUser.name} ${currentUser.surname}`}</h2>
+        <h2>{`${userData.name} ${userData.surname}`}</h2>
         <p>
-          <b>{currentUser.profession}</b>
-          {` - ${currentUser.place_of_living}`}
-          <span>{`${currentUser.age} лет`}</span>
+          <b>{userData.post}</b>
+          {` - ${userData.location}`}
+          <span>{`${userData.age} лет`}</span>
         </p>
 
         <Buttons>

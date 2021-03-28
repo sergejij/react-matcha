@@ -31,7 +31,7 @@ export default () => {
       <div>
       {isConfirmed && <Text size="24px">Регистрация прошла успешна.</Text>}
       {isError && <Text size="24px">Не удалось подтвердить регистрацию.</Text>}
-        <Link to={`/login${isConfirmed && '?openLogin=true'}`} size="L">
+        <Link style={{ 'textDecoration': 'none' }} to={`/login${isConfirmed && '?openLogin=true'}`} size="L">
           <Button size="L">{isConfirmed ? 'Войти' : 'На страницу регистрации'}</Button>
         </Link>
       </div>

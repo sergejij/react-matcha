@@ -3,50 +3,74 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import axios from 'axios';
 import ProfilePage from './styled';
 import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
-import ReactDOM from 'react-dom';
-import { Modal } from '../Login/styled';
-import RegistrationForm from '../Login/RegistrationForm';
 import ModalAddData from '../../components/ModalAddData/ModalAddData';
 import { usersAPI } from '../../api/api';
 
-export default ({ identifier }) => {
-  const [users, setUsers] = React.useState([]);
-  const id = identifier === undefined ? useParams().id : identifier;
+export default () => {
+  const id = useParams().id;
   const [isRequiredEmpty, setIsRequiredEmpty] = React.useState(false);
+  const [isProfilePhotoEmpty, setIsProfilePhotoEmpty] = React.useState(false);
+  const [userData, setUserData] = React.useState({});
 
   React.useEffect(() => {
     usersAPI.getUser(id)
       .then(
-        ({ data }) => {
-        console.log(data.Content);
-        if (!(!!data.Content.sex &&
-          !!data.Content.sexPreference &&
-          !!data.Content.biography &&
-          !!data.Content.interests &&
-          !!data.Content.mainPhoto)) {
-          setIsRequiredEmpty(true);
-          console.log('setIsRequiredEmpty(true);');
-        }
-        setUsers(data.Content);
+        (data) => {
+          setUserData(data.data.Content);
+          if (!(!!data.data.Content.sex &&
+            !!data.data.Content.age &&
+            !!data.data.Content.relationshipStatus &&
+            !!data.data.Content.sexPreference &&
+            !!data.data.Content.biography)) {
+            setIsRequiredEmpty(true);
+          } else {
+            setIsRequiredEmpty(false);
+          }
       },
       (err) => {
+        console.log("getUser err:", err, "ID:", id);
         console.error(err);
       });
   }, []);
-  // const [currentUser] = users.filter((user) => user.id === Number(id));
-  const currentUser = 1;
 
+  // отдельный этап
+  // React.useEffect(() => {
+  //   usersAPI.getProfileInterests()
+  //     .then(
+  //     (data) => {
+  //         if (data.data.Content.interests) {
+  //           setIsProfilePhotoEmpty(true);
+  //         }
+  //     },
+  //     (err) => {
+  //       console.error("Error:", err);
+  //     });
+  // }, []);
+
+  React.useEffect(() => {
+    usersAPI.getProfileAvatar()
+      .then(
+      ({ data }) => {
+          console.log(data.Content);
+          setIsProfilePhotoEmpty(!data.Content.avatar);
+      },
+      (err) => {
+        console.error("Error:", err);
+      });
+  }, []);
+
+  console.log('1 and 2', isRequiredEmpty, isProfilePhotoEmpty);
   return (
-      isRequiredEmpty ? (
-        <ModalAddData />
+      isRequiredEmpty || isProfilePhotoEmpty ? (
+          (Object.keys(userData).length !== 0) &&
+          <ModalAddData setIsRequiredEmpty={setIsRequiredEmpty} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} userData={userData} />
       ) : (
         <ProfilePage>
-          <ProfileHeader currentUser={currentUser} />
-          <ProfileTabs currentUser={currentUser} users={users} />
+          <ProfileHeader userData={userData} id={id} />
+          <ProfileTabs userData={userData} id={id} />
         </ProfilePage>
       )
   );

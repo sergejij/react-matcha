@@ -13,7 +13,8 @@ export const UserPhotoRow = styled.div`
   width: 60%;
   display: flex;
   justify-content: space-around;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  gap: 30px;
 `;
 
 export const UserPhotoChange = styled.img`
@@ -21,20 +22,15 @@ export const UserPhotoChange = styled.img`
   height: 349px;
   border-radius: 13px;
   transition: .2s ease-in-out;
-  cursor: pointer;
-  
-  &:hover {
-    opacity: 0.7;  
-  }
 `;
 
-export const AddPhotoStyled = styled.div`
+export const AddPhotoStyled = styled.label`
   position: relative;
   width: 250px;
   height: 349px;
   border-radius: 13px;
   border: 3px dotted ${COLORS.GRAY};
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -42,14 +38,10 @@ export const AddPhotoStyled = styled.div`
   
   & svg {
     position: absolute;
-    visibility: ${(props) => props.hasImg && 'hidden'};
     color: ${COLORS.GRAY};
   }
   
   &:hover {
-    & svg {
-      visibility: visible;
-    }
-    background-color: #eeeeee;
+    background-color: #f3f2f2;
   }
 `;

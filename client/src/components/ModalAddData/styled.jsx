@@ -18,24 +18,50 @@ export const AddDataRow = styled.div`
   justify-content: space-evenly;
   width: 90%;
   
+  & .upload-photo {
+    transition: .3s ease-in-out;
+    & :hover {
+      transition: .3s ease-in-out;
+      -ms-transform: rotate(4deg);
+      -webkit-transform: rotate(4deg);
+      -o-transform: rotate(4deg);
+      -moz-transform: rotate(4deg);
+      transform: rotate(4deg);
+    }
+  }
+      
   & label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-weight: 500;
-  font-size: 15px;
-  color: ${COLORS.DARK};
-  margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 500;
+    font-size: 15px;
+    color: ${COLORS.DARK};
+    margin: 10px;
+  
     & input {
       border: 1px solid rgba(0, 0, 0, 0.1);
       background-color: rgba(255,255,255,0.1);
-      border-radius: 13px;
+      border-radius: 7px;
       outline: none;
       width: 190px;
       height: 40px;
       text-align: center;
       font-size: 16px;
       color: black;
+    }
+    
+    & textarea {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 7px;
+      padding: 15px;
+      outline: none;
+      width: 100%;
+      height: 40%;
+      font-size: 15px;
+      color: black;
+      resize: none;
     }
   }
 `;
