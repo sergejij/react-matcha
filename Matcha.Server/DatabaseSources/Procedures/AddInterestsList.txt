@@ -8,6 +8,8 @@ BEGIN
     DECLARE value TEXT DEFAULT NULL;
     DECLARE interest_id BIGINT;
 
+    DELETE FROM users_interests WHERE users_interests.user_id = user_id;
+
     iterator:
     LOOP
   
@@ -31,6 +33,7 @@ BEGIN
         END IF;
 
         SET interests = INSERT(interests, 1, CHAR_LENGTH(value) + 1, '');
-END LOOP;
+
+    END LOOP;
 
 END

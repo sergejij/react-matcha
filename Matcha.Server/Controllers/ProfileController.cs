@@ -64,78 +64,9 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
-        [HttpPut]
-        [Route("put_info")]
-        public IActionResult UpdateProfileInfo(ProfileInfoModel profileInfo)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+        
 
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", UserId),
-                new MySqlParameter("post", profileInfo.Post),
-                new MySqlParameter("location", profileInfo.Location),
-                new MySqlParameter("age", profileInfo.Age),
-                new MySqlParameter("sex", profileInfo.Sex),
-                new MySqlParameter("rel_status", profileInfo.RelationshipStatus),
-                new MySqlParameter("sex_preference", profileInfo.SexPreference),
-                new MySqlParameter("smoking_attitude", profileInfo.AttitudeToSmoking),
-                new MySqlParameter("alcohol_attitude", profileInfo.AttitudeToAlcohol),
-                new MySqlParameter("biography", profileInfo.Biography),
-
-                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            //TODO: изменить код ошибки
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.Conflict, errorMessage).ToResult();
-
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpGet]
-        [Route("get_info")]
-        public IActionResult GetProfileInfo([FromQuery][Required] long userId)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("GetProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                    new MySqlParameter("user_id", userId),
-                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
-                });
-
-            connection.Open();
-            using var reader = command.ExecuteReader();
-
-            var errorMessage = command.Parameters["error_message"].Value?.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.NoContent, "Пользователь с таким ID не найден").ToResult();
-
-            reader.Read();
-            var fields = new Dictionary<string, object>
-            {
-                { "name", reader.StringOrEmpty("name") },
-                { "surname", reader.StringOrEmpty("surname") },
-                { "location", reader.StringOrEmpty("location") },
-                { "relationshipStatus", reader.StringOrEmpty("relationship_status") },
-                { "attitudeToAlcohol", reader.StringOrEmpty("attitude_to_alcohol") },
-                { "attitudeToSmoking", reader.StringOrEmpty("attitude_to_smoking") },
-                { "age", reader.StringOrEmpty("age") },
-                { "post", reader.StringOrEmpty("post") },
-                { "sex", reader.StringOrEmpty("sex") },
-                { "sexPreference", reader.StringOrEmpty("sex_preference") },
-                { "biography", reader.StringOrEmpty("biography") }
-            };
-
-            return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
-        }
+        
 
         [HttpPost]
         [Route("visit_notification")]
@@ -223,24 +154,7 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        [HttpPost]
-        [Route("update_interests")]
-        public IActionResult UpdateInterests(InterestsModel interests)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", UserId),
-                new MySqlParameter("interests", string.Join(',', interests.Interests))
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            return ResponseModel.OK().ToResult();
-        }
+        
 
         #region Работа с фото
 
@@ -290,8 +204,105 @@ namespace Matcha.Server.Controllers
 
         #endregion
 
+        #region Информация о профиле
+
+        [HttpGet]
+        [Route("info")]
+        public IActionResult GetProfileInfo([FromQuery][Required] long userId)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                    new MySqlParameter("user_id", userId),
+                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+                });
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            var errorMessage = command.Parameters["error_message"].Value?.ToString();
+            if (string.IsNullOrEmpty(errorMessage) == false)
+                return new ResponseModel(HttpStatusCode.NoContent, "Пользователь с таким ID не найден").ToResult();
+
+            reader.Read();
+            var fields = new Dictionary<string, object>
+            {
+                { "name", reader.StringOrEmpty("name") },
+                { "surname", reader.StringOrEmpty("surname") },
+                { "location", reader.StringOrEmpty("location") },
+                { "relationshipStatus", reader.StringOrEmpty("relationship_status") },
+                { "attitudeToAlcohol", reader.StringOrEmpty("attitude_to_alcohol") },
+                { "attitudeToSmoking", reader.StringOrEmpty("attitude_to_smoking") },
+                { "age", reader.StringOrEmpty("age") },
+                { "post", reader.StringOrEmpty("post") },
+                { "sex", reader.StringOrEmpty("sex") },
+                { "sexPreference", reader.StringOrEmpty("sex_preference") },
+                { "biography", reader.StringOrEmpty("biography") }
+            };
+
+            return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
+        }
+
+        [HttpPost]
+        [Route("info")]
+        public IActionResult UpdateProfileInfo(ProfileInfoModel profileInfo)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("post", profileInfo.Post),
+                new MySqlParameter("location", profileInfo.Location),
+                new MySqlParameter("age", profileInfo.Age),
+                new MySqlParameter("sex", profileInfo.Sex),
+                new MySqlParameter("rel_status", profileInfo.RelationshipStatus),
+                new MySqlParameter("sex_preference", profileInfo.SexPreference),
+                new MySqlParameter("smoking_attitude", profileInfo.AttitudeToSmoking),
+                new MySqlParameter("alcohol_attitude", profileInfo.AttitudeToAlcohol),
+                new MySqlParameter("biography", profileInfo.Biography),
+
+                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            var errorMessage = command.Parameters["error_message"].Value.ToString();
+            if (string.IsNullOrEmpty(errorMessage) == false)
+                return new ResponseModel(HttpStatusCode.Conflict, errorMessage).ToResult();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPut]
+        [Route("info")]
+        public IActionResult UpdateInfo(InfoUpdateModel infoModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("name", infoModel.Name),
+                new MySqlParameter("surname", infoModel.Surname),
+                new MySqlParameter("age", infoModel.Age),
+                new MySqlParameter("post", infoModel.Post),
+                new MySqlParameter("location", infoModel.Location)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
+
         [HttpPatch]
-        [Route("update_status")]
+        [Route("info")]
         public IActionResult UpdateStatus([FromBody] StatusUpdateModel statusUpdateModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -327,21 +338,22 @@ namespace Matcha.Server.Controllers
             { "attitudeToSmoking",  ("attitudes",             "attitude", "attitude_to_smoking") }
         };
 
+        #endregion
+
+        #region Интересы пользователя
+
+        [HttpPost]
         [HttpPut]
-        [Route("update_info")]
-        public IActionResult UpdateInfo(InfoUpdateModel infoModel)
+        [Route("interests")]
+        public IActionResult UpdateInterests(InterestsModel interests)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+            using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("user_id", UserId),
-                new MySqlParameter("name", infoModel.Name),
-                new MySqlParameter("surname", infoModel.Surname),
-                new MySqlParameter("age", infoModel.Age),
-                new MySqlParameter("post", infoModel.Post),
-                new MySqlParameter("location", infoModel.Location)
+                new MySqlParameter("interests", string.Join(',', interests.Interests))
             });
 
             connection.Open();
@@ -349,5 +361,36 @@ namespace Matcha.Server.Controllers
 
             return ResponseModel.OK().ToResult();
         }
+
+        [HttpGet]
+        [Route("interests")]
+        public IActionResult GetInterestsList()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetInterestsList", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId)
+            });
+
+            connection.Open();
+            
+            var interests = new HashSet<string>();
+
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                interests.Add(reader.GetString(0));
+            }
+
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "interests", interests }
+                                                              })
+                .ToResult();
+        }
+
+        #endregion
     }
 }
