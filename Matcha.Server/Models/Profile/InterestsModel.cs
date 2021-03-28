@@ -2,7 +2,7 @@
 
 namespace Matcha.Server.Models.Profile
 {
-    public class InterestsModel
+    public sealed record InterestsModel
     {
         public HashSet<string> Interests { get; set; }
     }

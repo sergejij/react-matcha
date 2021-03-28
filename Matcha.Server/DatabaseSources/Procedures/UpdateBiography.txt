@@ -1,0 +1,12 @@
+﻿CREATE PROCEDURE UpdateBiography (
+	user_id BIGINT,
+	biography TEXT
+)
+
+BEGIN
+
+	UPDATE user_full_data
+	SET user_full_data.biography = biography
+	WHERE user_full_data.id = user_id;
+
+END

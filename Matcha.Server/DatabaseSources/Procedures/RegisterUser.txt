@@ -23,7 +23,7 @@ BEGIN
         SET error_message = 'Пользователь с таким логином уже зарегистрирован';
     ELSE
         SET salt = UUID();
-        SET password_hash = HASH_PASSWORD(concat(password, salt));
+        SET password_hash = HASH_PASSWORD(CONCAT(password, salt));
 
         INSERT INTO user_data (
             login, password, salt

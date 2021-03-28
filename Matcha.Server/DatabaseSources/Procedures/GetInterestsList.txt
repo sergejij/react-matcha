@@ -1,0 +1,12 @@
+﻿CREATE PROCEDURE GetInterestsList(
+	user_id BIGINT
+)
+
+BEGIN
+
+	SELECT interest
+	FROM interests_list
+	WHERE interests_list.id IN
+		(SELECT interest_id FROM users_interests WHERE users_interests.user_id = user_id);
+
+END

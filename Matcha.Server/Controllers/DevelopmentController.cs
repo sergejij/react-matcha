@@ -134,6 +134,16 @@ namespace Matcha.Server.Controllers
 
             return ResponseModel.OK().ToResult();
         }
+
+        [HttpGet]
+        [Route("clear_photos")]
+        public IActionResult ClearPhotos()
+        {
+            if (Directory.Exists(AppConfig.Constants.PhotosDirectory))
+                Directory.Delete(AppConfig.Constants.PhotosDirectory, true);
+
+            return ResponseModel.OK().ToResult();
+        }
     }
 
     #region Модели
