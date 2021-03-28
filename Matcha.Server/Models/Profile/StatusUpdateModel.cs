@@ -1,6 +1,6 @@
 ﻿namespace Matcha.Server.Models.Profile
 {
-    public class StatusUpdateModel
+    public sealed record StatusUpdateModel
     {
         public string Field { get; set; }
 

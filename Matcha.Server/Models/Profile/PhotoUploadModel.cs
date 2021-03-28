@@ -2,7 +2,7 @@
 
 namespace Matcha.Server.Models.Profile
 {
-    public class PhotoUploadModel
+    public sealed record PhotoUploadModel
     {
         public int PhotoId { get; set; }
 

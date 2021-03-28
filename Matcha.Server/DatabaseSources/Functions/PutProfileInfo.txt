@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION UpdateProfileInfo (
+﻿CREATE FUNCTION PutProfileInfo (
 	user_id BIGINT,
 	post VARCHAR(128),
 	location VARCHAR(128),

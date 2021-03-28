@@ -1,6 +1,6 @@
 ﻿namespace Matcha.Server.Models.Profile
 {
-    public class ProfileInfoModel
+    public sealed record ProfileInfoModel
     {
         public string Sex { get; set; }
 

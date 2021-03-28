@@ -65,11 +65,11 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpPut]
-        [Route("update_info")]
+        [Route("put_info")]
         public IActionResult UpdateProfileInfo(ProfileInfoModel profileInfo)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+            using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
@@ -223,8 +223,6 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        
-
         [HttpPost]
         [Route("update_interests")]
         public IActionResult UpdateInterests(InterestsModel interests)
@@ -290,6 +288,8 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
+        #endregion
+
         [HttpPatch]
         [Route("update_status")]
         public IActionResult UpdateStatus([FromBody] StatusUpdateModel statusUpdateModel)
@@ -327,6 +327,27 @@ namespace Matcha.Server.Controllers
             { "attitudeToSmoking",  ("attitudes",             "attitude", "attitude_to_smoking") }
         };
 
-        #endregion
+        [HttpPut]
+        [Route("update_info")]
+        public IActionResult UpdateInfo(InfoUpdateModel infoModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("name", infoModel.Name),
+                new MySqlParameter("surname", infoModel.Surname),
+                new MySqlParameter("age", infoModel.Age),
+                new MySqlParameter("post", infoModel.Post),
+                new MySqlParameter("location", infoModel.Location)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
     }
 }

@@ -1,0 +1,22 @@
+﻿CREATE PROCEDURE UpdateProfileInfo (
+	user_id BIGINT,
+
+	name VARCHAR(128),
+	surname VARCHAR(128),
+	age INT,
+	post VARCHAR(128),
+	location VARCHAR(128)
+)
+
+BEGIN
+
+	UPDATE user_full_data
+	SET
+		user_full_data.name = name,
+		user_full_data.surname = surname,
+		user_full_data.age = age,
+		user_full_data.post = post,
+		user_full_data.location = location
+	WHERE user_full_data.id = user_id;
+
+END
