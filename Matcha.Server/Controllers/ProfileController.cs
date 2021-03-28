@@ -260,14 +260,14 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("info")]
-        public IActionResult GetProfileInfo([FromQuery][Required] long userId)
+        public IActionResult GetProfileInfo([FromQuery] long? userId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", userId),
+                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId),
                 new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
             });
 
@@ -416,14 +416,14 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("interests")]
-        public IActionResult GetInterestsList()
+        public IActionResult GetInterestsList([FromQuery] long? userId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetInterestsList", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId)
+                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId)
             });
 
             connection.Open();
