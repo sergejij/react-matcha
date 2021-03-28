@@ -299,7 +299,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("info")]
-        public IActionResult UpdateProfileInfo(ProfileInfoModel profileInfo)
+        public IActionResult InitProfileInfo(ProfileInfoModel profileInfo)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
@@ -345,6 +345,25 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("age", infoModel.Age),
                 new MySqlParameter("post", infoModel.Post),
                 new MySqlParameter("location", infoModel.Location)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPatch]
+        [Route("biography")]
+        public IActionResult UpdateBiography(UpdateBiographyModel biography)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateBiography", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("biography", biography.Biography)
             });
 
             connection.Open();
