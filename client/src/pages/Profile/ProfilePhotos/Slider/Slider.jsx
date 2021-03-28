@@ -36,6 +36,7 @@ export default ({ images }) => {
     </div>
   );
 
+
   return (
     <GalleryContainer>
       <GalleryGrid>

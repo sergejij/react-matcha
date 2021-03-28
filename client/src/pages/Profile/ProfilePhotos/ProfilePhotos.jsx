@@ -8,13 +8,33 @@ import third from '../../../assets/images/Profile/3.jpg';
 import fourth from '../../../assets/images/Profile/4.jpg';
 import Slider from './Slider/Slider';
 import { Link } from 'react-router-dom';
+import { usersAPI } from '../../../api/api';
 
 const PHOTO_SET = [zero, first, second, third, fourth];
 
-const ProfilePhotos = () => (
-  <ProfilePhotosStyled>
-    <Slider images={PHOTO_SET} />
-    <Link to="/settings/user-photos">Обновить/добавить фотографии</Link>
-  </ProfilePhotosStyled>
-);
+const ProfilePhotos = () => {
+  const [photos, setPhotos] = React.useState([]);
+
+  React.useEffect(() => {
+    usersAPI.getProfilePhotos()
+      .then(
+        ({ data }) => {
+          setPhotos(data.Content.photos);
+        },
+        (err) => console.log("ERROR getProfileAvatar:", err)
+      )
+      .catch((err) => console.log("ERROR getProfileAvatar:", err))
+  }, []);
+
+  console.log(photos);
+  return (
+    <ProfilePhotosStyled>
+      <Slider images={photos
+        .filter((item) => item.Id !== null)
+        .map((item) => 'data:image/bmp;base64,' + item.Content)}
+      />
+      <Link to="/settings/user-photos">Обновить/добавить фотографии</Link>
+    </ProfilePhotosStyled>
+  );
+}
 export default ProfilePhotos;

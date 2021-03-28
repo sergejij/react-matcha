@@ -1,5 +1,5 @@
 import React from 'react';
-import { usersAPI } from '../../../api/api';
+import { userInfoApi, usersAPI } from '../../../api/api';
 import { AddDataRow } from '../styled';
 import Button from '../../Button';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
@@ -17,9 +17,15 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
   const [attitudeToSmoking, setAttitudeToSmoking] = React.useState(userData.attitudeToSmoking);
   const [biography, setBiography] = React.useState(userData.biography);
 
+  const [isRequiredNotFilled, setIsRequiredNotFilled] = React.useState(false);
+
   const sendInfo = () => {
-    usersAPI
-      .putUser({post, location, age, sex, relationshipStatus, sexPreference, attitudeToAlcohol, attitudeToSmoking, biography})
+    if (!age || !sex || !relationshipStatus || !sexPreference || !biography) {
+      setIsRequiredNotFilled(true);
+      return;
+    }
+    userInfoApi
+      .postUserInfo({post, location, age, sex, relationshipStatus, sexPreference, attitudeToAlcohol, attitudeToSmoking, biography})
       .then((resp) => {
         console.log("Response PUT:", resp);
         setStepNumber(2);
@@ -94,12 +100,13 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
           </label>
         </AddDataRow>
 
+        {isRequiredNotFilled && <Text color="red">Пожалуйста, заполните обязательные поля отмеченные звездочкой</Text>}
 
         <Button onClick={sendInfo} view="main" size="M" color="yellow">
           <Text color={COLORS.DARK}>Следующий шаг</Text>
           <ArrowRightAltIcon />
         </Button>
-        <h3>Шаг 1/2</h3>
+        <h3>Шаг 1/3</h3>
       </>
   );
 };

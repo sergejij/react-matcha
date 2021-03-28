@@ -4,9 +4,7 @@ import {  Modal } from './styled';
 import { ModalAddDataStyled } from './styled';
 import CommonInfo from './steps/CommonInfo';
 import ProfilePhoto from './steps/ProfilePhoto';
-import COLORS from '../../constants';
-import { MyLink } from '../../styled';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import Interests from './steps/Interests';
 
 const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty }) => {
   const portalRoot = document.getElementById('portal');
@@ -18,8 +16,12 @@ const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty }) 
         {stepNumber === 1 && <CommonInfo setIsRequiredEmpty={setIsRequiredEmpty} userData={userData} setStepNumber={setStepNumber} />}
         {(stepNumber === 2) && (
           <>
-            <ProfilePhoto setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} />
-            <MyLink onClick={() => setStepNumber(1)} color={COLORS.DARK}><KeyboardBackspaceIcon/> На шаг 1/2</MyLink>
+            <Interests setStepNumber={setStepNumber} />
+          </>
+        )}
+        {(stepNumber === 3) && (
+          <>
+            <ProfilePhoto setStepNumber={setStepNumber} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} />
           </>
         )}
       </ModalAddDataStyled>

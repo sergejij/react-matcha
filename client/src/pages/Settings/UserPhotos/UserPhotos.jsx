@@ -7,7 +7,7 @@ import {
 import axios from 'axios';
 import { usersAPI } from '../../../api/api';
 
-const AddPhoto = ({ photoId }) => {
+const AddPhoto = ({ photoId, setIsUpdated }) => {
   const uploadPhoto = (e, id) => {
     console.log("photoId123321:", id);
     const formData = new FormData();
@@ -17,18 +17,11 @@ const AddPhoto = ({ photoId }) => {
     formData.append('content', file);
     formData.append('photoId', id);
 
-    axios({
-      method: 'post',
-      url: 'https://81.177.141.123:637/profile/upload_photo',
-      data: formData,
-      withCredentials: true,
-      headers: {
-        'Content-Type': `multipart/form-data;`,
-      },
-    })
+    usersAPI.uploadProfilePhoto(formData)
       .then(
         (data) => {
           console.log("DATA upload photo:", data);
+          setIsUpdated(true);
           // setIsProfilePhotoEmpty(false);
         },
         (err) => {
@@ -53,6 +46,7 @@ const AddPhoto = ({ photoId }) => {
 
 const UserPhotos = () => {
   const [photos, setPhotos] = React.useState([]);
+  const [isUpdated, setIsUpdated] = React.useState(false);
 
   useEffect(() => {
     usersAPI
@@ -68,17 +62,26 @@ const UserPhotos = () => {
         },
       )
       .catch((err) => console.log("ERROR:", err));
-  }, []);
+  }, [isUpdated]);
 
-
-  console.log("My Photos:", photos);
   return (
     <UserPhotosStyled>
       <UserPhotoRow>
-        {photos[0] && photos[0].Content ? <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[0].Content} /> : <AddPhoto photoId="0" />}
-        {photos[1] && photos[1].Content ? <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[1].Content} /> : <AddPhoto photoId="1" />}
-        {photos[2] && photos[2].Content ? <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[2].Content} /> : <AddPhoto photoId="2" />}
-        {photos[3] && photos[3].Content ? <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[3].Content} /> : <AddPhoto photoId="3" />}
+        {photos[0] && photos[0].Content ?
+          <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[0].Content} /> :
+          <AddPhoto setIsUpdated={setIsUpdated} photoId="0" />}
+
+        {photos[1] && photos[1].Content ?
+          <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[1].Content} /> :
+          <AddPhoto setIsUpdated={setIsUpdated} photoId="1" />}
+
+        {photos[2] && photos[2].Content ?
+          <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[2].Content} /> :
+          <AddPhoto setIsUpdated={setIsUpdated} photoId="2" />}
+
+        {photos[3] && photos[3].Content ?
+          <UserPhotoChange src={ 'data:image/bmp;base64,' + photos[3].Content} /> :
+          <AddPhoto setIsUpdated={setIsUpdated} photoId="3" />}
       </UserPhotoRow>
     </UserPhotosStyled>
   );
