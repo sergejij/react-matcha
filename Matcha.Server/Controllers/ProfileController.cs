@@ -125,10 +125,10 @@ namespace Matcha.Server.Controllers
             }
         }
 
-        
+        #region Обновление данных авторизации
 
-        [HttpPost]
-        [Route("change_email")]
+        [HttpPut]
+        [Route("email")]
         public IActionResult ChangeEmail(EmailChangeModel emailChangeModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -154,7 +154,59 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        
+        [HttpPut]
+        [Route("password")]
+        public IActionResult ChangePassword(PasswordChangeModel passwordModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("ChangePassword", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("current_password", passwordModel.CurrentPassword),
+                new MySqlParameter("new_password", passwordModel.NewPassword),
+
+                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            var errorMessage = command.Parameters["error_message"].Value.ToString();
+            if (string.IsNullOrEmpty(errorMessage) == false)
+                return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPut]
+        [Route("login")]
+        public IActionResult ChangeLogin(LoginChangeModel loginModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("ChangeLogin", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("new_login", loginModel.NewLogin),
+                new MySqlParameter("password", loginModel.Password),
+
+                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            var errorMessage = command.Parameters["error_message"].Value.ToString();
+            if (string.IsNullOrEmpty(errorMessage) == false)
+                return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        #endregion
 
         #region Работа с фото
 
@@ -215,9 +267,9 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                    new MySqlParameter("user_id", userId),
-                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
-                });
+                new MySqlParameter("user_id", userId),
+                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+            });
 
             connection.Open();
             using var reader = command.ExecuteReader();
@@ -303,7 +355,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPatch]
         [Route("info")]
-        public IActionResult UpdateStatus([FromBody] StatusUpdateModel statusUpdateModel)
+        public IActionResult UpdateStatus(StatusUpdateModel statusUpdateModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             connection.Open();

@@ -1,0 +1,31 @@
+﻿CREATE FUNCTION ChangeLogin (
+	user_id BIGINT,
+	new_login VARCHAR(128),
+	password VARCHAR(128)
+) RETURNS VARCHAR(256)
+
+BEGIN
+
+	DECLARE salt_bin BINARY(16);
+	DECLARE salt CHAR(36);
+	DECLARE salted_password VARCHAR(256);
+	DECLARE hashed_password BINARY(64);
+
+	SET salt_bin = (SELECT user_data.salt FROM user_data WHERE user_data.id = user_id);
+	SET salt = UUID_FROM_BIN(salt_bin);
+
+	SET salted_password = CONCAT(password, salt);
+	SET hashed_password = HASH_PASSWORD(salted_password);
+
+	IF (hashed_password = (SELECT user_data.password FROM user_data WHERE user_data.id = user_id))
+	THEN
+		UPDATE user_data
+		SET user_data.login = new_login
+		WHERE user_data.id = user_id;
+
+		RETURN NULL;
+	ELSE
+		RETURN 'Неверный пароль';
+	END IF;
+
+END

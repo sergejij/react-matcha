@@ -9,6 +9,9 @@ BEGIN
     TRUNCATE TABLE emails_for_confirm;
     TRUNCATE TABLE sessions;
     TRUNCATE TABLE visits;
+    TRUNCATE TABLE interests_list;
+    TRUNCATE TABLE users_interests;
+    TRUNCATE TABLE likes;
 
     SET FOREIGN_KEY_CHECKS = 1;
 
