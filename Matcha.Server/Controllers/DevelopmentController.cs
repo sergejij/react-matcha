@@ -139,7 +139,8 @@ namespace Matcha.Server.Controllers
         [Route("clear_photos")]
         public IActionResult ClearPhotos()
         {
-            Directory.Delete(AppConfig.Constants.PhotosDirectory, true);
+            if (Directory.Exists(AppConfig.Constants.PhotosDirectory))
+                Directory.Delete(AppConfig.Constants.PhotosDirectory, true);
 
             return ResponseModel.OK().ToResult();
         }
