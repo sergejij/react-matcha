@@ -128,7 +128,7 @@ namespace Matcha.Server.Controllers
         #region Обновление данных авторизации
 
         [HttpPut]
-        [Route("email")]
+        [Route("change_email")]
         public IActionResult ChangeEmail(EmailChangeModel emailChangeModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -155,7 +155,7 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpPut]
-        [Route("password")]
+        [Route("change_password")]
         public IActionResult ChangePassword(PasswordChangeModel passwordModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -181,7 +181,7 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpPut]
-        [Route("login")]
+        [Route("change_login")]
         public IActionResult ChangeLogin(LoginChangeModel loginModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
