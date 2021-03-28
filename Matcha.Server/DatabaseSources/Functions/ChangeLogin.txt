@@ -11,6 +11,11 @@ BEGIN
 	DECLARE salted_password VARCHAR(256);
 	DECLARE hashed_password BINARY(64);
 
+	IF EXISTS(SELECT login FROM user_data WHERE user_data.login = new_login)
+	THEN
+		RETURN 'Указанный логин уже используется';
+	END IF;
+
 	SET salt_bin = (SELECT user_data.salt FROM user_data WHERE user_data.id = user_id);
 	SET salt = UUID_FROM_BIN(salt_bin);
 
