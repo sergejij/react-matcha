@@ -194,40 +194,7 @@ namespace Matcha.Server.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("upload_avatar")]
-        public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
-        {
-            MediaClient.MediaClient.Image.UploadAvatar(avatar, UserId);
-
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpGet]
-        [Route("get_avatar")]
-        public IActionResult GetAvatar()
-        {
-            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(UserId);
-
-            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                              {
-                                                                  { "avatar", avatarBytes }
-                                                              })
-                .ToResult();
-        }
-
-        [HttpGet]
-        [Route("get_photos")]
-        public IActionResult GetPhotos()
-        {
-            var photos = MediaClient.MediaClient.Image.GetAllPhotos(UserId);
-
-            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                              {
-                                                                  { "photos", photos }
-                                                              })
-                .ToResult();
-        }
+        
 
         [HttpPost]
         [Route("change_email")]
@@ -256,14 +223,7 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        [HttpPost]
-        [Route("upload_photo")]
-        public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
-        {
-            MediaClient.MediaClient.Image.UploadPhoto(photo, UserId);
-
-            return ResponseModel.OK().ToResult();
-        }
+        
 
         [HttpPost]
         [Route("update_interests")]
@@ -283,5 +243,90 @@ namespace Matcha.Server.Controllers
 
             return ResponseModel.OK().ToResult();
         }
+
+        #region Работа с фото
+
+        [HttpPut]
+        [Route("upload_avatar")]
+        public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
+        {
+            MediaClient.MediaClient.Image.SaveAvatar(UserId, avatar);
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpGet]
+        [Route("get_avatar")]
+        public IActionResult GetAvatar()
+        {
+            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(UserId);
+
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "avatar", avatarBytes }
+                                                              })
+                .ToResult();
+        }
+
+        [HttpPost]
+        [Route("upload_photo")]
+        public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
+        {
+            MediaClient.MediaClient.Image.SavePhoto(UserId, photo);
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpGet]
+        [Route("get_photos")]
+        public IActionResult GetPhotos()
+        {
+            var photos = MediaClient.MediaClient.Image.GetAllPhotos(UserId);
+
+            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
+                                                              {
+                                                                  { "photos", photos }
+                                                              })
+                .ToResult();
+        }
+
+        [HttpPatch]
+        [Route("update_status")]
+        public IActionResult UpdateStatus([FromBody] StatusUpdateModel statusUpdateModel)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            connection.Open();
+
+            var table = FieldToTable[statusUpdateModel.Field].tableName;
+            var tableCol = FieldToTable[statusUpdateModel.Field].columnName;
+            var userDataCol = FieldToTable[statusUpdateModel.Field].userDataColumnMane;
+
+            using var command = connection.CreateCommand();
+            command.CommandText = $"IF NOT EXISTS(SELECT * FROM {table} WHERE {table}.{tableCol} = '{statusUpdateModel.Status}')\n" +
+                                  $"THEN\n" +
+                                  $"INSERT INTO {table} ({tableCol}) VALUES ('{statusUpdateModel.Status}');\n" +
+                                  $"END IF;";
+
+            command.ExecuteNonQuery();
+
+            command.CommandText = $"UPDATE user_full_data\n" +
+                                  $"SET {userDataCol} = (SELECT id FROM {table} WHERE {table}.{tableCol} = '{statusUpdateModel.Status}')\n" +
+                                  $"WHERE id = {UserId};";
+
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        private readonly static Dictionary<string, (string tableName, string columnName, string userDataColumnMane)> FieldToTable = new Dictionary<string, (string, string, string)>
+        {
+            { "relationshipStatus", ("relationship_statuses", "status",   "relationship_status") },
+            { "sex",                ("sexes",                 "sex",      "sex") },
+            { "sexPreference",      ("sexes",                 "sex",      "sex_preference") },
+            { "attitudeToAlcohol",  ("attitudes",             "attitude", "attitude_to_alcohol") },
+            { "attitudeToSmoking",  ("attitudes",             "attitude", "attitude_to_smoking") }
+        };
+
+        #endregion
     }
 }

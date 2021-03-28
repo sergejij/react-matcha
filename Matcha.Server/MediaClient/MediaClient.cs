@@ -29,21 +29,6 @@ namespace Matcha.Server.MediaClient
                     Directory.CreateDirectory(BaseDir);
             }
 
-            public static void UploadAvatar(IFormFile image, long userId)
-            {
-                var userDir = Path.Combine(BaseDir, userId.ToString());
-
-                if (Directory.Exists(userDir) == false)
-                    Directory.CreateDirectory(userDir);
-
-                var avatarPath = Path.Combine(userDir, AvatarName);
-
-                using (var fs = new FileStream(avatarPath, FileMode.Create))
-                {
-                    image.CopyTo(fs);
-                }
-            }
-
             public static byte[] GetAvatarBytes(long userId)
             {
                 var userDir = Path.Combine(BaseDir, userId.ToString());
@@ -80,19 +65,39 @@ namespace Matcha.Server.MediaClient
                 return photos;
             }
 
-            public static void UploadPhoto(PhotoUploadModel photoModel, long userId)
+            #region Сохранение
+
+            public static void SaveAvatar(long userId, IFormFile avatar)
             {
-                var userDir = Path.Combine(BaseDir, userId.ToString());
-                if (Directory.Exists(userDir) == false)
-                    Directory.CreateDirectory(userDir);
+                var path = Path.Combine(BaseDir, userId.ToString());
 
-                var photoPath = Path.Combine(userDir, photoModel.PhotoId.ToString());
+                if (Directory.Exists(path) == false)
+                    Directory.CreateDirectory(path);
 
-                using (var fs = new FileStream(photoPath, FileMode.Create))
+                var fullName = Path.Combine(path, AvatarName);
+
+                using (var fs = new FileStream(fullName, FileMode.Create))
+                {
+                    avatar.CopyTo(fs);
+                }
+            }
+
+            public static void SavePhoto(long userId, PhotoUploadModel photoModel)
+            {
+                var path = Path.Combine(BaseDir, userId.ToString());
+
+                if (Directory.Exists(path) == false)
+                    Directory.CreateDirectory(path);
+
+                var fullName = Path.Combine(path, photoModel.PhotoId.ToString());
+
+                using (var fs = new FileStream(fullName, FileMode.Create))
                 {
                     photoModel.Content.CopyTo(fs);
                 }
             }
+
+            #endregion
         }
     }
 }
