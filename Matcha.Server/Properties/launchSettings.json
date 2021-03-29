@@ -5,7 +5,7 @@
       "environmentVariables": {
         "GmailPassword": "*Itoses80*",
         "GmailLogin": "mishayagudin2012@gmail.com",
-        "DbConnectionString": "server=81.177.141.123; port=3306; user id=dbendu; password=Itoses80; database=matcha;",
+        "DbConnectionString": "Server=81.177.141.123;Port=3306;Database=matcha;Uid=dbendu;Pwd=Itoses80;CharSet=utf8;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "https://0.0.0.0:637"

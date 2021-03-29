@@ -64,6 +64,28 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
+        [HttpGet]
+        [Route("relationships_list")]
+        public IActionResult GetRelationshipsStatusesList()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetRelationshipsStatusesList", connection) { CommandType = CommandType.StoredProcedure };
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            var statuses = new HashSet<string>();
+            while (reader.Read())
+                statuses.Add(reader.GetString(0));
+
+            return new ResponseModel(HttpStatusCode.OK, null,
+                                     new Dictionary<string, object>
+                                     {
+                                         { "relationshipsStatuses", statuses }
+                                     })
+                .ToResult();
+        }
+
         
 
         
