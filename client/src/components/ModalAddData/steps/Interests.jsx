@@ -6,8 +6,7 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import { InterestsStepStyled } from './styled';
 import { ProfileInterests } from '../../../pages/Profile/ProfileInfo/ProfileInfo';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { userInterestsApi, usersAPI } from '../../../api/api';
-
+import { userInterestsApi } from '../../../api/api';
 
 const Interests = ({ setStepNumber }) => {
   const [interests, setInterests] = React.useState([]);

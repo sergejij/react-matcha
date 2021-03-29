@@ -15,7 +15,6 @@ export const MyLink = styled.a`
 `;
 
 export const Content = styled.div`
-  //position:relative;
   display:flex;
   justify-content: space-between;
   width: calc(100% - 130px);
@@ -25,6 +24,7 @@ export const IconPencil = styled.div`
   display: inline-block;
   color: ${COLORS.PINK};
   padding-left: ${(props) => props.size};
+  cursor: pointer;
   
   & svg {
     width: ${(props) => (props.size ? props.size : '16px')};
