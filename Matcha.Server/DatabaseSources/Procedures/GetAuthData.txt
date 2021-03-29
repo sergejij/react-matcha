@@ -1,0 +1,13 @@
+﻿CREATE PROCEDURE GetAuthData (
+	user_id BIGINT,
+
+	OUT login VARCHAR(128),
+	OUT email VARCHAR(128)
+)
+
+BEGIN
+
+	SET login = (SELECT user_data.login FROM user_data WHERE user_data.id = user_id);
+	SET email = (SELECT user_data.email FROM user_data WHERE user_data.id = user_id);
+
+END
