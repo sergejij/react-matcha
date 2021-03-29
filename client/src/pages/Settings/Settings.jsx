@@ -10,18 +10,31 @@ import UserData from './UserData/UserData';
 import UserPhotos from './UserPhotos/UserPhotos';
 import UserSecurity from './UserSecurity/UserSecurity';
 import axios from 'axios';
+import { devAPI } from '../../api/api';
 
 export default () => {
   const [activeSetting, setActiveSetting] = React.useState(null);
   const match = useRouteMatch();
 
   const [users, setUsers] = React.useState([]);
+  const [userData, setUserData] = React.useState({});
 
   React.useEffect(() => {
     axios.get('http://localhost:3000/db.json')
       .then(({ data }) => {
         setUsers(data.users);
       });
+
+    devAPI
+      .usersList()
+      .then(
+        ({data}) => {
+          console.log(data);
+          setUserData(data.Content);
+        },
+        (err) => console.error("ERROR settings getUserInfo:", err)
+      )
+      .catch((err) => console.error("ERROR settings getUserInfo:", err))
   }, []);
 
   return (
@@ -31,10 +44,10 @@ export default () => {
       <SettingsPage>
         <Switch>
           <Route onClick={() => setActiveSetting(0)} path={`${match.path}/user-data`}>
-            <UserData user={users[0]} />
+            <UserData />
           </Route>
           <Route onClick={() => setActiveSetting(1)} path={`${match.path}/user-security`}>
-            <UserSecurity  user={users[0]} />
+            <UserSecurity />
           </Route>
           <Route onClick={() => setActiveSetting(2)} path={`${match.path}/user-photos`}>
             <UserPhotos />

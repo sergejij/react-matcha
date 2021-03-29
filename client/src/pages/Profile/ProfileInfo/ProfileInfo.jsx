@@ -96,7 +96,10 @@ const ProfileInfo = ({ userData }) => {
 
     userInfoApi
       .getSexesList()
-      .then(({ data }) => setSexesList(data.Content.sexes))
+      .then(({ data }) => {
+        console.log("SEXESLIST:", data);
+        setSexesList(data.Content.sexes)
+      })
       .catch(err => console.log("ERROR getSexesList:", err))
 
     userInfoApi
@@ -110,26 +113,17 @@ const ProfileInfo = ({ userData }) => {
       .catch(err => console.log("ERROR getRelationshipsList:", err))
   }, []);
 
-  const creatingInterests = (e) => {
-    setInterestsEditing(false);
-    setInputValue(e.target.value);
-    setInterests(e.target.value.split(" ")
-      .filter(item => item)
-      .map(item => item[0] === '#' ? item.slice(1) : item));
-  };
-
   const saveInterests = () => {
     setInterestsEditing(false);
-    setInterests(inputValue.split(" ")
+    const newInterests = inputValue.split(" ")
       .filter(item => item)
-      .map(item => item[0] === '#' ? item.slice(1) : item));
+      .map(item => item[0] === '#' ? item.slice(1) : item);
+    setInterests(newInterests);
 
     userInterestsApi
-      .postInterests(interests)
+      .postInterests(newInterests)
       .then(
-        (data) => {
-          console.log(data);
-        },
+        () => {},
         (err) => console.error("ERROR createInterests:", err)
       )
       .catch((err) => console.error("ERROR createInterests:", err))

@@ -114,8 +114,12 @@ export const userAuthApi = {
     return instance.post(`/account/logout`);
   },
 
+  getAuthData() {
+    return instance.get(`profile/auth_data`);
+  },
+
   updateLogin(newLogin, password) {
-    return instance.post(`/profile/login`, {
+    return instance.put(`/profile/change_login`, {
       newLogin, password,
     });
   },
@@ -125,13 +129,13 @@ export const userAuthApi = {
   },
 
   updateEmail(newEmail) {
-    return instance.post(`/profile/email`, {
+    return instance.put(`/profile/change_email`, {
       newEmail
     });
   },
 
   updatePassword(currentPassword, newPassword) {
-    return instance.post(`/profile/password`, {
+    return instance.put(`/profile/change_password`, {
       currentPassword, newPassword
     });
   },
