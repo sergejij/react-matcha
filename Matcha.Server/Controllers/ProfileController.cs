@@ -20,6 +20,34 @@ namespace Matcha.Server.Controllers
     public class ProfileController : BaseMatchaController
     {
         [HttpGet]
+        [Route("auth_data")]
+        public IActionResult GetAuthData()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetAuthData", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+
+                new MySqlParameter("login", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
+                new MySqlParameter("email", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return new ResponseModel(HttpStatusCode.OK,
+                                     null,
+                                     new Dictionary<string, object>
+                                     {
+                                         { "login", command.Parameters["login"].Value },
+                                         { "email", command.Parameters["email"].Value },
+                                     })
+                .ToResult();
+        }
+
+        [HttpGet]
         [Route("attitudes_list")]
         public IActionResult GetAttitudesList()
         {
