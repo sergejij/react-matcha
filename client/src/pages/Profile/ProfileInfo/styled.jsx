@@ -13,7 +13,7 @@ export const UpdateField = styled.div`
   position:absolute;
   right: -25px;
   
-  & input {
+  & select {
     height: 25px;
     width: 100px;
     border: 1px solid ${COLORS.GRAY};
@@ -31,6 +31,26 @@ export const UpdateBio = styled.div`
   width: 100%;
   & textarea {
     height: 90%;
+    width: 90%;
+    border: 1px solid ${COLORS.GRAY};
+    border-radius: 3px;
+    resize: none;
+    outline-color: ${COLORS.PINK};
+  }
+  & svg {
+    color: green;
+    cursor: pointer;
+  }
+`
+
+export const UpdateInterests = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  width: 100%;
+  & input {
+    height: 40px;
     width: 90%;
     border: 1px solid ${COLORS.GRAY};
     border-radius: 3px;
@@ -71,10 +91,14 @@ export const ProfileInfoPairs = styled.div`
 `;
 
 export const ProfileInfoBio = styled.div`
-  width: 45%;
-  display: flex;
+  width: 45%; 
   & svg {
     margin-top: 8px;
+  }
+  
+  p {
+    display: inline;
+    word-break: break-all;
   }
 `;
 
@@ -85,6 +109,7 @@ export const ProfileInterestsStyled = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap: 1em 3em;
+  margin-bottom: 30px;
 `;
 
 export const ProfileInterest = styled.div`

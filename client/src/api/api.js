@@ -37,6 +37,18 @@ export const userInfoApi = {
       "status": value
     });
   },
+
+  getSexesList() {
+    return instance.get(`/profile/sexes_list`);
+  },
+
+  getRelationshipsList() {
+    return instance.get(`/profile/relationships_list`);
+  },
+
+  getAttitudesList() {
+    return instance.get(`/profile/attitudes_list`);
+  },
 }
 
 export const userInterestsApi = {
