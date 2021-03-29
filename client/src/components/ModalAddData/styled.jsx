@@ -41,7 +41,7 @@ export const AddDataRow = styled.div`
   
     & input {
       border: 1px solid rgba(0, 0, 0, 0.1);
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255,255,255,0.3);
       border-radius: 7px;
       outline: none;
       width: 190px;
@@ -53,7 +53,7 @@ export const AddDataRow = styled.div`
     
     & textarea {
       border: 1px solid rgba(0, 0, 0, 0.1);
-      background-color: rgba(255,255,255,0.1);
+      background-color: rgba(255,255,255,0.3);
       border-radius: 7px;
       padding: 15px;
       outline: none;
@@ -68,15 +68,14 @@ export const AddDataRow = styled.div`
 
 export const ModalAddDataStyled = styled.div`
   position: absolute;
-  width: 70%;
-  height: 70%;
+  width: 80%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  left: 50%;
-  top: 16%;
-  margin-left: -35%;
+  left: 10%;
+  top: 10%;
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
   padding: 5px;

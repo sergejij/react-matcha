@@ -2,84 +2,136 @@ import React from 'react';
 import CreateIcon from '@material-ui/icons/Create';
 
 import {
-  ProfileInfoStyled, ProfileInfoBio, ProfileInfoPairs, ProfileInterest, ProfileInterestsStyled,
+  ProfileInfoStyled,
+  ProfileInfoBio,
+  ProfileInfoPairs,
+  ProfileInterest,
+  ProfileInterestsStyled,
+  UpdateField, UpdateBio,
 } from './styled';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import SettingsItem from '../../../components/Aside/SettingsItem/SettingsItem';
 import { IconPencil, Text } from '../../../styled';
+import { userInfoApi, userInterestsApi } from '../../../api/api';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-const ProfileInterests = ({ user }) => (
-  <>
-    <h2>
-      Интересы:
-      <IconPencil size="28px">
-        <CreateIcon />
-      </IconPencil>
-    </h2>
+export const ProfileInterests = ({ interests }) => (
     <ProfileInterestsStyled>
       {
-        user.interests.map((interest, index) => (
+        interests.map((interest, index) => (
           <ProfileInterest key={`${interest}_${index}`}>{`#${interest}`}</ProfileInterest>
           ))
       }
     </ProfileInterestsStyled>
-  </>
 );
 
-const ProfileInfo = ({ userData }) => (
-  <>
-    <ProfileInfoStyled>
-      <ProfileInfoPairs>
-        <div>
-          <p>Пол:</p>
-          <p className="info-value">{userData.sex}</p>
-        </div>
-        <div>
-          <p>Статус отношений:</p>
-          <p className="info-value">{userData.relationshipStatus}</p>
-        </div>
-        <div>
-          <p>Сексульное предпочтение:</p>
-          <p className="info-value">{userData.sexPreference}</p>
-        </div>
-        {
-          userData.sexPreference && <div>
-            <p>Отношение к алкоголю:</p>
-            <p className="info-value">{userData.sexPreference}</p>
-          </div>
-        }
-        {
-          userData.sexPreference && <div>
-            <p>Отношение к курению:</p>
-            <p className="info-value">{userData.sexPreference}</p>
-          </div>
-        }
-        <div>
-          <p>Рейтинг:</p>
-          <p className="info-value">1234</p>
-        </div>
-      {/*  {*/}
-      {/*    user.info.map((item, index) => (*/}
-      {/*      <div key={`${user.title}_${index}`}>*/}
-      {/*        <p>{`${item.title}:`}</p>*/}
-      {/*        <p className="info-value">{item.value}</p>*/}
-      {/*      </div>*/}
-      {/*    ))*/}
-      {/*}*/}
-      </ProfileInfoPairs>
+const ProfileInfoField = ({fieldName, fieldKey, fieldValue}) => {
+  const [value, setValue] = React.useState(fieldValue);
+  const [fieldEditing, setFieldEditing] = React.useState(false);
 
-      <ProfileInfoBio>
-        <p>
-          {userData.biography}
-          <IconPencil size="18px">
+  const changeInfoField = () => {
+    setFieldEditing(false);
+    userInfoApi
+      .patchUserInfo(fieldKey, value)
+      .then(
+        () => {},
+        (err) => console.log("ERROR patchUserInfo:", err)
+        )
+      .catch((err) => console.log("ERROR patchUserInfo:", err))
+  }
+
+  return (
+    <div>
+      <p>{fieldName}:</p>
+      {!fieldEditing && <label onClick={() => setFieldEditing(true)} className="info-value">{value}</label>}
+      {fieldEditing &&
+      <UpdateField>
+        <input onChange={(e) => setValue(e.target.value)} type="text" value={value}/>
+        <CheckCircleIcon onClick={changeInfoField} />
+      </UpdateField>}
+    </div>
+  );
+}
+
+const ProfileInfo = ({ userData }) => {
+  const [interests, setInterests] = React.useState([]);
+  const [bio, setBio] = React.useState(userData.biography);
+  const [bioEditing, setBioEditing] = React.useState(false);
+
+  const changeBio = () => {
+    setBioEditing(false);
+    userInfoApi
+      .changeBio(bio)
+      .then(
+        () => {},
+        (err) => console.log("ERROR patchUserInfo bio:", err)
+      )
+      .catch((err) => console.log("ERROR patchUserInfo bio:", err))
+  }
+
+  React.useEffect(() => {
+    userInterestsApi
+      .getInterests()
+      .then(
+        ({data}) => {
+          setInterests(data.Content.interests);
+        },
+        (err) => console.error("ERROR getInterests:", err)
+        )
+      .catch((err) => console.error("ERROR getInterests:", err))
+  }, []);
+
+  return(
+    <>
+      <ProfileInfoStyled>
+        <ProfileInfoPairs>
+          <ProfileInfoField fieldName="Пол" fieldKey="sex" fieldValue={userData.sex} />
+          <ProfileInfoField fieldName="Статус отношений" fieldKey="relationshipStatus" fieldValue={userData.relationshipStatus} />
+          <ProfileInfoField fieldName="Сексуальное предпочтение" fieldKey="sexPreference" fieldValue={userData.sexPreference} />
+          {userData.sexPreference &&
+            <ProfileInfoField fieldName="Отношение к алкоголю" fieldKey="attitudeToAlcohol" fieldValue={userData.attitudeToAlcohol} />}
+          {userData.sexPreference &&
+            <ProfileInfoField fieldName="Отношение к курению" fieldKey="attitudeToSmoking" fieldValue={userData.attitudeToSmoking} />}
+          <div>
+            <p>Рейтинг:</p>
+            <p>1234</p>
+          </div>
+        </ProfileInfoPairs>
+
+
+
+        <ProfileInfoBio>
+          {!bioEditing &&
+          <>
+          <div className="flex">
+            {bio}
+          </div>
+          <IconPencil onClick={() => setBioEditing(true)} size="18px">
             <CreateIcon />
           </IconPencil>
-        </p>
+          </>}
 
-      </ProfileInfoBio>
-    </ProfileInfoStyled>
-    {/*<ProfileInterests user={user} />*/}
-  </>
-);
+          {bioEditing &&
+          <UpdateBio>
+            <textarea onChange={(e) => setBio(e.target.value)}>
+              {bio}
+            </textarea>
+            <CheckCircleIcon onClick={changeBio} />
+          </UpdateBio>}
+        </ProfileInfoBio>
+
+
+      </ProfileInfoStyled>
+
+
+
+      <h2>
+        Интересы:
+        <IconPencil size="28px">
+          <CreateIcon />
+        </IconPencil>
+      </h2>
+      <ProfileInterests interests={interests} />
+    </>
+  );
+}
 
 export default ProfileInfo;

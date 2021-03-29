@@ -40,7 +40,7 @@ export default ({ onClose, onRegister }) => {
               "Произошла ошибка. Пожалуйста попробуйте снова.");
             console.log('err:', err.response);
           })
-        .catch(err => console.error("Error login:", err.response));
+        .catch(err => console.error("Error login:", err));
     }
   }
 
