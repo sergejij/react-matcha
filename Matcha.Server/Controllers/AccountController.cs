@@ -80,7 +80,6 @@ namespace Matcha.Server.Controllers
         [Route("login")]
         public IActionResult Login(AccountAuthModel authModel)
         {
-            // TODO: Переименовать loginbylogin и loginbyemail в A_B case
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("Login", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -90,7 +89,7 @@ namespace Matcha.Server.Controllers
                     new MySqlParameter("password", authModel.Password),
 
                     new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.Output },
-                    new MySqlParameter("cookie", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
+                    new MySqlParameter("session_id", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
 
                     new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
                 });
@@ -102,10 +101,10 @@ namespace Matcha.Server.Controllers
             if (string.IsNullOrEmpty(errorMessage) == false)
                 return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
 
-            var cookie = command.Parameters["cookie"].Value.ToString();
             var userId = command.Parameters["user_id"].Value.ToString();
+            var sessionId = command.Parameters["session_id"].Value.ToString();
 
-            Response.Cookies.Append(ResponseContentConstants.Cookie, cookie);
+            Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId);
             Response.Cookies.Append(ResponseContentConstants.UserId, userId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
@@ -126,8 +125,8 @@ namespace Matcha.Server.Controllers
 
                 command.Parameters.AddRange(new[]
                 {
-                    new MySqlParameter("userId", UserId),
-                    new MySqlParameter("cookie", Cookie)
+                    new MySqlParameter("user_id", UserId),
+                    new MySqlParameter("session_id", SessionId)
                 });
 
                 connection.Open();
@@ -135,7 +134,7 @@ namespace Matcha.Server.Controllers
             }
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
-            Response.Cookies.Append(ResponseContentConstants.Cookie, "", cookieExpiredOption);
+            Response.Cookies.Append(ResponseContentConstants.SessionId, "", cookieExpiredOption);
             Response.Cookies.Append(ResponseContentConstants.UserId, "", cookieExpiredOption);
 
             return ResponseModel.OK().ToResult();

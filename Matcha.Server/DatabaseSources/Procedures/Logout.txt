@@ -1,8 +1,9 @@
 ﻿CREATE PROCEDURE Logout (
-    userId BIGINT,
-    cookie CHAR(36)
+    session_id BIGINT,
+    user_id BIGINT
 )
 
 BEGIN
-    delete from sessions where sessions.user_id = userId and sessions.cookie = UUID_TO_BIN(cookie);
+    DELETE FROM sessions WHERE sessions.session_id = session_id AND sessions.user_id = user_id;
+    DELETE FROM sessions_geolocations WHERE sessions_geolocations.session_id = session_id;
 END
