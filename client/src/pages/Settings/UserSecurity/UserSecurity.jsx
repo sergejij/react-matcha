@@ -5,6 +5,7 @@ import {
 } from '../UserData/styled';
 import Button from '../../../components/Button';
 import { userAuthApi } from '../../../api/api';
+import { Redirect } from 'react-router-dom';
 
 
 const UserSecurity = () => {
@@ -15,6 +16,8 @@ const UserSecurity = () => {
   const [newPassword, setNewPassword] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+
   React.useEffect(() => {
     userAuthApi
       .getAuthData()
@@ -23,7 +26,12 @@ const UserSecurity = () => {
           setEmail(data.Content.email)
           setLogin(data.Content.login)
         },
-        (err) => console.error("ERROR: settings getAuthData:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR: settings getAuthData:", err);
+        }
       )
       .catch((err) => console.error("ERROR: settings getAuthData:", err))
   }, []);
@@ -36,7 +44,12 @@ const UserSecurity = () => {
         ({ data }) => {
           console.log(data);
         },
-        (err) => console.error("ERROR: settings updateEmail:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR: settings updateEmail:", err)
+        }
       )
       .catch((err) => console.error("ERROR: settings updateEmail:", err))
   };
@@ -49,7 +62,12 @@ const UserSecurity = () => {
         ({ data }) => {
           console.log(data);
         },
-        (err) => console.error("ERROR: settings updateLogin:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR: settings updateLogin:", err)
+        }
       )
       .catch((err) => console.error("ERROR: settings updateLogin:", err))
   };
@@ -62,10 +80,19 @@ const UserSecurity = () => {
         ({ data }) => {
           console.log(data);
         },
-        (err) => console.error("ERROR: settings updatePassword:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR: settings updatePassword:", err)
+        }
       )
       .catch((err) => console.error("ERROR: settings updatePassword:", err))
   };
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <SettingsDataStyled>

@@ -12,6 +12,7 @@ import {
 import { IconPencil } from '../../../styled';
 import { userInfoApi, userInterestsApi } from '../../../api/api';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { Redirect } from 'react-router-dom';
 
 export const ProfileInterests = ({ interests }) => (
     <ProfileInterestsStyled>
@@ -73,10 +74,20 @@ const ProfileInfo = ({ userData }) => {
   const [relationshipsList, setRelationshipsList] = React.useState([]);
   const [attitudesList, setAttitudesList] = React.useState([]);
 
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+
   const changeBio = () => {
     setBioEditing(false);
     userInfoApi
       .changeBio(bio)
+      .then(
+        () => {},
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        }
+      )
       .catch((err) => console.log("ERROR patchUserInfo bio:", err))
   }
 
@@ -90,16 +101,26 @@ const ProfileInfo = ({ userData }) => {
           console.log("INTERESTS:", values);
           setInputValue(values.join(" "));
         },
-        (err) => console.error("ERROR getInterests:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR getInterests:", err)
+        }
         )
       .catch((err) => console.error("ERROR getInterests:", err))
 
     userInfoApi
       .getSexesList()
-      .then(({ data }) => {
-        console.log("SEXESLIST:", data);
-        setSexesList(data.Content.sexes)
-      })
+      .then(
+        ({ data }) => {
+          setSexesList(data.Content.sexes)
+        },
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        })
       .catch(err => console.log("ERROR getSexesList:", err))
 
     userInfoApi
@@ -109,7 +130,13 @@ const ProfileInfo = ({ userData }) => {
 
     userInfoApi
       .getRelationshipsList()
-      .then(({ data }) => setRelationshipsList(data.Content.relationshipsStatuses))
+      .then(
+        ({ data }) => setRelationshipsList(data.Content.relationshipsStatuses),
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        })
       .catch(err => console.log("ERROR getRelationshipsList:", err))
   }, []);
 
@@ -124,10 +151,19 @@ const ProfileInfo = ({ userData }) => {
       .postInterests(newInterests)
       .then(
         () => {},
-        (err) => console.error("ERROR createInterests:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR createInterests:", err)
+        }
       )
       .catch((err) => console.error("ERROR createInterests:", err))
   };
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return(
     <>

@@ -1,6 +1,5 @@
 import React from 'react';
 import EditIcon from '@material-ui/icons/Edit';
-import ProfileImg from '../../../assets/images/Profile/0.jpeg';
 import {
   SettingsDataHeaderBoxStyled,
   SettingsDataHeaderPhotoImg,
@@ -8,7 +7,8 @@ import {
   SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit, UserDataStyled,
 } from './styled';
 import Button from '../../../components/Button';
-import { userAuthApi, userInfoApi } from '../../../api/api';
+import { userAuthApi, userInfoApi, userPhotosApi, usersAPI } from '../../../api/api';
+import { Redirect } from 'react-router-dom';
 
 const SettingsDataHeaderBox = ({ userData }) => (
   <div>
@@ -37,27 +37,62 @@ const SettingsData = () => {
 
   const [isSharedLocation, setIsSharedLocation] = React.useState(true);
 
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+
   React.useEffect(() => {
     userInfoApi
       .getUserInfo(localStorage.getItem('id'))
       .then(
         ({ data }) => {
+          console.log("us", data);
           setName(data.Content.name);
           setSurname(data.Content.surname);
           setAge(data.Content.age);
           setPost(data.Content.post);
           setLocation(data.Content.location);
+          setIsSharedLocation(data.Content.shareLocation);
         },
-        (err) => console.error("ERROR settings getUserInfo:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR settings getUserInfo:", err)
+        }
       )
       .catch((err) => console.error("ERROR settings getUserInfo:", err))
   }, []);
 
   const changeUserInfo = () => {
     userInfoApi
-      .putUserInfo()
+      .putUserInfo({ name, surname, age, post, location })
+      .then(
+        () => {},
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR settings putUserInfo:", err)
+        }
+      )
+      .catch((err) => console.error("ERROR patchUserInfo name:", err));
+
+    userInfoApi
+      .patchSharingLocation(isSharedLocation)
+      .then(
+        () => {},
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR settings patchSharingLocation:", err)
+        },
+      )
+      .catch((err) => console.error("ERROR settings patchSharingLocation:", err))
   };
 
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <SettingsDataStyled>
@@ -72,28 +107,48 @@ const SettingsData = () => {
           />
         </label>
 
-        <label htmlFor="name">
+        <label htmlFor="surname">
           Фамилия
-          <input id="surname" onChange={(e) => setSurname(e.target.value)} type="text" value={surname} />
+          <input
+            id="surname"
+            onChange={(e) => setSurname(e.target.value)}
+            type="text"
+            value={surname}
+          />
         </label>
       </SettingsDataRow>
 
       <SettingsDataRow>
         <label htmlFor="age">
           Возраст
-          <input id="age" onChange={(e) => setAge(e.target.value)} type="number" value={age} />
+          <input
+            id="age"
+            onChange={(e) => setAge(e.target.value)}
+            type="number"
+            value={age}
+          />
         </label>
 
         <label htmlFor="profession">
           Профессия
-          <input id="profession" onChange={(e) => setPost(e.target.value)} type="text" value={post} />
+          <input
+            id="profession"
+            onChange={(e) => setPost(e.target.value)}
+            type="text"
+            value={post}
+          />
         </label>
       </SettingsDataRow>
 
       <SettingsDataRow>
         <label htmlFor="age">
           Место жительства
-          <input id="place" onChange={(e) => setLocation(e.target.value)} type="text" value={location} />
+          <input
+            id="place"
+            onChange={(e) => setLocation(e.target.value)}
+            type="text"
+            value={location}
+          />
         </label>
       </SettingsDataRow>
 
@@ -111,6 +166,8 @@ const SettingsData = () => {
 
 const UserData = () => {
   const [userData, setUserData] = React.useState({});
+  const [avatar, setAvatar] = React.useState('');
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
     userInfoApi
@@ -119,20 +176,67 @@ const UserData = () => {
         ({ data }) => {
           setUserData(data.Content);
         },
-        (err) => console.error("ERROR settings getUserInfo:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.error("ERROR settings getUserInfo:", err);
+        }
       )
       .catch((err) => console.error("ERROR settings getUserInfo:", err))
+
+    userPhotosApi
+      .getAvatar()
+      .then(
+        ({ data }) => {
+          setAvatar('data:image/bmp;base64,' + data.Content.avatar);
+        },
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        }
+      )
+      .catch((err) => console.log("ERROR settings getAvatar:", err))
   }, []);
+
+  const changePhoto = (e) => {
+    const formData = new FormData();
+    const file = e.target.files[0];
+
+    formData.append('avatar', file);
+
+    usersAPI.uploadProfileAvatar(formData)
+      .then(() => {
+        userPhotosApi
+          .getAvatar()
+          .then(
+            ({ data }) => {
+              setAvatar('data:image/bmp;base64,' + data.Content.avatar);
+            },
+            (err) => {
+              if (err.response.status === 401) {
+                setAmIAuthorized(() => false);
+              }
+            })
+          .catch((err) => console.log("ERROR settings getAvatar:", err))
+      })
+      .catch((err) => console.error("ERROR settings uploadProfileAvatar:", err))
+  }
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
       <SettingsDataHeaderBoxStyled>
         <SettingsDataHeaderPhotoContainer>
-          <SettingsDataHeaderPhotoImg src={ProfileImg} alt="Фото профиля" />
+          <SettingsDataHeaderPhotoImg src={avatar} alt="Фото профиля" />
           <SettingsDataHeaderPhotoEdit htmlFor="settings-avatar">
             <EditIcon />
           </SettingsDataHeaderPhotoEdit>
-          <input style={{ "visibility": "hidden" }} id="settings-avatar" type="file"/>
+          <input onChange={changePhoto} style={{ "visibility": "hidden" }} id="settings-avatar" type="file"/>
         </SettingsDataHeaderPhotoContainer>
 
         <SettingsDataHeaderBox userData={userData}  />

@@ -7,13 +7,14 @@ import second from '../../../assets/images/Profile/2.jpg';
 import third from '../../../assets/images/Profile/3.jpg';
 import fourth from '../../../assets/images/Profile/4.jpg';
 import Slider from './Slider/Slider';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { usersAPI } from '../../../api/api';
 
 const PHOTO_SET = [zero, first, second, third, fourth];
 
 const ProfilePhotos = () => {
   const [photos, setPhotos] = React.useState([]);
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
     usersAPI.getProfilePhotos()
@@ -21,12 +22,20 @@ const ProfilePhotos = () => {
         ({ data }) => {
           setPhotos(data.Content.photos);
         },
-        (err) => console.log("ERROR getProfileAvatar:", err)
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.log("ERROR getProfileAvatar:", err)
+        }
       )
       .catch((err) => console.log("ERROR getProfileAvatar:", err))
   }, []);
 
-  console.log(photos);
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <ProfilePhotosStyled>
       <Slider images={photos

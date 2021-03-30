@@ -49,6 +49,18 @@ export const userInfoApi = {
   getAttitudesList() {
     return instance.get(`/profile/attitudes_list`);
   },
+
+  patchSharingLocation(status) {
+    return instance.patch(`/profile/location_sharing_status`, {
+      status
+    });
+  },
+
+  sendLocation(latitude, longitude) {
+    return instance.put(`/profile/coordinates`, {
+      latitude, longitude
+    })
+  }
 }
 
 export const userInterestsApi = {

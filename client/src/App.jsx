@@ -17,6 +17,11 @@ function App() {
   const match = useRouteMatch('/login');
   const [users, setUsers] = React.useState([]);
 
+  // добавить состояние или локалстораж в котором isAuth
+  // тут запускаю интервал и в колбеке смотрю авторизован ли
+  // но надо в каждом 401 менять состояние и при логауте
+  // и придумать как останавливать когда не авторизован
+
   React.useEffect(() => {
     axios.get('http://localhost:3000/db.json')
       .then(({ data }) => {

@@ -6,6 +6,7 @@ import {
 } from './styled';
 import axios from 'axios';
 import { usersAPI } from '../../../api/api';
+import { Redirect } from 'react-router-dom';
 
 const AddPhoto = ({ photoId, setIsUpdated }) => {
   const uploadPhoto = (e, id) => {
@@ -47,6 +48,7 @@ const AddPhoto = ({ photoId, setIsUpdated }) => {
 const UserPhotos = () => {
   const [photos, setPhotos] = React.useState([]);
   const [isUpdated, setIsUpdated] = React.useState(false);
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   useEffect(() => {
     usersAPI
@@ -58,11 +60,18 @@ const UserPhotos = () => {
 
         },
         (err) => {
-          console.log("ERROR Settings GetPhoto:", err)
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+          console.log("ERROR Settings GetPhoto:", err);
         },
       )
       .catch((err) => console.log("ERROR:", err));
   }, [isUpdated]);
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <UserPhotosStyled>

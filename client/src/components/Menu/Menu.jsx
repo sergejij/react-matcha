@@ -9,10 +9,17 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import { Text } from '../../styled';
 import { BoxMenu, MenuIcon } from './styled';
+import { userAuthApi } from '../../api/api';
 
 const Menu = () => {
   const id = localStorage.getItem('id');
-  console.log("ID:", id);
+
+  const logout = () => {
+    userAuthApi
+      .logout()
+      .catch((err) => console.error("ERROR logout:", err));
+  }
+
   return (
     <BoxMenu>
       <MenuIcon to={`/profile/${id}`} exact activeClassName="active">
@@ -40,7 +47,7 @@ const Menu = () => {
         <Text size="15px">Настройки</Text>
       </MenuIcon>
 
-      <MenuIcon to="/login" activeClassName="active">
+      <MenuIcon to="/login" onClick={logout} activeClassName="active">
         <ExitToAppIcon style={{ width: 45, height: 45 }} />
         <Text size="15px">Выход</Text>
       </MenuIcon>

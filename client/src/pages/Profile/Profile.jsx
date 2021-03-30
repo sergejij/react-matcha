@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  useParams,
+  Redirect, useParams,
 } from 'react-router-dom';
 
 import ProfilePage from './styled';
@@ -14,11 +14,13 @@ export default () => {
   const [isRequiredEmpty, setIsRequiredEmpty] = React.useState(false);
   const [isProfilePhotoEmpty, setIsProfilePhotoEmpty] = React.useState(false);
   const [userData, setUserData] = React.useState({});
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(
         (data) => {
+          setAmIAuthorized(() => true);
           setUserData(data.data.Content);
           if (!(!!data.data.Content.sex &&
             !!data.data.Content.age &&
@@ -29,6 +31,11 @@ export default () => {
           } else {
             setIsRequiredEmpty(false);
           }
+      },
+      (err) => {
+        if (err.response.status === 401) {
+          setAmIAuthorized(() => false);
+        }
       },
       (err) => console.error(err));
   }, []);
@@ -41,9 +48,16 @@ export default () => {
           setIsProfilePhotoEmpty(!data.Content.avatar);
       },
       (err) => {
+        if (err.response.status === 401) {
+          setAmIAuthorized(() => false);
+        }
         console.error("Error:", err);
       });
   }, []);
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
 
   return (
       isRequiredEmpty || isProfilePhotoEmpty /*true*/ ? (
