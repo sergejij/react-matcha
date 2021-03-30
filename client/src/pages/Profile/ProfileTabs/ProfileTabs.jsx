@@ -6,8 +6,6 @@ import {
 import { ProfileTabsLink, ProfileTabsStyled } from './styled';
 import ProfilePhotos from '../ProfilePhotos/ProfilePhotos';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
-import ProfileVisitors from '../ProfileVisitors/ProfileVisitors';
-import ProfileLikes from '../ProfileLikes/ProfileLikes';
 
 const tabs = [
   'Фото',

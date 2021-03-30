@@ -35,7 +35,7 @@ export default ({ onClose, onRegister }) => {
             setRedirectTo(`/profile/${id}`);
           },
           (err) => {
-            console.error("Err", err);
+            console.error("Err", err.response.status);
             setErrorNotification(err.response.status === 401 ? "Неверный логин или пароль." :
               "Произошла ошибка. Пожалуйста попробуйте снова.");
             console.log('err:', err.response);

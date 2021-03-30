@@ -13,6 +13,8 @@ export const UserDataStyled = styled.div`
 `;
 
 export const SettingsDataHeaderBoxStyled = styled.div`
+  width: 50%;
+  margin: 3% auto 0;
   display: flex;
   justify-content: flex-start;
   
@@ -32,7 +34,6 @@ export const SettingsDataHeaderBoxStyled = styled.div`
 export const SettingsDataHeaderPhotoContainer = styled.div`
   position: relative;
   width: 200px;
-  height: 200px;
   margin-right: 50px;
 `;
 
@@ -45,10 +46,13 @@ export const SettingsDataHeaderPhotoImg = styled.img`
   margin-right: 5%;
 `;
 
-export const SettingsDataHeaderPhotoEdit = styled.button`
+export const SettingsDataHeaderPhotoEdit = styled.label`
   position: absolute;
-  top: 75%;
-  left: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 67%;
+  left: 67%;
   
   border-radius: 100%;
   width: 40px;
@@ -90,13 +94,20 @@ export const SettingsDataStyled = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 50%;
+  margin: 3% auto 0;
 `;
 
 export const SettingsDataRow = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  align-items: flex-end;
   margin-bottom: 40px;
   width: 100%;
+  
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+  }
   
   & label {
   display: flex;
@@ -109,20 +120,40 @@ export const SettingsDataRow = styled.div`
       background-color: rgba(154, 158, 171, 0.1);
       border-radius: 13px;
       outline: none;
-      width: 190px;
+      width: 300px;
       height: 40px;
       text-align: center;
       font-size: 16px;
       color: black;
+      
+      @media screen and (max-width: 1700px) {
+        width: 250px;
+      }
+      
+      @media screen and (max-width: 1500px) {
+        width: 200px;
+      }
+      
+      @media screen and (max-width: 1300px) {
+        width: 150px;
+      }
     }
   }
+`;
+
+export const SettingsPasswords = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
 `;
 
 export const ShareLocationStyled = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: 40px 0;
-  width: 60%;
+  width: 100%;
   
   & label {
     margin-left: 20px;
