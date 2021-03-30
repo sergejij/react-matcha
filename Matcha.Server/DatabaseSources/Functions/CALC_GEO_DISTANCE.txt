@@ -1,0 +1,19 @@
+﻿CREATE FUNCTION CALC_GEO_DISTANCE(
+	first_latitude DOUBLE,
+	first_longitude DOUBLE,
+
+	second_latitude DOUBLE,
+	second_longitude DOUBLE
+) RETURNS DOUBLE
+
+BEGIN
+
+	RETURN
+		111.111 *
+		DEGREES(ACOS(LEAST(1.0, COS(RADIANS(first_latitude))
+			* COS(RADIANS(second_latitude))
+			* COS(RADIANS(first_longitude - second_longitude))
+			+ SIN(RADIANS(first_latitude))
+			* SIN(RADIANS(second_latitude)))));
+
+END

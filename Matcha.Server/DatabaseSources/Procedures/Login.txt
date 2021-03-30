@@ -13,9 +13,19 @@ BEGIN
     IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
     THEN
         call LoginByEmail(email, password, user_id, session_id, error_message);
+
+        INSERT
+        INTO sessions_geolocations (sessions_geolocations.session_id, sessions_geolocations.longitude, sessions_geolocations.latitude)
+        VALUES (session_id, 0, 0);
+
     ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = email)
     THEN
         call LoginByLogin(email, password, user_id, session_id, error_message);
+
+        INSERT
+        INTO sessions_geolocations (sessions_geolocations.session_id, sessions_geolocations.longitude, sessions_geolocations.latitude)
+        VALUES (session_id, 0, 0);
+
     ELSEIF EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email)
     THEN
         SET error_message = 'Email не подтвержден';

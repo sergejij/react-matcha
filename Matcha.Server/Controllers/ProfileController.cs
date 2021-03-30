@@ -537,5 +537,25 @@ namespace Matcha.Server.Controllers
 
             return ResponseModel.OK().ToResult();
         }
+
+        [HttpPut]
+        [Route("coordinates")]
+        public IActionResult UpdateCoordinates(UpdateCoordinatesModel newCoordinates)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateSessionGeolocation", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("session_id", SessionId),
+                new MySqlParameter("longitude", newCoordinates.Longitude),
+                new MySqlParameter("latitude", newCoordinates.Latitude),
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
     }
 }
