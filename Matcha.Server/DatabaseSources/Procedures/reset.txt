@@ -4,14 +4,14 @@ BEGIN
 
     SET FOREIGN_KEY_CHECKS = 0;
 
-    TRUNCATE TABLE user_data;
-    TRUNCATE TABLE user_full_data;
-    TRUNCATE TABLE emails_for_confirm;
-    TRUNCATE TABLE sessions;
-    TRUNCATE TABLE visits;
-    TRUNCATE TABLE interests_list;
-    TRUNCATE TABLE users_interests;
-    TRUNCATE TABLE likes;
+    TRUNCATE user_data;
+    TRUNCATE user_full_data;
+    TRUNCATE emails_for_confirm;
+    TRUNCATE sessions;
+    TRUNCATE visits;
+    TRUNCATE interests_list;
+    TRUNCATE users_interests;
+    TRUNCATE likes;
 
     SET FOREIGN_KEY_CHECKS = 1;
 

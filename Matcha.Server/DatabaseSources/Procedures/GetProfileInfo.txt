@@ -19,12 +19,13 @@ BEGIN
         post VARCHAR(128),
         sex VARCHAR(128),
         sex_preference VARCHAR(128),
-        biography TEXT
+        biography TEXT,
+        share_location BIT
     );
 
     IF EXISTS(SELECT * FROM user_full_data WHERE user_full_data.id = user_id)
     THEN
-        INSERT INTO temp (id, name, surname, location, age, post, biography)
+        INSERT INTO temp (id, name, surname, location, age, post, biography, share_location)
         SELECT
             id,
             name,
@@ -32,7 +33,8 @@ BEGIN
             location,
             age,
             post,
-            biography
+            biography,
+            share_location
         FROM user_full_data where user_full_data.id = user_id;
 
         UPDATE temp
