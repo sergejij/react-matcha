@@ -19,34 +19,8 @@ namespace Matcha.Server.Controllers
     [ExceptionHandlerFilter]
     public class ProfileController : BaseMatchaController
     {
-        [HttpGet]
-        [Route("auth_data")]
-        public IActionResult GetAuthData()
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("GetAuthData", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", UserId),
-
-                new MySqlParameter("login", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
-                new MySqlParameter("email", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            return new ResponseModel(HttpStatusCode.OK,
-                                     null,
-                                     new Dictionary<string, object>
-                                     {
-                                         { "login", command.Parameters["login"].Value },
-                                         { "email", command.Parameters["email"].Value },
-                                     })
-                .ToResult();
-        }
-
+        #region Получение информации
+    
         [HttpGet]
         [Route("attitudes_list")]
         public IActionResult GetAttitudesList()
@@ -114,9 +88,9 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
-        
+        #endregion
 
-        
+        #region Уведомления
 
         [HttpPost]
         [Route("visit_notification")]
@@ -174,6 +148,8 @@ namespace Matcha.Server.Controllers
                     .ToResult();
             }
         }
+
+        #endregion
 
         #region Обновление данных авторизации
 
@@ -271,9 +247,9 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("get_avatar")]
-        public IActionResult GetAvatar()
+        public IActionResult GetAvatar([FromQuery] long? userId)
         {
-            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(UserId);
+            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId.HasValue ? userId.Value : UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -293,9 +269,9 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("get_photos")]
-        public IActionResult GetPhotos()
+        public IActionResult GetPhotos([FromQuery] long? userId)
         {
-            var photos = MediaClient.MediaClient.Image.GetAllPhotos(UserId);
+            var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId.HasValue ? userId.Value : UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -307,6 +283,53 @@ namespace Matcha.Server.Controllers
         #endregion
 
         #region Информация о профиле
+
+        [HttpGet]
+        [Route("auth_data")]
+        public IActionResult GetAuthData()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetAuthData", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+
+                new MySqlParameter("login", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
+                new MySqlParameter("email", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return new ResponseModel(HttpStatusCode.OK,
+                                     null,
+                                     new Dictionary<string, object>
+                                     {
+                                         { "login", command.Parameters["login"].Value },
+                                         { "email", command.Parameters["email"].Value },
+                                     })
+                .ToResult();
+        }
+
+        [HttpPatch]
+        [Route("biography")]
+        public IActionResult UpdateBiography(UpdateBiographyModel biography)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateBiography", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("biography", biography.Biography)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
 
         [HttpGet]
         [Route("info")]
@@ -341,7 +364,8 @@ namespace Matcha.Server.Controllers
                 { "post", reader.StringOrEmpty("post") },
                 { "sex", reader.StringOrEmpty("sex") },
                 { "sexPreference", reader.StringOrEmpty("sex_preference") },
-                { "biography", reader.StringOrEmpty("biography") }
+                { "biography", reader.StringOrEmpty("biography") },
+                { "shareLocation", Convert.ToBoolean(reader["share_location"]) }
             };
 
             return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
@@ -395,25 +419,6 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("age", infoModel.Age),
                 new MySqlParameter("post", infoModel.Post),
                 new MySqlParameter("location", infoModel.Location)
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpPatch]
-        [Route("biography")]
-        public IActionResult UpdateBiography(UpdateBiographyModel biography)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("UpdateBiography", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", UserId),
-                new MySqlParameter("biography", biography.Biography)
             });
 
             connection.Open();
@@ -513,5 +518,44 @@ namespace Matcha.Server.Controllers
         }
 
         #endregion
+
+        [HttpPatch]
+        [Route("location_sharing_status")]
+        public IActionResult ChangeLocationSharingStatus(LocationSharingStatusModel locationSharing)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("ChangeLocationSharingStatus", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("share", locationSharing.Status)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
+
+        [HttpPut]
+        [Route("coordinates")]
+        public IActionResult UpdateCoordinates(UpdateCoordinatesModel newCoordinates)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("UpdateSessionGeolocation", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("session_id", SessionId),
+                new MySqlParameter("longitude", newCoordinates.Longitude),
+                new MySqlParameter("latitude", newCoordinates.Latitude),
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
     }
 }

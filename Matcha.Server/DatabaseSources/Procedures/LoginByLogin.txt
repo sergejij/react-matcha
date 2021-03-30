@@ -3,7 +3,7 @@
     password VARCHAR(128),
 
     OUT user_id BIGINT,
-    OUT cookie CHAR(36),
+    OUT session_id BIGINT,
 
     OUT error_message VARCHAR(256)
 )
@@ -26,9 +26,10 @@ BEGIN
         IF (password_hash = (SELECT user_data.password FROM user_data WHERE user_data.login = login))
         THEN
             SET user_id = (SELECT id FROM user_data WHERE user_data.login = login);
-            SET cookie = UUID();
-            
-            INSERT INTO sessions (user_id, cookie) VALUES (user_id, UUID_TO_BIN(cookie));
+
+            INSERT INTO sessions (sessions.user_id) VALUES (user_id);
+
+            SET session_id = LAST_INSERT_ID();
         ELSE
             SET error_message = 'Неверный пароль';
         END IF;        

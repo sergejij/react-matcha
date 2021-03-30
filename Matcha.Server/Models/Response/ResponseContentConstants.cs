@@ -2,7 +2,7 @@
 {
     public sealed class ResponseContentConstants
     {
-        public readonly static string Cookie = "matcha-session-id";
+        public readonly static string SessionId = "matcha-session-id";
 
         public readonly static string UserId = "matcha-user-id";
     }

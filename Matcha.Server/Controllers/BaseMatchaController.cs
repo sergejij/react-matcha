@@ -18,12 +18,12 @@ namespace Matcha.Server.Controllers
             }
         }
 
-        protected string Cookie
+        protected long SessionId
         {
             get
             {
-                if (Request.Cookies.TryGetValue(ResponseContentConstants.Cookie, out string cookie))
-                    return cookie;
+                if (Request.Cookies.TryGetValue(ResponseContentConstants.SessionId, out string sessionId))
+                    return Convert.ToInt64(sessionId);
                 else
                     return default;
             }
@@ -33,22 +33,23 @@ namespace Matcha.Server.Controllers
         {
             get
             {
-                return UserId != default && Cookie != default;
+                return UserId != default && SessionId != default;
             }
         }
 
-        public static bool TryGetSessionAttributes(HttpRequest request, out long userId, out string cookie)
+        public static bool TryGetSessionAttributes(HttpRequest request, out long userId, out long sessionId)
         {
             if (request.Cookies.TryGetValue(ResponseContentConstants.UserId, out var userIdStr) &&
-                request.Cookies.TryGetValue(ResponseContentConstants.Cookie, out cookie))
+                request.Cookies.TryGetValue(ResponseContentConstants.SessionId, out var sessionIdStr))
             {
                 userId = Convert.ToInt64(userIdStr);
+                sessionId = Convert.ToInt64(sessionIdStr);
                 return true;
             }
             else
             {
                 userId = default;
-                cookie = default;
+                sessionId = default;
                 return false;
             }
         }

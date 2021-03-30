@@ -12,17 +12,17 @@ namespace Matcha.Server.Filters
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (BaseMatchaController.TryGetSessionAttributes(context.HttpContext.Request, out long userId, out string cookie) == false)
+            if (BaseMatchaController.TryGetSessionAttributes(context.HttpContext.Request, out long userId, out long sessionId) == false)
             {
                 context.Result = ResponseModel.Unauthorized().ToResult();
                 return;
             }
 
-            if (SessionExists(userId, cookie) == false)
+            if (SessionExists(userId, sessionId) == false)
                 context.Result = ResponseModel.Unauthorized().ToResult();
         }
 
-        private static bool SessionExists(long userId, string cookie)
+        private static bool SessionExists(long userId, long sessionId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("IsSessionExists", connection) { CommandType = CommandType.StoredProcedure };
@@ -30,7 +30,7 @@ namespace Matcha.Server.Filters
             command.Parameters.AddRange(new[]
             {
                     new MySqlParameter("user_id", userId),
-                    new MySqlParameter("cookie", cookie),
+                    new MySqlParameter("session_id", sessionId),
 
                     new MySqlParameter("exists", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
                 });
