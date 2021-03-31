@@ -29,6 +29,7 @@ const UserSecurity = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR: settings getAuthData:", err);
         }
@@ -47,6 +48,7 @@ const UserSecurity = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR: settings updateEmail:", err)
         }
@@ -65,6 +67,7 @@ const UserSecurity = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR: settings updateLogin:", err)
         }
@@ -83,6 +86,7 @@ const UserSecurity = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR: settings updatePassword:", err)
         }

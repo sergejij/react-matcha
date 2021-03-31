@@ -4,15 +4,23 @@ import AddIcon from '@material-ui/icons/Add';
 import {
   AddPhotoStyled, UserPhotoChange, UserPhotoRow, UserPhotosStyled,
 } from './styled';
-import axios from 'axios';
 import { usersAPI } from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
+const CropPhoto = (photo) => {
+  const elementPicture = document.createElement('img');
+  // const c = new Cropper(elementPicture, );
+}
+
 const AddPhoto = ({ photoId, setIsUpdated }) => {
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+
   const uploadPhoto = (e, id) => {
     console.log("photoId123321:", id);
     const formData = new FormData();
     const file = e.target.files[0];
+
+    CropPhoto(file);
 
     console.log("photoId:", id);
     formData.append('content', file);
@@ -27,9 +35,17 @@ const AddPhoto = ({ photoId, setIsUpdated }) => {
         },
         (err) => {
           console.log("ERR upload photo:", err);
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+            localStorage.clear();
+          }
         }
       )
       .catch(err => console.error("ERROR upload photo:", err));
+  }
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
   }
 
   return (
@@ -55,13 +71,12 @@ const UserPhotos = () => {
       .getProfilePhotos()
       .then(
         ({ data }) => {
-          console.log("arr:", data);
           setPhotos(data.Content.photos);
-
         },
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.log("ERROR Settings GetPhoto:", err);
         },

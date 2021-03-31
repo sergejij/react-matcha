@@ -51,6 +51,18 @@ export const AddDataRow = styled.div`
       color: black;
     }
     
+    & select {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: rgba(255,255,255,0.3);
+      border-radius: 7px;
+      outline: none;
+      width: 190px;
+      height: 40px;
+      text-align: center;
+      font-size: 16px;
+      color: black;
+    }
+    
     & textarea {
       border: 1px solid rgba(0, 0, 0, 0.1);
       background-color: rgba(255,255,255,0.3);

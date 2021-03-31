@@ -25,6 +25,7 @@ const ProfilePhotos = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.log("ERROR getProfileAvatar:", err)
         }

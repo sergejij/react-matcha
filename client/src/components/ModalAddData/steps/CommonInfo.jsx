@@ -1,10 +1,11 @@
 import React from 'react';
-import { userInfoApi, usersAPI } from '../../../api/api';
+import { userInfoApi, userInterestsApi, usersAPI } from '../../../api/api';
 import { AddDataRow } from '../styled';
 import Button from '../../Button';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import { Text } from '../../../styled';
 import COLORS from '../../../constants';
+import { Redirect } from 'react-router-dom';
 
 const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
   const [post, setPost] = React.useState(userData.post);
@@ -19,11 +20,50 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
 
   const [isRequiredNotFilled, setIsRequiredNotFilled] = React.useState(false);
 
+  const [sexesList, setSexesList] = React.useState([]);
+  const [relationshipsList, setRelationshipsList] = React.useState([]);
+  const [attitudesList, setAttitudesList] = React.useState([]);
+
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+
+  React.useEffect(() => {
+    userInfoApi
+      .getSexesList()
+      .then(
+        ({ data }) => {
+          setSexesList(data.Content.sexes)
+        },
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        })
+      .catch(err => console.log("ERROR getSexesList:", err))
+
+    userInfoApi
+      .getAttitudesList()
+      .then(({ data }) => setAttitudesList(data.Content.attitudes))
+      .catch(err => console.log("ERROR getSexesList:", err))
+
+    userInfoApi
+      .getRelationshipsList()
+      .then(
+        ({ data }) => setRelationshipsList(data.Content.relationshipsStatuses),
+        (err) => {
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+          }
+        })
+      .catch(err => console.log("ERROR getRelationshipsList:", err))
+  }, []);
+
   const sendInfo = () => {
     if (!age || !sex || !relationshipStatus || !sexPreference || !biography) {
       setIsRequiredNotFilled(true);
       return;
     }
+
+    console.log(age, sex, relationshipStatus, sexPreference, biography);
     userInfoApi
       .postUserInfo({post, location, age, sex, relationshipStatus, sexPreference, attitudeToAlcohol, attitudeToSmoking, biography})
       .then((resp) => {
@@ -35,6 +75,11 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
     setStepNumber(2); // надо удалить
   }
 
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
+  }
+
+  console.log("sex:", sex);
   return (
       <>
         <h2>Добавьте информацию о себе</h2>
@@ -58,33 +103,84 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
         <AddDataRow>
           <label htmlFor="sex">
             Пол &#9913;
-            <input onChange={(e) => setSex(e.target.value)} value={sex}  id="sex" type="text" />
+            <select onChange={(e) => setSex(e.target.value)} value={sex} name="sex" id="sex" >
+              {
+                sexesList.map((name, index) =>
+                  <option
+                    value={name}
+                    key={`${name}${index}`}
+                  >
+                    {name}
+                  </option>)
+              }
+            </select>
           </label>
 
           <label htmlFor="relationshipStatus">
             Статус отношений &#9913;
-            <input
-              onChange={(e) => setRelationshipStatus(e.target.value)}
-              value={relationshipStatus}
-              id="relationshipStatus"
-              type="text" />
+            <select onChange={(e) => setRelationshipStatus(e.target.value)} value={relationshipStatus} name="relationshipStatus" id="relationshipStatus">
+              {
+                relationshipsList.map((name, index) =>
+                  <option
+                    value={name}
+                    selected={name === relationshipStatus && "selected"}
+                    key={`${name}${index}`}
+                  >
+                    {name}
+                  </option>)
+              }
+            </select>
           </label>
 
           <label htmlFor="sexPreference">
             Сексульные предпочтения &#9913;
-            <input onChange={(e) => setSexPreference(e.target.value)} value={sexPreference}  id="sexPreference" type="text" />
+            <select onChange={(e) => setSexPreference(e.target.value)} value={sexPreference} name="sexPreference" id="sexPreference">
+              {
+                sexesList.map((name, index) =>
+                  <option
+                    value={name}
+                    selected={name === sexPreference && "selected"}
+                    key={`${name}${index}preference`}
+                  >
+                    {name}
+                  </option>
+                )
+              }
+            </select>
           </label>
         </AddDataRow>
 
         <AddDataRow>
           <label htmlFor="alcoholAttitude">
             Отношение к алкоголю
-            <input onChange={(e) => setAttitudeToAlcohol(e.target.value)} value={attitudeToAlcohol}  id="alcoholAttitude" type="text" />
+            <select onChange={(e) => setAttitudeToAlcohol(e.target.value)} value={attitudeToAlcohol} name="alcoholAttitude" id="alcoholAttitude">
+              {
+                attitudesList.map((name, index) =>
+                  <option
+                    value={name}
+                    selected={name === attitudeToAlcohol && "selected"}
+                    key={`${name}${index}alcoholAttitude`}
+                  >
+                    {name}
+                  </option>)
+              }
+            </select>
           </label>
 
           <label htmlFor="smokingAttitude">
             Отношение к курению
-            <input onChange={(e) => setAttitudeToSmoking(e.target.value)} value={attitudeToSmoking}  id="smokingAttitude" type="text" />
+           <select onChange={(e) => setAttitudeToSmoking(e.target.value)} value={attitudeToSmoking} name="smokingAttitude" id="smokingAttitude">
+              {
+                attitudesList.map((name, index) =>
+                  <option
+                    value={name}
+                    selected={name === attitudeToSmoking && "selected"}
+                    key={`${name}${index}smokingAttitude`}
+                  >
+                    {name}
+                  </option>)
+              }
+            </select>
           </label>
         </AddDataRow>
 

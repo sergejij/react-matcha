@@ -10,6 +10,7 @@ const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty }) 
   const portalRoot = document.getElementById('portal');
   const [stepNumber, setStepNumber] = React.useState(1);
 
+  console.log("UD:", userData)
   return ReactDOM.createPortal(
     <Modal>
       <ModalAddDataStyled>

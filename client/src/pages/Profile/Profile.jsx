@@ -35,6 +35,7 @@ export default () => {
       (err) => {
         if (err.response.status === 401) {
           setAmIAuthorized(() => false);
+          localStorage.clear();
         }
       },
       (err) => console.error(err));
@@ -50,6 +51,7 @@ export default () => {
       (err) => {
         if (err.response.status === 401) {
           setAmIAuthorized(() => false);
+          localStorage.clear();
         }
         console.error("Error:", err);
       });

@@ -3,6 +3,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SecurityIcon from '@material-ui/icons/Security';
+import SettingsInputCompositeIcon from '@material-ui/icons/SettingsInputComposite';
 import ProfileImg from '../../assets/images/Chats/liza.png';
 import {
   ChatsAsideHeader, ChatsAsideItems, ChatsAsideStyled, FilterBox,
@@ -36,6 +37,9 @@ const Aside = ({
             </SettingsItem>
             <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting="Фото пользователя">
               <CropOriginalIcon />
+            </SettingsItem>
+            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting="Активные сессии">
+              <SettingsInputCompositeIcon />
             </SettingsItem>
 
           </>

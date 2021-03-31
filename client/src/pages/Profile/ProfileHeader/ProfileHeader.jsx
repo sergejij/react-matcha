@@ -28,6 +28,7 @@ const ProfileHeader = ({ userData, id }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("Error:", err);
         });
