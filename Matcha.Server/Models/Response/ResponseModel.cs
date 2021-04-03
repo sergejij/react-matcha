@@ -33,9 +33,9 @@ namespace server.Response
             Ok = code < HttpStatusCode.BadRequest;
         }
 
-        public static ResponseModel OK() => new ResponseModel(HttpStatusCode.OK, null);
+        public static ResponseModel OK = new ResponseModel(HttpStatusCode.OK, null);
 
-        public static ResponseModel Unauthorized() => new ResponseModel(HttpStatusCode.Unauthorized, null);
+        public static ResponseModel Unauthorized = new ResponseModel(HttpStatusCode.Unauthorized, null);
 
         public IActionResult ToResult()
         {

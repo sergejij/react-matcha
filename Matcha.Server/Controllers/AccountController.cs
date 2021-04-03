@@ -48,7 +48,7 @@ namespace Matcha.Server.Controllers
             AddConfirmationCode(userId, registerModel.Email, confirmationCode);
             SendConfirmationCode(registerModel.Email, confirmationCode);
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         #endregion
@@ -110,7 +110,7 @@ namespace Matcha.Server.Controllers
             Response.Cookies.Append(ResponseContentConstants.SessionId, string.Empty, cookieExpiredOption);
             Response.Cookies.Append(ResponseContentConstants.UserId, string.Empty, cookieExpiredOption);
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         #endregion
@@ -129,7 +129,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         public static void AddConfirmationCode(long userId, string email, Guid code)

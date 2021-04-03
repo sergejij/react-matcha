@@ -1,0 +1,101 @@
+﻿CREATE PROCEDURE CreateTestUsers (
+	amount INT
+)
+
+BEGIN
+	DECLARE i BIGINT DEFAULT 0;
+	DECLARE j BIGINT DEFAULT 0;
+	DECLARE interests_for_user BIGINT;
+	DECLARE interests_count BIGINT;
+	DECLARE suffix VARCHAR(128);
+	DECLARE sexes_count BIGINT;
+	DECLARE attitudes_count BIGINT;
+	DECLARE relationship_statuses_count BIGINT;
+	DECLARE user_id BIGINT;
+	DECLARE interest_id BIGINT;
+
+	SELECT COUNT(*) INTO interests_count FROM interests_list;
+	SELECT COUNT(*) INTO sexes_count FROM sexes;
+	SELECT COUNT(*) INTO attitudes_count FROM attitudes;
+	SELECT COUNT(*) INTO relationship_statuses_count FROM relationship_statuses;
+
+	CALL DeleteTestUsers();
+
+	WHILE i < amount
+	DO
+		SET suffix = CONCAT(i, '__test_user__');
+
+		INSERT INTO user_data (
+			login,
+			email,
+			password,
+			salt
+		) VALUES (
+			CONCAT('login', suffix),
+			CONCAT('email', suffix),
+			'a',
+			'a'
+		);
+
+		INSERT INTO user_full_data (
+			id,
+			name,
+			surname,
+			location,
+			age, 
+			post,
+			biography,
+			sex,
+			sex_preference,
+			relationship_status,
+			attitude_to_alcohol,
+			attitude_to_smoking
+		) VALUES (
+			LAST_INSERT_ID(),
+			CONCAT('name', suffix),
+			CONCAT('surname', suffix),
+			CONCAT('location', suffix),
+			i + 100,
+			CONCAT('post', suffix),
+			CONCAT('biography', suffix),
+			random_integer(1, sexes_count),
+			random_integer(1, sexes_count),
+			random_integer(1, relationship_statuses_count),
+			random_integer(1, attitudes_count),
+			random_integer(1, attitudes_count)
+		);
+
+		SET user_id = LAST_INSERT_ID();
+		
+		SET interests_for_user = random_integer(0, interests_count / 3 * 2);
+		IF (interests_for_user = 0)
+		THEN
+			SET interests_for_user = 1;
+		END IF;
+
+		SET j = 0;
+
+		WHILE j < interests_for_user
+		DO
+			SET interest_id = random_integer(0, interests_count);
+
+			IF NOT EXISTS(SELECT * FROM users_interests
+						  WHERE users_interests.user_id = user_id
+							    AND
+								users_interests.interest_id = interest_id)
+			THEN
+				INSERT INTO users_interests (
+					user_id,
+					interest_id
+				) VALUES (
+					user_id,
+					interest_id
+				);
+			END IF;
+
+			SET j = j + 1;
+		END WHILE;
+		
+		SET i = i + 1;
+	END WHILE;
+END;

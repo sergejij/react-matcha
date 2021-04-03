@@ -4,71 +4,34 @@
 
 BEGIN
 
-    DROP TEMPORARY TABLE IF EXISTS temp;
-    CREATE TEMPORARY TABLE temp (
-        id BIGINT,
-        name VARCHAR(128),
-        surname VARCHAR(128),
-        location VARCHAR(128),
-        relationship_status VARCHAR(128),
-        attitude_to_alcohol VARCHAR(128),
-        attitude_to_smoking VARCHAR(128),
-        age INT,
-        post VARCHAR(128),
-        sex VARCHAR(128),
-        sex_preference VARCHAR(128),
-        biography TEXT
-    );
-
     IF EXISTS(SELECT * FROM user_full_data WHERE user_full_data.id = user_id)
     THEN
-        INSERT INTO temp (id, name, surname, location, age, post, biography)
         SELECT
-            id,
-            name,
-            surname,
-            location,
-            age,
-            post,
-            biography
-        FROM user_full_data where user_full_data.id = user_id;
-
-        UPDATE temp
-        SET relationship_status = 
-            (SELECT status
-            FROM relationship_statuses
-            WHERE relationship_statuses.id = (SELECT relationship_status FROM user_full_data where user_full_data.id = user_id))
-        WHERE temp.id = user_id;
-
-        UPDATE temp
-        SET attitude_to_alcohol = 
-            (SELECT attitude
-            FROM attitudes
-            WHERE attitudes.id = (SELECT attitude_to_alcohol FROM user_full_data where user_full_data.id = user_id))
-        WHERE temp.id = user_id;
-
-        UPDATE temp
-        SET attitude_to_smoking = 
-            (SELECT attitude
-            FROM attitudes
-            WHERE attitudes.id = (SELECT attitude_to_smoking FROM user_full_data where user_full_data.id = user_id))
-        WHERE temp.id = user_id;
-
-        UPDATE temp
-        SET sex = 
-            (SELECT sex
-            FROM sexes
-            WHERE sexes.id = (SELECT sex FROM user_full_data where user_full_data.id = user_id))
-        WHERE temp.id = user_id;
-
-        UPDATE temp
-        SET sex_preference = 
-            (SELECT sex
-            FROM sexes
-            WHERE sexes.id = (SELECT sex_preference FROM user_full_data where user_full_data.id = user_id))
-        WHERE temp.id = user_id;
-
-        SELECT * FROM temp;
+            data.name,
+            data.surname,
+            data.location,
+            data.age,
+            data.post,
+            data.biography,
+            s1.sex as sex,
+            s2.sex as sex_preference,
+            rel.status as  relationship_status,
+            a1.attitude as attitude_to_smoking,
+            a2.attitude as attitude_to_alcohol
+        FROM
+            user_full_data AS data
+        JOIN
+            sexes AS s1 ON data.sex = s1.id
+        JOIN
+            sexes AS s2 ON data.sex_preference = s2.id
+        JOIN
+            relationship_statuses AS rel ON data.relationship_status = rel.id
+        JOIN
+            attitudes AS a1 ON data.attitude_to_smoking = a1.id
+        JOIN
+            attitudes AS a2 ON data.attitude_to_alcohol = a2.id
+        WHERE
+            data.id = user_id;
     ELSE
         SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO=404, MESSAGE_TEXT='Пользователь с таким ID не найден';
     END IF;

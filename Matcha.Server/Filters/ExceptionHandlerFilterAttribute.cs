@@ -15,7 +15,13 @@ namespace Matcha.Server.Filters
             var mySqlException = context.Exception as MySqlException;
             if (mySqlException is not null)
             {
-                SetResult(context, mySqlException.Message, (HttpStatusCode)mySqlException.Number);
+                //TODO: удалить
+                if (mySqlException.Number > 500)
+                    SetResult(context, mySqlException.Message, (HttpStatusCode)500);
+                else
+                    SetResult(context, mySqlException.Message, (HttpStatusCode)mySqlException.Number);
+
+                //SetResult(context, mySqlException.Message, (HttpStatusCode)mySqlException.Number);
                 return;
             }
 

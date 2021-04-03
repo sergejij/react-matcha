@@ -1,0 +1,8 @@
+﻿CREATE FUNCTION random_integer(
+	value_minimum INT, value_maximum INT
+) RETURNS INT
+
+COMMENT 'Gets a random integer between value_minimum and value_maximum, bounds included'
+
+RETURN
+	FLOOR(value_minimum + RAND() * (value_maximum - value_minimum + 1));

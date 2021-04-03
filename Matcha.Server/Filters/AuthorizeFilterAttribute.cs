@@ -14,12 +14,12 @@ namespace Matcha.Server.Filters
         {
             if (BaseMatchaController.TryGetSessionAttributes(context.HttpContext.Request, out long userId, out long sessionId) == false)
             {
-                context.Result = ResponseModel.Unauthorized().ToResult();
+                context.Result = ResponseModel.Unauthorized.ToResult();
                 return;
             }
 
             if (SessionExists(userId, sessionId) == false)
-                context.Result = ResponseModel.Unauthorized().ToResult();
+                context.Result = ResponseModel.Unauthorized.ToResult();
         }
 
         private static bool SessionExists(long userId, long sessionId)

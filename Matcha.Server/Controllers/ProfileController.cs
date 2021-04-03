@@ -118,7 +118,7 @@ namespace Matcha.Server.Controllers
             AccountController.AddConfirmationCode(UserId, emailChangeModel.NewEmail, confirmationCode);
             AccountController.SendConfirmationCode(emailChangeModel.NewEmail, confirmationCode);
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpPut]
@@ -138,7 +138,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpPut]
@@ -158,7 +158,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         #endregion
@@ -171,7 +171,7 @@ namespace Matcha.Server.Controllers
         {
             MediaClient.MediaClient.Image.SaveAvatar(UserId, avatar);
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
@@ -193,7 +193,7 @@ namespace Matcha.Server.Controllers
         {
             MediaClient.MediaClient.Image.SavePhoto(UserId, photo);
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
@@ -257,7 +257,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
@@ -324,7 +324,7 @@ namespace Matcha.Server.Controllers
             if (string.IsNullOrEmpty(errorMessage) == false)
                 return new ResponseModel(HttpStatusCode.Conflict, errorMessage).ToResult();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpPut]
@@ -347,7 +347,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpPatch]
@@ -377,7 +377,7 @@ namespace Matcha.Server.Controllers
 
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         private readonly static Dictionary<string, (string tableName, string columnName, string userDataColumnMane)> FieldToTable = new Dictionary<string, (string, string, string)>
@@ -410,7 +410,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             command.ExecuteNonQuery();
 
-            return ResponseModel.OK().ToResult();
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
