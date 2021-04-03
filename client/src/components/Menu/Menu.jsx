@@ -17,7 +17,10 @@ const Menu = () => {
   const logout = () => {
     userAuthApi
       .logout()
-      .catch((err) => console.error("ERROR logout:", err));
+      .catch((err) => console.error("ERROR logout:", err))
+      .finally(() => {
+          localStorage.clear();
+      });
   }
 
   return (

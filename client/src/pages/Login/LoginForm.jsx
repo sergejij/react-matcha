@@ -23,27 +23,27 @@ export default ({ onClose, onRegister }) => {
     onRegister();
   };
 
-  function sendGeoPosition(position) {
-    const {latitude, longitude} = position.coords;
-
-    userInfoApi
-      .sendLocation(latitude, longitude)
-      .then(
-        () => {
-          console.log("Good");
-        },
-        (err) => {
-          if (err.response.status === 401) {
-            clearInterval(intervalId);
-          }
-        }
-      )
-      .catch((err) => console.error("ERROR sendLocation:", err));
-  }
-
-  function sendErrGeoPosition() {
-    clearInterval(intervalId);
-  }
+  // function sendGeoPosition(position) {
+  //   const {latitude, longitude} = position.coords;
+  //
+  //   userInfoApi
+  //     .sendLocation(latitude, longitude)
+  //     .then(
+  //       () => {
+  //         console.log("Good");
+  //       },
+  //       (err) => {
+  //         if (err.response.status === 401) {
+  //           clearInterval(intervalId);
+  //         }
+  //       }
+  //     )
+  //     .catch((err) => console.error("ERROR sendLocation:", err));
+  // }
+  //
+  // function sendErrGeoPosition() {
+  //   clearInterval(intervalId);
+  // }
 
   const onLogin = () => {
     if (!emailOrLogin || !password) {
@@ -56,13 +56,13 @@ export default ({ onClose, onRegister }) => {
           ({ data }) => {
             const id = data.Content.userId;
             localStorage.setItem('id', id);
-            intervalId = setInterval(() => {
-              navigator.geolocation.getCurrentPosition(
-                sendGeoPosition,
-                sendErrGeoPosition, {
-                  enableHighAccuracy: true,
-                })
-            }, 5000);
+            // intervalId = setInterval(() => {
+            //   navigator.geolocation.getCurrentPosition(
+            //     sendGeoPosition,
+            //     sendErrGeoPosition, {
+            //       enableHighAccuracy: true,
+            //     })
+            // }, 500000);
             setRedirectTo(`/profile/${id}`);
           },
           (err) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Route, useRouteMatch, Switch, useParams, Redirect,
+  Route, useRouteMatch, Switch,
 } from 'react-router-dom';
 
 import { Content } from '../../styled';
@@ -9,11 +9,11 @@ import { SettingsPage } from './UserData/styled';
 import UserData from './UserData/UserData';
 import UserPhotos from './UserPhotos/UserPhotos';
 import UserSecurity from './UserSecurity/UserSecurity';
+import UserActiveSessions from './UserActiveSessions/UserActiveSessions';
 
 export default () => {
   const [activeSetting, setActiveSetting] = React.useState(null);
   const match = useRouteMatch();
-
 
   return (
     <Content>
@@ -28,6 +28,9 @@ export default () => {
           </Route>
           <Route onClick={() => setActiveSetting(2)} path={`${match.path}/user-photos`}>
             <UserPhotos />
+          </Route>
+          <Route onClick={() => setActiveSetting(3)} path={`${match.path}/active-sessions`}>
+            <UserActiveSessions />
           </Route>
         </Switch>
       </SettingsPage>

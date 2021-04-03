@@ -5,9 +5,9 @@ const Button = styled.button`
   display:flex;
   align-items: center;
   justify-content: center;
-  color: ${(props) => (props.view === 'main' ? '#FFF' : COLORS.PINK)};
+  color: ${(props) => (props.view === 'main' ? '#FFF' : props.color === "BLACK" ? "#000" : COLORS.PINK)};
   background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? COLORS.PINK : COLORS.YELLOW) : 'transparent')};
-  border-color: ${(props) => (props.view === 'main' ? 'transparent' : COLORS.PINK)};
+  border-color: ${(props) => (props.view === 'main' ? 'transparent' : props.color === "BLACK" ? "#000" : COLORS.PINK)};
   width: ${(props) => (props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '350px')};
   height: ${(props) => (props.size === 'S' ? '40px' : props.size === 'M' ? '45px' : '55px')};
   font-size: ${(props) => (props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
@@ -20,12 +20,12 @@ const Button = styled.button`
     
   &:hover {
     color: #FFF;
-    background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? '#e0909e' : '#d1d35b') : COLORS.PINK)};
+    background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? '#e0909e' : '#d1d35b') : props.color === "BLACK" ? "#000" : COLORS.PINK)};
     cursor: pointer;
   }
   
   &:active {
-    background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? '#d48794' : '#c9ca5c') : '#e0909e')};
+    background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? '#d48794' : '#c9ca5c') : props.color === "BLACK" ? "#414141" : '#e0909e')};
   }
   
   svg {

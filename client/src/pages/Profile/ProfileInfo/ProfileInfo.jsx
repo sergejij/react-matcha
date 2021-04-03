@@ -7,7 +7,7 @@ import {
   ProfileInfoPairs,
   ProfileInterest,
   ProfileInterestsStyled,
-  UpdateField, UpdateBio, UpdateInterests, ShowBio,
+  UpdateField, UpdateBio, UpdateInterests,
 } from './styled';
 import { IconPencil } from '../../../styled';
 import { userInfoApi, userInterestsApi } from '../../../api/api';
@@ -27,6 +27,7 @@ export const ProfileInterests = ({ interests }) => (
 const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
   const [value, setValue] = React.useState(fieldValue);
   const [fieldEditing, setFieldEditing] = React.useState(false);
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   const changeInfoField = () => {
     setFieldEditing(false);
@@ -34,9 +35,19 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
       .patchUserInfo(fieldKey, value)
       .then(
         () => {},
-        (err) => console.log("ERROR patchUserInfo:", err)
+        (err) => {
+          console.log("ERROR patchUserInfo:", err);
+          if (err.response.status === 401) {
+            setAmIAuthorized(() => false);
+            localStorage.clear();
+          }
+        }
         )
       .catch((err) => console.log("ERROR patchUserInfo:", err))
+  }
+
+  if (!amIAuthorized) {
+    return <Redirect to="/login" />;
   }
 
   return (
@@ -49,7 +60,7 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
           {
             list.map((name, index) =>
               <option
-                value={`${name}`}
+                value={name}
                 key={`${name}${index}`}
               >
                 {name}
@@ -85,6 +96,7 @@ const ProfileInfo = ({ userData }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
         }
       )
@@ -104,6 +116,7 @@ const ProfileInfo = ({ userData }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR getInterests:", err)
         }
@@ -119,6 +132,7 @@ const ProfileInfo = ({ userData }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
         })
       .catch(err => console.log("ERROR getSexesList:", err))
@@ -135,6 +149,7 @@ const ProfileInfo = ({ userData }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
         })
       .catch(err => console.log("ERROR getRelationshipsList:", err))
@@ -154,6 +169,7 @@ const ProfileInfo = ({ userData }) => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR createInterests:", err)
         }

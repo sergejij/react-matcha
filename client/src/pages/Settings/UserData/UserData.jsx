@@ -55,6 +55,7 @@ const SettingsData = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR settings getUserInfo:", err)
         }
@@ -70,6 +71,7 @@ const SettingsData = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR settings putUserInfo:", err)
         }
@@ -83,6 +85,7 @@ const SettingsData = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR settings patchSharingLocation:", err)
         },
@@ -179,6 +182,7 @@ const UserData = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
           console.error("ERROR settings getUserInfo:", err);
         }
@@ -194,6 +198,7 @@ const UserData = () => {
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
+            localStorage.clear();
           }
         }
       )
@@ -217,6 +222,7 @@ const UserData = () => {
             (err) => {
               if (err.response.status === 401) {
                 setAmIAuthorized(() => false);
+                localStorage.clear();
               }
             })
           .catch((err) => console.log("ERROR settings getAvatar:", err))
