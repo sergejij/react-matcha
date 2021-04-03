@@ -4,6 +4,7 @@ using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using server.Response;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Matcha.Server.Controllers
     [ExceptionHandlerFilter]
     public class AccountController : BaseMatchaController
     {
+        #region Регистрация
+
         [HttpPost]
         [Route("register")]
         public IActionResult Register(AccountRegisterModel registerModel)
@@ -33,16 +36,11 @@ namespace Matcha.Server.Controllers
                     new MySqlParameter("name", registerModel.Name),
                     new MySqlParameter("surname", registerModel.Surname),
 
-                    new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.Output },
-                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+                    new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
                 });
 
             connection.Open();
             command.ExecuteNonQuery();
-
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.Conflict, errorMessage).ToResult();
 
             var userId = Convert.ToInt64(command.Parameters["user_id"].Value);
 
@@ -53,28 +51,9 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK().ToResult();
         }
 
-        [HttpPost]
-        [Route("confirm_email")]
-        public IActionResult ConfirmEmail([Required][FromQuery] Guid code)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("ConfirmEmail", connection) { CommandType = CommandType.StoredProcedure };
+        #endregion
 
-            command.Parameters.AddRange(new[]
-            {
-                    new MySqlParameter("code", code.ToString()),
-                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
-                });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.InternalServerError, errorMessage).ToResult();
-
-            return ResponseModel.OK().ToResult();
-        }
+        #region Вход/выход
 
         [HttpPost]
         [Route("login")]
@@ -85,21 +64,15 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                    new MySqlParameter("email", authModel.Email),
-                    new MySqlParameter("password", authModel.Password),
+                new MySqlParameter("email", authModel.Email),
+                new MySqlParameter("password", authModel.Password),
 
-                    new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.Output },
-                    new MySqlParameter("session_id", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
-
-                    new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
-                });
+                new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.Output },
+                new MySqlParameter("session_id", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+            });
 
             connection.Open();
             command.ExecuteNonQuery();
-
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
 
             var userId = command.Parameters["user_id"].Value.ToString();
             var sessionId = command.Parameters["session_id"].Value.ToString();
@@ -134,13 +107,30 @@ namespace Matcha.Server.Controllers
             }
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
-            Response.Cookies.Append(ResponseContentConstants.SessionId, "", cookieExpiredOption);
-            Response.Cookies.Append(ResponseContentConstants.UserId, "", cookieExpiredOption);
+            Response.Cookies.Append(ResponseContentConstants.SessionId, string.Empty, cookieExpiredOption);
+            Response.Cookies.Append(ResponseContentConstants.UserId, string.Empty, cookieExpiredOption);
 
             return ResponseModel.OK().ToResult();
         }
 
-        #region Вспомогательные методы
+        #endregion
+
+        #region Работа с почтой
+
+        [HttpPost]
+        [Route("confirm_email")]
+        public IActionResult ConfirmEmail([Required][FromQuery] Guid code)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("ConfirmEmail", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.Add(new MySqlParameter("code", code.ToString()));
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK().ToResult();
+        }
 
         public static void AddConfirmationCode(long userId, string email, Guid code)
         {
@@ -149,10 +139,10 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                    new MySqlParameter("user_id", userId),
-                    new MySqlParameter("email", email),
-                    new MySqlParameter("code", code.ToString())
-                });
+                new MySqlParameter("user_id", userId),
+                new MySqlParameter("email", email),
+                new MySqlParameter("code", code.ToString())
+            });
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -160,10 +150,10 @@ namespace Matcha.Server.Controllers
 
         public static void SendConfirmationCode(string email, Guid code)
         {
-            var codestr = code.ToString();
+            var codeToStr = code.ToString();
 
-            var body = $"Тык: http://localhost:3000/confirm-email?code={codestr}\nhttps://81.177.141.123:637/confirm_email?code={codestr}";
-            MailClient.MailClient.SendMail(email, "Подтверждение регистрации в Matcha", body);
+            var body = $"Тык: http://localhost:3000/confirm-email?code={codeToStr}\nhttps://81.177.141.123:637/confirm_email?code={codeToStr}";
+            MailClient.MailClient.SendMail(email, "Подтверждение почты для Matcha", body);
         }
 
         #endregion

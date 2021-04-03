@@ -1,8 +1,8 @@
-﻿CREATE FUNCTION ChangeLogin (
+﻿CREATE PROCEDURE ChangeLogin (
 	user_id BIGINT,
 	new_login VARCHAR(128),
 	password VARCHAR(128)
-) RETURNS VARCHAR(256)
+)
 
 BEGIN
 
@@ -13,7 +13,7 @@ BEGIN
 
 	IF EXISTS(SELECT login FROM user_data WHERE user_data.login = new_login)
 	THEN
-		RETURN 'Указанный логин уже используется';
+		SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 422, MESSAGE_TEXT = 'Указанный логин уже используется';
 	END IF;
 
 	SET salt_bin = (SELECT user_data.salt FROM user_data WHERE user_data.id = user_id);
@@ -27,10 +27,8 @@ BEGIN
 		UPDATE user_data
 		SET user_data.login = new_login
 		WHERE user_data.id = user_id;
-
-		RETURN NULL;
 	ELSE
-		RETURN 'Неверный пароль';
+		SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 401, MESSAGE_TEXT = 'Неверный пароль';
 	END IF;
 
 END

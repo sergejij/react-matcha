@@ -4,7 +4,6 @@
 
 BEGIN
 
-	RETURN EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
-	    OR EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email);
+	RETURN EXISTS(SELECT * FROM user_data WHERE user_data.email = email);
 
 END

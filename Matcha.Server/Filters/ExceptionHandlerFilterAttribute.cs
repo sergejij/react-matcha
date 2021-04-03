@@ -15,7 +15,7 @@ namespace Matcha.Server.Filters
             var mySqlException = context.Exception as MySqlException;
             if (mySqlException is not null)
             {
-                SetResult(context, "Необработанная ошибка базы данных", HttpStatusCode.InternalServerError);
+                SetResult(context, mySqlException.Message, (HttpStatusCode)mySqlException.Number);
                 return;
             }
 

@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matcha.Server.Models.Profile
 {
     public sealed record PhotoUploadModel
     {
-        public int PhotoId { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public int Id { get; set; }
 
-        public IFormFile Content { get; set; }
+        [Required]
+        public IFormFile Photo { get; set; }
     }
 }

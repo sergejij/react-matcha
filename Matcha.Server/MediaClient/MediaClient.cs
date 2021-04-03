@@ -89,11 +89,11 @@ namespace Matcha.Server.MediaClient
                 if (Directory.Exists(path) == false)
                     Directory.CreateDirectory(path);
 
-                var fullName = Path.Combine(path, photoModel.PhotoId.ToString());
+                var fullName = Path.Combine(path, photoModel.Id.ToString());
 
                 using (var fs = new FileStream(fullName, FileMode.Create))
                 {
-                    photoModel.Content.CopyTo(fs);
+                    photoModel.Photo.CopyTo(fs);
                 }
             }
 

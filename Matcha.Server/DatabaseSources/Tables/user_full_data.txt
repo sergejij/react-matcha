@@ -10,8 +10,7 @@
     post VARCHAR(128),
     sex INT,
     sex_preference INT,
-    biography TEXT,
-    share_location BIT NOT NULL DEFAULT 1,
+    biography TEXT
 
 
     PRIMARY KEY(id),

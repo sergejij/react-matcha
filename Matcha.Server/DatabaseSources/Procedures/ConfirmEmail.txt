@@ -1,6 +1,6 @@
-﻿CREATE FUNCTION ConfirmEmail(
+﻿CREATE PROCEDURE ConfirmEmail(
     code VARCHAR(36)
-) RETURNS VARCHAR(256)
+)
 
 BEGIN
     
@@ -15,10 +15,8 @@ BEGIN
         WHERE id = (SELECT user_id FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin);
 
         DELETE FROM emails_for_confirm WHERE emails_for_confirm.confirmation_code = code_bin;
-
-        RETURN NULL;
     ELSE
-        RETURN 'Ссылка недействительна';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 422, MESSAGE_TEXT = 'Ссылка недействительна';
     END IF;
 
 END

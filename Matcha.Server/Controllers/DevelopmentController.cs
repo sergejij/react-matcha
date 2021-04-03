@@ -83,56 +83,25 @@ namespace Matcha.Server.Controllers
             }
             catch { }
 
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpGet]
-        [Route("img")]
-        public IActionResult Img()
-        {
-            string file_path = @"C:\Users\user\Desktop\jpgs\s.jpg";
-            var bytes = System.IO.File.ReadAllBytes(file_path);
-
-            var model = new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-            {
-                { "img", bytes }
-            });
-
-            return model.ToResult();
+            return ClearPhotos();
         }
 
         [HttpGet]
         [Route("test")]
         public void TestEx()
         {
-            throw new Exception("exception");
+            GeolocationManager.GeolocationManager.DetermineRequestLocation(Request);
         }
 
         [HttpGet]
-        [Route("check_session")]
-        [AuthorizeFilter]
-        public IActionResult SessionCheck()
+        [Route("a")]
+        public void Test()
         {
-            return ResponseModel.OK().ToResult();
-        }
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("call test();", connection);
 
-        [HttpPost]
-        [Route("upload_img")]
-        public IActionResult UploadPhoto()
-        {
-            var dir = @"C:\Users\user\Desktop\jpgs";
-
-            foreach (var file in Request.Form.Files)
-            {
-                var filePath = Path.Combine(dir, file.FileName);
-
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                }
-            }
-
-            return ResponseModel.OK().ToResult();
+            connection.Open();
+            command.ExecuteNonQuery();
         }
 
         [HttpGet]

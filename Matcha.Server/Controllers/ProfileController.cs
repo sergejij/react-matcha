@@ -19,7 +19,7 @@ namespace Matcha.Server.Controllers
     [ExceptionHandlerFilter]
     public class ProfileController : BaseMatchaController
     {
-        #region Получение информации
+        #region Получение выпадающих списков
     
         [HttpGet]
         [Route("attitudes_list")]
@@ -55,6 +55,7 @@ namespace Matcha.Server.Controllers
             using var reader = command.ExecuteReader();
 
             var sexes = new HashSet<string>();
+
             while (reader.Read())
                 sexes.Add(reader.GetString(0));
 
@@ -77,6 +78,7 @@ namespace Matcha.Server.Controllers
             using var reader = command.ExecuteReader();
 
             var statuses = new HashSet<string>();
+
             while (reader.Read())
                 statuses.Add(reader.GetString(0));
 
@@ -86,67 +88,6 @@ namespace Matcha.Server.Controllers
                                          { "relationshipsStatuses", statuses }
                                      })
                 .ToResult();
-        }
-
-        #endregion
-
-        #region Уведомления
-
-        [HttpPost]
-        [Route("visit_notification")]
-        public IActionResult ProfileVisitEvent([FromQuery][Required] long visitedProfileId)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("AddProfileVisiter", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("visiter_id", UserId),
-                new MySqlParameter("visited_id", visitedProfileId)
-            });
-
-            connection.Open();
-            using var reader = command.ExecuteReader();
-
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpPost]
-        [Route("like_notification")]
-        public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            connection.Open();
-
-            using (var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure })
-            {
-                command.Parameters.AddRange(new[]
-                {
-                    new MySqlParameter("liker_id", UserId),
-                    new MySqlParameter("liked_id", likedProfileId)
-                });
-
-                command.ExecuteNonQuery();
-            }
-
-            using (var command = new MySqlCommand("IsLikesMutuals", connection) { CommandType = CommandType.StoredProcedure })
-            {
-                command.Parameters.AddRange(new[]
-                {
-                    new MySqlParameter("first_id", UserId),
-                    new MySqlParameter("second_id", likedProfileId),
-
-                    new MySqlParameter("mutual", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
-                });
-
-                command.ExecuteNonQuery();
-
-                return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                                  {
-                                                                      { "mutual", Convert.ToBoolean(command.Parameters["mutual"].Value) }
-                                                                  })
-                    .ToResult();
-            }
         }
 
         #endregion
@@ -191,17 +132,11 @@ namespace Matcha.Server.Controllers
             {
                 new MySqlParameter("user_id", UserId),
                 new MySqlParameter("current_password", passwordModel.CurrentPassword),
-                new MySqlParameter("new_password", passwordModel.NewPassword),
-
-                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+                new MySqlParameter("new_password", passwordModel.NewPassword)
             });
 
             connection.Open();
             command.ExecuteNonQuery();
-
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
 
             return ResponseModel.OK().ToResult();
         }
@@ -217,17 +152,11 @@ namespace Matcha.Server.Controllers
             {
                 new MySqlParameter("user_id", UserId),
                 new MySqlParameter("new_login", loginModel.NewLogin),
-                new MySqlParameter("password", loginModel.Password),
-
-                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+                new MySqlParameter("password", loginModel.Password)
             });
 
             connection.Open();
             command.ExecuteNonQuery();
-
-            var errorMessage = command.Parameters["error_message"].Value.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.Unauthorized, errorMessage).ToResult();
 
             return ResponseModel.OK().ToResult();
         }
@@ -237,7 +166,7 @@ namespace Matcha.Server.Controllers
         #region Работа с фото
 
         [HttpPut]
-        [Route("upload_avatar")]
+        [Route("avatar")]
         public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
         {
             MediaClient.MediaClient.Image.SaveAvatar(UserId, avatar);
@@ -246,7 +175,7 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpGet]
-        [Route("get_avatar")]
+        [Route("avatar")]
         public IActionResult GetAvatar([FromQuery] long? userId)
         {
             var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId.HasValue ? userId.Value : UserId);
@@ -258,8 +187,8 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
-        [HttpPost]
-        [Route("upload_photo")]
+        [HttpPut]
+        [Route("photo")]
         public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
         {
             MediaClient.MediaClient.Image.SavePhoto(UserId, photo);
@@ -268,7 +197,7 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpGet]
-        [Route("get_photos")]
+        [Route("photos")]
         public IActionResult GetPhotos([FromQuery] long? userId)
         {
             var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId.HasValue ? userId.Value : UserId);
@@ -340,16 +269,11 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId),
-                new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId)
             });
 
             connection.Open();
             using var reader = command.ExecuteReader();
-
-            var errorMessage = command.Parameters["error_message"].Value?.ToString();
-            if (string.IsNullOrEmpty(errorMessage) == false)
-                return new ResponseModel(HttpStatusCode.NoContent, "Пользователь с таким ID не найден").ToResult();
 
             reader.Read();
             var fields = new Dictionary<string, object>
@@ -364,8 +288,7 @@ namespace Matcha.Server.Controllers
                 { "post", reader.StringOrEmpty("post") },
                 { "sex", reader.StringOrEmpty("sex") },
                 { "sexPreference", reader.StringOrEmpty("sex_preference") },
-                { "biography", reader.StringOrEmpty("biography") },
-                { "shareLocation", Convert.ToBoolean(reader["share_location"]) }
+                { "biography", reader.StringOrEmpty("biography") }
             };
 
             return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
@@ -434,9 +357,11 @@ namespace Matcha.Server.Controllers
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             connection.Open();
 
-            var table = FieldToTable[statusUpdateModel.Field].tableName;
-            var tableCol = FieldToTable[statusUpdateModel.Field].columnName;
-            var userDataCol = FieldToTable[statusUpdateModel.Field].userDataColumnMane;
+            var unit = FieldToTable[statusUpdateModel.Field];
+
+            var table = unit.tableName;
+            var tableCol = unit.columnName;
+            var userDataCol = unit.userDataColumnMane;
 
             using var command = connection.CreateCommand();
             command.CommandText = $"IF NOT EXISTS(SELECT * FROM {table} WHERE {table}.{tableCol} = '{statusUpdateModel.Status}')\n" +
@@ -518,44 +443,5 @@ namespace Matcha.Server.Controllers
         }
 
         #endregion
-
-        [HttpPatch]
-        [Route("location_sharing_status")]
-        public IActionResult ChangeLocationSharingStatus(LocationSharingStatusModel locationSharing)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("ChangeLocationSharingStatus", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", UserId),
-                new MySqlParameter("share", locationSharing.Status)
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            return ResponseModel.OK().ToResult();
-        }
-
-        [HttpPut]
-        [Route("coordinates")]
-        public IActionResult UpdateCoordinates(UpdateCoordinatesModel newCoordinates)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("UpdateSessionGeolocation", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("session_id", SessionId),
-                new MySqlParameter("longitude", newCoordinates.Longitude),
-                new MySqlParameter("latitude", newCoordinates.Latitude),
-            });
-
-            connection.Open();
-            command.ExecuteNonQuery();
-
-            return ResponseModel.OK().ToResult();
-        }
     }
 }

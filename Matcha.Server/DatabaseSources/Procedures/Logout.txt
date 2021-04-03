@@ -5,5 +5,4 @@
 
 BEGIN
     DELETE FROM sessions WHERE sessions.session_id = session_id AND sessions.user_id = user_id;
-    DELETE FROM sessions_geolocations WHERE sessions_geolocations.session_id = session_id;
 END

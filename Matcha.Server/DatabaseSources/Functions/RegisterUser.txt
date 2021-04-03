@@ -1,26 +1,24 @@
-﻿CREATE PROCEDURE RegisterUser (
+﻿CREATE FUNCTION RegisterUser (
     login VARCHAR(128),
     email VARCHAR(128),
     password VARCHAR(128),
     name NVARCHAR(128),
-    surname NVARCHAR(128),
-
-    OUT user_id BIGINT,
-    OUT error_message VARCHAR(256)
-)
+    surname NVARCHAR(128)
+) RETURNS BIGINT
 
 BEGIN
 
+    DECLARE user_id BIGINT;
     DECLARE password_hash BINARY(64);
     DECLARE salt CHAR(36);
 
     IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
     OR EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email)
     THEN
-        SET error_message = 'Пользователь с таким email уже зарегистрирован';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 409, MESSAGE_TEXT = 'Пользователь с таким email уже зарегистрирован';
     ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = login)
     THEN
-        SET error_message = 'Пользователь с таким логином уже зарегистрирован';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 409, MESSAGE_TEXT = 'Пользователь с таким логином уже зарегистрирован';
     ELSE
         SET salt = UUID();
         SET password_hash = HASH_PASSWORD(CONCAT(password, salt));
@@ -31,7 +29,7 @@ BEGIN
             login, password_hash, UUID_TO_BIN(salt)
         );
 
-        SET user_id = (SELECT id FROM user_data WHERE user_data.login = login);
+        SET user_id = LAST_INSERT_ID();
 
         INSERT INTO user_full_data (
             id, name, surname
@@ -39,7 +37,7 @@ BEGIN
             user_id, name, surname
         );
 
-        SET error_message = NULL;
+        RETURN user_id;
     END IF;
 
 END

@@ -3,9 +3,7 @@
     password VARCHAR(128),
 
     OUT user_id BIGINT,
-    OUT session_id BIGINT,
-
-    OUT error_message VARCHAR(256)
+    OUT session_id BIGINT
 )
 
 BEGIN
@@ -16,7 +14,7 @@ BEGIN
 
     IF ((SELECT email FROM user_data WHERE user_data.login = login) IS NULL)
     THEN
-        SET error_message = 'Email не подтвержден';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 401, MESSAGE_TEXT = 'Email не подтвержден';
     ELSE
         SET salt = (SELECT user_data.salt FROM user_data WHERE user_data.login = login);
         SET salted_password = CONCAT(password, (SELECT UUID_FROM_BIN(salt)));
@@ -31,7 +29,7 @@ BEGIN
 
             SET session_id = LAST_INSERT_ID();
         ELSE
-            SET error_message = 'Неверный пароль';
+            SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 401, MESSAGE_TEXT = 'Неверный пароль';
         END IF;        
     END IF;
 

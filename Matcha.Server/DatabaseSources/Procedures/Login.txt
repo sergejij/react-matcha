@@ -3,34 +3,22 @@
     password VARCHAR(128),
 
     OUT user_id BIGINT,
-    OUT session_id BIGINT,
-
-    OUT error_message VARCHAR(256)
+    OUT session_id BIGINT
 )
 
 BEGIN
 
     IF EXISTS(SELECT * FROM user_data WHERE user_data.email = email)
     THEN
-        call LoginByEmail(email, password, user_id, session_id, error_message);
-
-        INSERT
-        INTO sessions_geolocations (sessions_geolocations.session_id, sessions_geolocations.longitude, sessions_geolocations.latitude)
-        VALUES (session_id, 0, 0);
-
+        call LoginByEmail(email, password, user_id, session_id);
     ELSEIF EXISTS(SELECT * FROM user_data WHERE user_data.login = email)
     THEN
-        call LoginByLogin(email, password, user_id, session_id, error_message);
-
-        INSERT
-        INTO sessions_geolocations (sessions_geolocations.session_id, sessions_geolocations.longitude, sessions_geolocations.latitude)
-        VALUES (session_id, 0, 0);
-
+        call LoginByLogin(email, password, user_id, session_id);
     ELSEIF EXISTS(SELECT * FROM emails_for_confirm WHERE emails_for_confirm.email = email)
     THEN
-        SET error_message = 'Email не подтвержден';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 401, MESSAGE_TEXT = 'Email не подтвержден';
     ELSE
-        SET error_message = 'Пользователь с таким email/login не найден';
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 404, MESSAGE_TEXT = 'Пользователь с таким email/login не найден';
     END IF;
 
 END
