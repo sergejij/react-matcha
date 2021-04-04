@@ -18,13 +18,13 @@ namespace Matcha.Server.Controllers
     {
         [HttpGet]
         [Route("list")]
-        public IActionResult GetUsersList([Required][FromQuery] int skip, [Required][FromQuery] int take)
+        public IActionResult GetUsersList([Required][FromQuery] int page, [Required][FromQuery] int size)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetUsersList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
 
-            command.Parameters.Add(new MySqlParameter("skip", skip));
-            command.Parameters.Add(new MySqlParameter("take", take));
+            command.Parameters.Add(new MySqlParameter("skip", page));
+            command.Parameters.Add(new MySqlParameter("take", size));
 
             connection.Open();
             using var reader = command.ExecuteReader();
