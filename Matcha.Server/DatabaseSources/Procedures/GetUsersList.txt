@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE GetUsersList(
-	skip INT,
-	take INT
+	page INT,
+	size INT
 )
 
 BEGIN
@@ -30,6 +30,6 @@ BEGIN
     LEFT JOIN
         attitudes AS a2 ON data.attitude_to_alcohol = a2.id
     ORDER BY data.id
-    LIMIT take OFFSET skip;
+    LIMIT size OFFSET size * page;
 
 END
