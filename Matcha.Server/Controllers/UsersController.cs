@@ -18,7 +18,7 @@ namespace Matcha.Server.Controllers
     {
         [HttpGet]
         [Route("list")]
-        public IActionResult GetUsersList([Required][FromQuery] int skip, int take)
+        public IActionResult GetUsersList([Required][FromQuery] int skip, [Required][FromQuery] int take)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetUsersList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
