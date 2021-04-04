@@ -10,8 +10,8 @@
     post VARCHAR(128),
     sex INT,
     sex_preference INT,
-    biography TEXT
-
+    biography TEXT,
+    rating INT NOT NULL DEFAULT 0,
 
     PRIMARY KEY(id),
     FOREIGN KEY(id) REFERENCES user_data(id),

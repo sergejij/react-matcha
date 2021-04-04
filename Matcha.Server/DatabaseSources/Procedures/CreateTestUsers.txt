@@ -49,7 +49,8 @@ BEGIN
 			sex_preference,
 			relationship_status,
 			attitude_to_alcohol,
-			attitude_to_smoking
+			attitude_to_smoking,
+			rating
 		) VALUES (
 			LAST_INSERT_ID(),
 			CONCAT('name', suffix),
@@ -62,7 +63,8 @@ BEGIN
 			random_integer(1, sexes_count),
 			random_integer(1, relationship_statuses_count),
 			random_integer(1, attitudes_count),
-			random_integer(1, attitudes_count)
+			random_integer(1, attitudes_count),
+			random_integer(1, 1000)
 		);
 
 		SET user_id = LAST_INSERT_ID();

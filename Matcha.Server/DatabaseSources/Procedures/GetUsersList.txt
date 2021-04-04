@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE GetUsersList(
-	page INT,
-	size INT
+	take INT,
+	skip INT,
+    order_by VARCHAR(32)
 )
 
 BEGIN
@@ -12,6 +13,7 @@ BEGIN
         data.age,
         data.post,
         data.biography,
+        data.rating,
         s1.sex as sex,
         s2.sex as sex_preference,
         rel.status as  relationship_status,
@@ -29,7 +31,9 @@ BEGIN
         attitudes AS a1 ON data.attitude_to_smoking = a1.id
     LEFT JOIN
         attitudes AS a2 ON data.attitude_to_alcohol = a2.id
-    ORDER BY data.id
-    LIMIT size OFFSET size * page;
-
+    ORDER BY
+        CASE WHEN order_by = 'id'  THEN data.id  END,
+        CASE WHEN order_by = 'age' THEN -data.age END DESC,
+        CASE WHEN order_by = 'rating' THEN data.rating END DESC
+    LIMIT take OFFSET skip;
 END
