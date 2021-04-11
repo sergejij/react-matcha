@@ -11,24 +11,49 @@ namespace Matcha.Server.Models.Users
         [Required]
         public int Size { get; set; }
 
-        public string OrderBy { get; set; }
+        private string OrderByStr { get; set; }
+
+        public OrderMethodsEnum OrderBy { get; set; }
+
+        public int? minAge { get; set; }
+
+        public int? maxAge { get; set; }
+
+        #region Валидация модели
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (OrderBy is null)
-                OrderBy = "id";
+            if (OrderByStr is null)
+                OrderByStr = "id";
 
-            if (KnownOrderMethods.Contains(OrderBy) is false)
-                yield return new ValidationResult($"Неизвестный вид сортировки: {OrderBy}. Поддерживаемые виды: {string.Join(',', KnownOrderMethods)}");
+            if (KnownOrderMethodsStrings.ContainsKey(OrderByStr) is false)
+                yield return new ValidationResult($"Неизвестный тип сортировки: {OrderByStr}. Поддерживаемые сортировки: {string.Join(',', KnownOrderMethodsStrings.Values)}");
+
+            OrderBy = KnownOrderMethodsStrings[OrderByStr];
         }
 
-        public static HashSet<string> KnownOrderMethods = new HashSet<string>
+        #endregion
+
+        #region Вспомогательные структуры
+
+        public enum OrderMethodsEnum
         {
-            "id",
-            "age",
-            //"location",
-            "rating",
-            //"common_tags"
+            Id,
+            Age,
+            Distance,
+            Rating,
+            CommonTags
+        }
+
+        private readonly Dictionary<string, OrderMethodsEnum> KnownOrderMethodsStrings = new()
+        {
+            { "id", OrderMethodsEnum.Id },
+            { "age", OrderMethodsEnum.Age },
+            { "distance", OrderMethodsEnum.Distance },
+            { "rating", OrderMethodsEnum.Rating },
+            { "commonTags", OrderMethodsEnum.CommonTags }
         };
+
+        #endregion
     }
 }

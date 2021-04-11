@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE UpdateSessionGeolocation (
+﻿CREATE PROCEDURE UpdateSessionGeoposition (
 	session_id BIGINT,
 	longitude DOUBLE,
 	latitude DOUBLE
@@ -6,10 +6,10 @@
 
 BEGIN
 
-	UPDATE sessions_geolocations
+	UPDATE sessions_geopositions
 	SET
-		sessions_geolocations.longitude = longitude,
-		sessions_geolocations.latitude = latitude
-	WHERE sessions_geolocations.session_id = session_id;
+		sessions_geopositions.current_longitude = longitude,
+		sessions_geopositions.current_latitude = latitude
+	WHERE sessions_geopositions.session_id = session_id;
 
 END

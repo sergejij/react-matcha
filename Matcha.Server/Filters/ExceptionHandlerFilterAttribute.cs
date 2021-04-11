@@ -25,7 +25,7 @@ namespace Matcha.Server.Filters
                 return;
             }
 
-            SetResult(context, "Необработанная ошибка сервера", HttpStatusCode.InternalServerError);
+            SetResult(context, $"Необработанная ошибка сервера: {mySqlException.Message}", HttpStatusCode.InternalServerError);
         }
 
         private static void SetResult(ExceptionContext context, string message, HttpStatusCode code)

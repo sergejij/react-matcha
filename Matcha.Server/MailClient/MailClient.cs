@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Matcha.Server.MailClient
 {
     public static class MailClient
     {
-        public static void SendMail(in string to, in string subject, in string body)
+        public static async Task SendMailAsync(string to, string subject, string body)
         {
             using var mail = new MailMessage()
             {
@@ -26,7 +26,7 @@ namespace Matcha.Server.MailClient
                 DeliveryMethod = SmtpDeliveryMethod.Network
             };
 
-            client.Send(mail);
+            await client.SendMailAsync(mail);
         }
     }
 }

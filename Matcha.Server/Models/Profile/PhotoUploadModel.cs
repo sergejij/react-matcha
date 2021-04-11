@@ -5,7 +5,7 @@ namespace Matcha.Server.Models.Profile
 {
     public sealed record PhotoUploadModel
     {
-        [Required(AllowEmptyStrings = false)]
+        [Required]
         public int Id { get; set; }
 
         [Required]

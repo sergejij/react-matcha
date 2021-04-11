@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Matcha.Server.MediaClient
 {
@@ -28,6 +29,8 @@ namespace Matcha.Server.MediaClient
                 if (Directory.Exists(BaseDir) == false)
                     Directory.CreateDirectory(BaseDir);
             }
+
+            #region Получение
 
             public static byte[] GetAvatarBytes(long userId)
             {
@@ -64,6 +67,8 @@ namespace Matcha.Server.MediaClient
 
                 return photos;
             }
+
+            #endregion
 
             #region Сохранение
 

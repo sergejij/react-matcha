@@ -5,19 +5,20 @@ namespace Matcha.Server.Models.Account
 {
     public sealed class AccountRegisterModel
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
+        [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Login { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Password { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Surname { get; set; }
     }
 }

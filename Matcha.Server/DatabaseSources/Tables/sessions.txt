@@ -1,6 +1,8 @@
 ﻿CREATE TABLE sessions (
     session_id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
+    longitude DOUBLE,
+	latitude DOUBLE,
 
     PRIMARY KEY(session_id),
     FOREIGN KEY(user_id) REFERENCES user_data(id)

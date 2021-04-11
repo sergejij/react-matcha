@@ -1,0 +1,18 @@
+﻿CREATE PROCEDURE InitializeSessionGeoposition (
+	session_id BIGINT,
+	country VARCHAR(128),
+	city VARCHAR(128),
+	longitude DOUBLE,
+	latitude DOUBLE
+)
+
+BEGIN
+	UPDATE sessions_geopositions
+	SET
+		sessions_geopositions.country = country,
+		sessions_geopositions.city = city,
+		sessions_geopositions.initial_longitude = longitude,
+		sessions_geopositions.initial_latitude = latitude
+	WHERE
+		sessions_geopositions.session_id = session_id;
+END
