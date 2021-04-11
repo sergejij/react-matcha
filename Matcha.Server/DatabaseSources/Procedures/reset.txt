@@ -8,7 +8,6 @@ BEGIN
     TRUNCATE user_full_data;
     TRUNCATE emails_for_confirm;
     TRUNCATE sessions;
-    TRUNCATE sessions_geolocations;
     TRUNCATE visits;
     TRUNCATE interests_list;
     TRUNCATE users_interests;

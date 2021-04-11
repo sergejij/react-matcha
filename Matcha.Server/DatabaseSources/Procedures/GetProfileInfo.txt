@@ -20,15 +20,15 @@ BEGIN
             a2.attitude as attitude_to_alcohol
         FROM
             user_full_data AS data
-        JOIN
+        LEFT JOIN
             sexes AS s1 ON data.sex = s1.id
-        JOIN
+        LEFT JOIN
             sexes AS s2 ON data.sex_preference = s2.id
-        JOIN
+        LEFT JOIN
             relationship_statuses AS rel ON data.relationship_status = rel.id
-        JOIN
+        LEFT JOIN
             attitudes AS a1 ON data.attitude_to_smoking = a1.id
-        JOIN
+        LEFT JOIN
             attitudes AS a2 ON data.attitude_to_alcohol = a2.id
         WHERE
             data.id = user_id;

@@ -14,6 +14,8 @@
 
         public string Biography { get; set; }
 
+        public string Rating { get; set; }
+
         public string Post { get; set; }
 
         public string Location { get; set; }

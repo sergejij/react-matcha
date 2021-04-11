@@ -1,6 +1,7 @@
 ﻿using Matcha.Server.Extensions;
 using Matcha.Server.Filters;
 using Matcha.Server.Models.Profile;
+using Matcha.Server.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
@@ -18,13 +19,17 @@ namespace Matcha.Server.Controllers
     {
         [HttpGet]
         [Route("list")]
-        public IActionResult GetUsersList([Required][FromQuery] int skip, int take)
+        public IActionResult GetUsersList([Required][FromQuery] SortParametersModel sortParameters)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetUsersList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
 
-            command.Parameters.Add(new MySqlParameter("skip", skip));
-            command.Parameters.Add(new MySqlParameter("take", take));
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("take", sortParameters.Size),
+                new MySqlParameter("skip", (sortParameters.Page - 1) * sortParameters.Size),
+                new MySqlParameter("order_by", sortParameters.OrderBy)
+            });
 
             connection.Open();
             using var reader = command.ExecuteReader();
@@ -45,7 +50,8 @@ namespace Matcha.Server.Controllers
                     Post = reader.StringOrEmpty("post"),
                     Sex = reader.StringOrEmpty("sex"),
                     SexPreference = reader.StringOrEmpty("sex_preference"),
-                    Biography = reader.StringOrEmpty("biography")
+                    Biography = reader.StringOrEmpty("biography"),
+                    Rating = reader.StringOrEmpty("rating")
                 });
             };
 
