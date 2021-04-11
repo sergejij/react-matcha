@@ -8,6 +8,18 @@ const instance = axios.create({
     },
 });
 
+export const usersApi = {
+  createUsers(amount) {
+    return instance.post(`/dev/test_users?amount=${amount}`);
+  },
+
+  getUsers(page, size) {
+    return instance.get(`/users/list?page=${page}&size=${size}`);
+  },
+
+}
+
+
 export const userInfoApi = {
   getUserInfo(id) {
     return instance.get(`/profile/info?userId=${id}`);
@@ -83,33 +95,33 @@ export const userInterestsApi = {
 
 export const userPhotosApi = {
   getAvatar() {
-    return instance.get(`/profile/get_avatar`);
+    return instance.get(`/profile/avatar`);
   },
 
   postAvatar(formData) {
-    return instance.post(`/profile/upload_avatar`, formData, {
+    return instance.post(`/profile/avatar`, formData, {
       'Content-Type': `multipart/form-data;`,
     });
   },
 
   putAvatar(formData) {
-    return instance.put(`/profile/upload_avatar`, formData, {
+    return instance.put(`/profile/avatar`, formData, {
       'Content-Type': `multipart/form-data;`,
     });
   },
 
   getPhotos() {
-    return instance.get(`/profile/get_photos`);
+    return instance.get(`/profile/photos`);
   },
 
   postPhotos(formData) {
-    return instance.post(`/profile/upload_photo`, formData, {
+    return instance.put(`/profile/photo`, formData, {
       'Content-Type': `multipart/form-data;`
     });
   },
 
   putProfilePhoto(formData) {
-    return instance.put(`/profile/upload_photo`, formData, {
+    return instance.put(`/profile/photo`, formData, {
       'Content-Type': `multipart/form-data;`
     });
   },
@@ -167,21 +179,21 @@ export const usersAPI = {
 
 
   getProfileAvatar() {
-    return instance.get(`/profile/get_avatar`);
+    return instance.get(`/profile/avatar`);
   },
 
   getProfilePhotos() {
-    return instance.get(`/profile/get_photos`);
+    return instance.get(`/profile/photos`);
   },
 
   uploadProfileAvatar(formData) {
-    return instance.put(`/profile/upload_avatar`, formData, {
+    return instance.put(`/profile/avatar`, formData, {
       'Content-Type': `multipart/form-data;`,
     });
   },
 
   uploadProfilePhoto(formData) {
-    return instance.post(`/profile/upload_photo`, formData, {
+    return instance.put(`/profile/photo`, formData, {
       'Content-Type': `multipart/form-data;`
     });
   },

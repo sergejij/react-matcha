@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import {
   AddPhotoStyled, UserPhotoChange, UserPhotoRow, UserPhotosStyled,
 } from './styled';
-import { usersAPI } from '../../../api/api';
+import {usersAPI as userPhotosApi, usersAPI} from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
 const CropPhoto = (photo) => {
@@ -23,10 +23,10 @@ const AddPhoto = ({ photoId, setIsUpdated }) => {
     CropPhoto(file);
 
     console.log("photoId:", id);
-    formData.append('content', file);
-    formData.append('photoId', id);
+    formData.append('photo', file);
+    formData.append('id', id);
 
-    usersAPI.uploadProfilePhoto(formData)
+      userPhotosApi.uploadProfilePhoto(formData)
       .then(
         (data) => {
           console.log("DATA upload photo:", data);

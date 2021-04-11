@@ -26,6 +26,7 @@ const ProfileHeader = ({ userData, id }) => {
             setUserAvatar('data:image/bmp;base64,' + data.data.Content.avatar);
         },
         (err) => {
+          console.log("ERR:",err.response);
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
             localStorage.clear();
