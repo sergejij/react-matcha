@@ -79,7 +79,6 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
     return <Redirect to="/login" />;
   }
 
-  console.log("sex:", sex);
   return (
       <>
         <h2>Добавьте информацию о себе</h2>
