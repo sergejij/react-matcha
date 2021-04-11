@@ -24,54 +24,29 @@ BEGIN
 		WHERE user_full_data.id = user_id;
 
 		IF (rel_status IS NOT NULL) THEN
-			IF NOT EXISTS(SELECT * FROM relationship_statuses WHERE relationship_statuses.status = rel_status)
-			THEN
-				INSERT INTO relationship_statuses (status) VALUES (rel_status);
-			END IF;
-
 			UPDATE user_full_data
 			SET user_full_data.relationship_status = (SELECT id FROM relationship_statuses where relationship_statuses.status = rel_status)
 			WHERE user_full_data.id = user_id;
 		END IF;
 
 		IF (alcohol_attitude IS NOT NULL) THEN
-			IF NOT EXISTS(SELECT * FROM attitudes WHERE attitudes.attitude = alcohol_attitude)
-			THEN
-				INSERT INTO attitudes (attitude) VALUES (alcohol_attitude);
-			END IF;
-
 			UPDATE user_full_data
 			SET user_full_data.attitude_to_alcohol = (SELECT id FROM attitudes where attitudes.attitude = alcohol_attitude)
 			WHERE user_full_data.id = user_id;
 		END IF;
 
 		IF (smoking_attitude IS NOT NULL) THEN
-			IF NOT EXISTS(SELECT * FROM attitudes WHERE attitudes.attitude = smoking_attitude)
-			THEN
-				INSERT INTO attitudes (attitude) VALUES (smoking_attitude);
-			END IF;
-
 			UPDATE user_full_data
 			SET user_full_data.attitude_to_smoking = (SELECT id FROM attitudes where attitudes.attitude = smoking_attitude)
 			WHERE user_full_data.id = user_id;
 		END IF;
 
 		IF (sex IS NOT NULL) THEN
-			IF NOT EXISTS(SELECT * FROM sexes WHERE sexes.sex = sex)
-			THEN
-				INSERT INTO sexes (sex) VALUES (sex);
-			END IF;
-
 			UPDATE user_full_data
 			SET user_full_data.sex = (SELECT id FROM sexes where sexes.sex = sex);
 		END IF;
 
 		IF (sex_preference IS NOT NULL) THEN
-			IF NOT EXISTS(SELECT * FROM sexes WHERE sexes.sex = sex_preference)
-			THEN
-				INSERT INTO sexes (sex) VALUES (sex_preference);
-			END IF;
-
 			UPDATE user_full_data
 			SET user_full_data.sex_preference = (SELECT id FROM sexes where sexes.sex = sex_preference)
 			WHERE user_full_data.id = user_id;

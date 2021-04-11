@@ -1,13 +1,12 @@
-﻿using Matcha.Server.Extensions;
-using Matcha.Server.Filters;
+﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Profile;
 using Matcha.Server.Models.Users;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
-using server.Response;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
+using System.Linq;
+using System.Threading.Tasks;
+using static Matcha.Server.Models.Users.SortParametersModel;
 
 namespace Matcha.Server.Controllers
 {
@@ -19,47 +18,45 @@ namespace Matcha.Server.Controllers
     {
         [HttpGet]
         [Route("list")]
-        public IActionResult GetUsersList([Required][FromQuery] SortParametersModel sortParameters)
+        public async Task<IActionResult> GetUsersList([Required][FromQuery] SortParametersModel sortParameters)
         {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("GetUsersList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
+            var skip = (sortParameters.Page - 1) * sortParameters.Size;
+            var take = sortParameters.Size;
 
-            command.Parameters.AddRange(new[]
+            IEnumerable<ProfileInfoModel> usersList;
+            
+            switch (sortParameters.OrderBy)
             {
-                new MySqlParameter("take", sortParameters.Size),
-                new MySqlParameter("skip", (sortParameters.Page - 1) * sortParameters.Size),
-                new MySqlParameter("order_by", sortParameters.OrderBy)
-            });
-
-            connection.Open();
-            using var reader = command.ExecuteReader();
-
-            var users = new List<ProfileInfoResponseModel>();
-
-            while (reader.Read())
-            {
-                users.Add(new ProfileInfoResponseModel
+                case OrderMethodsEnum.Id:
                 {
-                    Name = reader.StringOrEmpty("name"),
-                    Surname = reader.StringOrEmpty("surname"),
-                    Location = reader.StringOrEmpty("location"),
-                    RelationshipStatus = reader.StringOrEmpty("relationship_status"),
-                    AttitudeToAlcohol = reader.StringOrEmpty("attitude_to_alcohol"),
-                    AttitudeToSmoking = reader.StringOrEmpty("attitude_to_smoking"),
-                    Age = reader.StringOrEmpty("age"),
-                    Post = reader.StringOrEmpty("post"),
-                    Sex = reader.StringOrEmpty("sex"),
-                    SexPreference = reader.StringOrEmpty("sex_preference"),
-                    Biography = reader.StringOrEmpty("biography"),
-                    Rating = reader.StringOrEmpty("rating")
-                });
-            };
+                    usersList = UsersCache.GetProfiles()
+                            .Select(arg => arg.Value)
+                            .Skip(skip)
+                            .Take(take);
+                    break;
+                }
 
-            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                              {
-                                                                  { "users", users }
-                                                              })
-            .ToResult();
+                case OrderMethodsEnum.Age:
+                {
+                    usersList = UsersCache.GetProfiles()
+                            .Select(arg => arg.Value)
+                            .OrderBy(arg => arg.Age)
+                            .Where(arg => !sortParameters.minAge.HasValue || arg.Age >= sortParameters.minAge.Value)
+                            .Where(arg => !sortParameters.maxAge.HasValue || arg.Age <= sortParameters.maxAge.Value);
+                    break;
+                }
+
+                case OrderMethodsEnum.Distance:
+                {
+                        //var sessions = UsersCache.GetSessions();
+                        //usersList = UsersCache.GetProfiles()
+
+
+                        break;
+                }
+            }
+
+            return default;
         }
     }
 }

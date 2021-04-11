@@ -1,0 +1,12 @@
+﻿CREATE TABLE sessions_geopositions (
+	session_id BIGINT NOT NULL UNIQUE,
+	country VARCHAR(128),
+	city VARCHAR(128),
+	initial_longitude DOUBLE,
+	initial_latitude DOUBLE,
+	current_longitude DOUBLE,
+	current_latitude DOUBLE,
+
+	PRIMARY KEY(session_id),
+	FOREIGN KEY(session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+);

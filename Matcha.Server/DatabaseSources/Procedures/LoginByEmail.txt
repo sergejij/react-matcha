@@ -24,6 +24,8 @@ BEGIN
         INSERT INTO sessions (sessions.user_id) VALUES (user_id);
 
         SET session_id = LAST_INSERT_ID();
+
+        INSERT INTO sessions_geopositions (session_id) VALUES (session_id);
     ELSE
         SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 401, MESSAGE_TEXT = 'Неверный пароль';
     END IF;

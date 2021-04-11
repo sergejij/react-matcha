@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Matcha.Server.Controllers
 {
@@ -23,13 +24,13 @@ namespace Matcha.Server.Controllers
     
         [HttpGet]
         [Route("attitudes_list")]
-        public IActionResult GetAttitudesList()
+        public async Task<IActionResult> GetAttitudesListAsync()
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetAttitudesList", connection) { CommandType = CommandType.StoredProcedure };
 
             connection.Open();
-            using var reader = command.ExecuteReader();
+            using var reader = await command.ExecuteReaderAsync();
 
             var attitudes = new HashSet<string>();
 
@@ -46,13 +47,13 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("sexes_list")]
-        public IActionResult GetSexesList()
+        public async Task<IActionResult> GetSexesListAsync()
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetSexesList", connection) { CommandType = CommandType.StoredProcedure };
 
             connection.Open();
-            using var reader = command.ExecuteReader();
+            using var reader = await command.ExecuteReaderAsync();
 
             var sexes = new HashSet<string>();
 
@@ -69,13 +70,13 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("relationships_list")]
-        public IActionResult GetRelationshipsStatusesList()
+        public async Task<IActionResult> GetRelationshipsStatusesListAsync()
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetRelationshipsStatusesList", connection) { CommandType = CommandType.StoredProcedure };
 
             connection.Open();
-            using var reader = command.ExecuteReader();
+            using var reader = await command.ExecuteReaderAsync();
 
             var statuses = new HashSet<string>();
 
@@ -96,7 +97,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPut]
         [Route("change_email")]
-        public IActionResult ChangeEmail(EmailChangeModel emailChangeModel)
+        public async Task<IActionResult> ChangeEmailAsync(EmailChangeModel emailChangeModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("IsEmailRegistered", connection) { CommandType = CommandType.StoredProcedure };
@@ -108,22 +109,22 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             bool registered = Convert.ToBoolean(command.Parameters["registered"].Value);
             if (registered)
                 return new ResponseModel(HttpStatusCode.Conflict, "Email уже используется").ToResult();
 
             var confirmationCode = Guid.NewGuid();
-            AccountController.AddConfirmationCode(UserId, emailChangeModel.NewEmail, confirmationCode);
-            AccountController.SendConfirmationCode(emailChangeModel.NewEmail, confirmationCode);
+            await AccountController.AddConfirmationCodeAsync(UserId, emailChangeModel.NewEmail, confirmationCode);
+            await AccountController.SendConfirmationCodeAsync(emailChangeModel.NewEmail, confirmationCode);
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpPut]
         [Route("change_password")]
-        public IActionResult ChangePassword(PasswordChangeModel passwordModel)
+        public async Task<IActionResult> ChangePassword(PasswordChangeModel passwordModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("ChangePassword", connection) { CommandType = CommandType.StoredProcedure };
@@ -136,14 +137,14 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpPut]
         [Route("change_login")]
-        public IActionResult ChangeLogin(LoginChangeModel loginModel)
+        public async Task<IActionResult> ChangeLogin(LoginChangeModel loginModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("ChangeLogin", connection) { CommandType = CommandType.StoredProcedure };
@@ -156,7 +157,7 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             return ResponseModel.OK.ToResult();
         }
@@ -178,7 +179,10 @@ namespace Matcha.Server.Controllers
         [Route("avatar")]
         public IActionResult GetAvatar([FromQuery] long? userId)
         {
-            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId.HasValue ? userId.Value : UserId);
+            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
+                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
+
+            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId ?? UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -200,7 +204,10 @@ namespace Matcha.Server.Controllers
         [Route("photos")]
         public IActionResult GetPhotos([FromQuery] long? userId)
         {
-            var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId.HasValue ? userId.Value : UserId);
+            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
+                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
+
+            var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId ?? UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -215,7 +222,7 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("auth_data")]
-        public IActionResult GetAuthData()
+        public async Task<IActionResult> GetAuthDataAsync()
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetAuthData", connection) { CommandType = CommandType.StoredProcedure };
@@ -229,7 +236,7 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             return new ResponseModel(HttpStatusCode.OK,
                                      null,
@@ -243,8 +250,10 @@ namespace Matcha.Server.Controllers
 
         [HttpPatch]
         [Route("biography")]
-        public IActionResult UpdateBiography(UpdateBiographyModel biography)
+        public async Task<IActionResult> UpdateBiographyAsync(UpdateBiographyModel biography)
         {
+            UsersCache.UpdateBiography(UserId, biography.Biography);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("UpdateBiography", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -255,25 +264,25 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
         [Route("info")]
-        public IActionResult GetProfileInfo([FromQuery] long? userId)
+        public async Task<IActionResult> GetProfileInfoAsync([FromQuery] long? userId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId)
+                new MySqlParameter("user_id", userId ?? UserId)
             });
 
             connection.Open();
-            using var reader = command.ExecuteReader();
+            using var reader = await command.ExecuteReaderAsync();
 
             reader.Read();
             var fields = new Dictionary<string, object>
@@ -296,8 +305,10 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("info")]
-        public IActionResult InitProfileInfo(ProfileInfoModel profileInfo)
+        public async Task<IActionResult> InitProfileInfoAsync(ProfileInfoModel profileInfo)
         {
+            UsersCache.InitProfileInfo(UserId, profileInfo);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -314,11 +325,12 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("alcohol_attitude", profileInfo.AttitudeToAlcohol),
                 new MySqlParameter("biography", profileInfo.Biography),
 
+                //TODO: убрать
                 new MySqlParameter("error_message", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             var errorMessage = command.Parameters["error_message"].Value.ToString();
             if (string.IsNullOrEmpty(errorMessage) == false)
@@ -329,65 +341,125 @@ namespace Matcha.Server.Controllers
 
         [HttpPut]
         [Route("info")]
-        public IActionResult UpdateInfo(InfoUpdateModel infoModel)
+        public async Task<IActionResult> UpdateInfoAsync(ProfileInfoModel profileInfo)
         {
+            UsersCache.UpdateProfileInfo(UserId, profileInfo);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("user_id", UserId),
-                new MySqlParameter("name", infoModel.Name),
-                new MySqlParameter("surname", infoModel.Surname),
-                new MySqlParameter("age", infoModel.Age),
-                new MySqlParameter("post", infoModel.Post),
-                new MySqlParameter("location", infoModel.Location)
+                new MySqlParameter("name", profileInfo.Name),
+                new MySqlParameter("surname", profileInfo.Surname),
+                new MySqlParameter("age", profileInfo.Age),
+                new MySqlParameter("post", profileInfo.Post),
+                new MySqlParameter("location", profileInfo.Location)
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        #region Обновление выпадающих списков
+
+        [HttpPatch]
+        [Route("sex")]
+        public async Task<IActionResult> UpdateSex(UpdateDropDownFieldModel dropDownField)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = connection.CreateCommand();
+
+            command.CommandText = BuildPatchDropDownListCommand("sexes", "sex", "sex", dropDownField.Sex);
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            UsersCache.UpdateSex(UserId, dropDownField.Sex);
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpPatch]
-        [Route("info")]
-        public IActionResult UpdateStatus(StatusUpdateModel statusUpdateModel)
+        [Route("sex_preference")]
+        public async Task<IActionResult> UpdateSexPreference(UpdateDropDownFieldModel dropDownField)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            connection.Open();
-
-            var unit = FieldToTable[statusUpdateModel.Field];
-
-            var table = unit.tableName;
-            var tableCol = unit.columnName;
-            var userDataCol = unit.userDataColumnMane;
-
             using var command = connection.CreateCommand();
-            command.CommandText = $"IF NOT EXISTS(SELECT * FROM {table} WHERE {table}.{tableCol} = '{statusUpdateModel.Status}')\n" +
-                                  $"THEN\n" +
-                                  $"INSERT INTO {table} ({tableCol}) VALUES ('{statusUpdateModel.Status}');\n" +
-                                  $"END IF;";
 
-            command.ExecuteNonQuery();
+            command.CommandText = BuildPatchDropDownListCommand("sexes", "sex", "sex_preference", dropDownField.SexPreference);
 
-            command.CommandText = $"UPDATE user_full_data\n" +
-                                  $"SET {userDataCol} = (SELECT id FROM {table} WHERE {table}.{tableCol} = '{statusUpdateModel.Status}')\n" +
-                                  $"WHERE id = {UserId};";
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
 
-            command.ExecuteNonQuery();
+            UsersCache.UpdateSexPreference(UserId, dropDownField.SexPreference);
 
             return ResponseModel.OK.ToResult();
         }
 
-        private readonly static Dictionary<string, (string tableName, string columnName, string userDataColumnMane)> FieldToTable = new Dictionary<string, (string, string, string)>
+        [HttpPatch]
+        [Route("relationship_status")]
+        public async Task<IActionResult> UpdateRelationshipStatus(UpdateDropDownFieldModel dropDownField)
         {
-            { "relationshipStatus", ("relationship_statuses", "status",   "relationship_status") },
-            { "sex",                ("sexes",                 "sex",      "sex") },
-            { "sexPreference",      ("sexes",                 "sex",      "sex_preference") },
-            { "attitudeToAlcohol",  ("attitudes",             "attitude", "attitude_to_alcohol") },
-            { "attitudeToSmoking",  ("attitudes",             "attitude", "attitude_to_smoking") }
-        };
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = connection.CreateCommand();
+
+            command.CommandText = BuildPatchDropDownListCommand("relationship_statuses", "status", "relationship_status", dropDownField.RelationshipStatus);
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            UsersCache.UpdateRelatioshipStatus(UserId, dropDownField.RelationshipStatus);
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        [HttpPatch]
+        [Route("attitude_to_alcohol")]
+        public async Task<IActionResult> UpdateAttitudeToAlcohol(UpdateDropDownFieldModel dropDownField)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = connection.CreateCommand();
+
+            command.CommandText = BuildPatchDropDownListCommand("attitudes", "attitude", "attitude_to_alcohol", dropDownField.AttitudeToAlcohol);
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            UsersCache.UpdateAttitudeToAlcohol(UserId, dropDownField.AttitudeToAlcohol);
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        [HttpPatch]
+        [Route("attitude_to_smoking")]
+        public async Task<IActionResult> UpdateAttitudeToSmoking(UpdateDropDownFieldModel dropDownField)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = connection.CreateCommand();
+
+            command.CommandText = BuildPatchDropDownListCommand("attitudes", "attitude", "attitude_to_smoking", dropDownField.AttitudeToSmoking);
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            UsersCache.UpdateAttitudeToSmoking(UserId, dropDownField.AttitudeToSmoking);
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        private string BuildPatchDropDownListCommand(string table, string table_column, string user_data_column, string value)
+        {
+            return
+                $"UPDATE user_full_data\n" +
+                $"SET {user_data_column} = (SELECT id FROM {table} WHERE {table}.{table_column} = '{value}')\n" +
+                $"WHERE id = {UserId};";
+        }
+
+        #endregion
 
         #endregion
 
@@ -396,7 +468,7 @@ namespace Matcha.Server.Controllers
         [HttpPost]
         [HttpPut]
         [Route("interests")]
-        public IActionResult UpdateInterests(InterestsModel interests)
+        public async Task<IActionResult> UpdateInterestsAsync(InterestsModel interests)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
@@ -408,32 +480,33 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpGet]
         [Route("interests")]
-        public IActionResult GetInterestsList([FromQuery] long? userId)
+        public async Task<IActionResult> GetInterestsListAsync([FromQuery] long? userId)
         {
+            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
+                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetInterestsList", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", userId.HasValue ? userId.Value : UserId)
+                new MySqlParameter("user_id", userId ?? UserId)
             });
 
             connection.Open();
             
             var interests = new HashSet<string>();
 
-            var reader = command.ExecuteReader();
+            using var reader = await command.ExecuteReaderAsync();
             while (reader.Read())
-            {
                 interests.Add(reader.GetString(0));
-            }
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {

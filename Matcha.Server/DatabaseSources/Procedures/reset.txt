@@ -12,6 +12,7 @@ BEGIN
     TRUNCATE interests_list;
     TRUNCATE users_interests;
     TRUNCATE likes;
+    TRUNCATE sessions_geopositions;
 
     SET FOREIGN_KEY_CHECKS = 1;
 

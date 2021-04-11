@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Matcha.Server.Controllers
 {
@@ -23,30 +24,30 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("register")]
-        public IActionResult Register(AccountRegisterModel registerModel)
+        public async Task<IActionResult> RegisterAsync(AccountRegisterModel registerModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("RegisterUser", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                    new MySqlParameter("login", registerModel.Login),
-                    new MySqlParameter("email", registerModel.Email),
-                    new MySqlParameter("password", registerModel.Password),
-                    new MySqlParameter("name", registerModel.Name),
-                    new MySqlParameter("surname", registerModel.Surname),
+                new MySqlParameter("login", registerModel.Login),
+                new MySqlParameter("email", registerModel.Email),
+                new MySqlParameter("password", registerModel.Password),
+                new MySqlParameter("name", registerModel.Name),
+                new MySqlParameter("surname", registerModel.Surname),
 
-                    new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
-                });
+                new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
+            });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             var userId = Convert.ToInt64(command.Parameters["user_id"].Value);
 
             var confirmationCode = Guid.NewGuid();
-            AddConfirmationCode(userId, registerModel.Email, confirmationCode);
-            SendConfirmationCode(registerModel.Email, confirmationCode);
+            await AddConfirmationCodeAsync(userId, registerModel.Email, confirmationCode);
+            await SendConfirmationCodeAsync(registerModel.Email, confirmationCode);
 
             return ResponseModel.OK.ToResult();
         }
@@ -57,7 +58,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("login")]
-        public IActionResult Login(AccountAuthModel authModel)
+        public async Task<IActionResult> LoginAsync(AccountAuthModel authModel)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("Login", connection) { CommandType = CommandType.StoredProcedure };
@@ -72,13 +73,21 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             var userId = command.Parameters["user_id"].Value.ToString();
             var sessionId = command.Parameters["session_id"].Value.ToString();
 
-            Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId);
-            Response.Cookies.Append(ResponseContentConstants.UserId, userId);
+            UsersCache.AddSession(long.Parse(userId), long.Parse(sessionId));
+
+            _ = GeopositionController.DetectAndSaveSessionGeopositionAsync(Request, long.Parse(userId), long.Parse(sessionId));
+
+            var cookieOptions = new CookieOptions
+            {
+                SameSite = SameSiteMode.Lax,
+            };
+            Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId, cookieOptions);
+            Response.Cookies.Append(ResponseContentConstants.UserId, userId, cookieOptions);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -89,10 +98,12 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
             if (Authorized)
             {
+                UsersCache.DeleteSession(UserId, SessionId);
+
                 using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
                 using var command = new MySqlCommand("Logout", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -103,7 +114,7 @@ namespace Matcha.Server.Controllers
                 });
 
                 connection.Open();
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
 
             var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
@@ -119,20 +130,27 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("confirm_email")]
-        public IActionResult ConfirmEmail([Required][FromQuery] Guid code)
+        public async Task<IActionResult> ConfirmEmailAsync([Required][FromQuery] Guid code)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("ConfirmEmail", connection) { CommandType = CommandType.StoredProcedure };
 
-            command.Parameters.Add(new MySqlParameter("code", code.ToString()));
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("code", code.ToString()),
+                new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
+            });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
+
+            var user_id = Convert.ToInt64(command.Parameters["user_id"].Value);
+            UsersCache.AddUser(user_id);
 
             return ResponseModel.OK.ToResult();
         }
 
-        public static void AddConfirmationCode(long userId, string email, Guid code)
+        public static async Task AddConfirmationCodeAsync(long userId, string email, Guid code)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("AddConfirmationCode", connection) { CommandType = CommandType.StoredProcedure };
@@ -145,17 +163,19 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public static void SendConfirmationCode(string email, Guid code)
+        public static async Task SendConfirmationCodeAsync(string email, Guid code)
         {
             var codeToStr = code.ToString();
 
             var body = $"Тык: http://localhost:3000/confirm-email?code={codeToStr}\nhttps://81.177.141.123:637/confirm_email?code={codeToStr}";
-            MailClient.MailClient.SendMail(email, "Подтверждение почты для Matcha", body);
+            await MailClient.MailClient.SendMailAsync(email, "Подтверждение почты для Matcha", body);
         }
 
         #endregion
     }
 }
+
+//TODO: ResponseModel.OK.ToResult() => ResponseModel.OkResult

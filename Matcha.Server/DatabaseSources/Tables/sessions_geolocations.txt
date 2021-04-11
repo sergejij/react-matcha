@@ -1,8 +1,0 @@
-﻿CREATE TABLE sessions_geolocations (
-	session_id BIGINT NOT NULL UNIQUE,
-	longitude DOUBLE NOT NULL,
-	latitude DOUBLE NOT NULL,
-
-	PRIMARY KEY(session_id),
-	FOREIGN KEY(session_id) REFERENCES sessions(session_id)
-);

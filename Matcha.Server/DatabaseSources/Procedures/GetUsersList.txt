@@ -1,12 +1,9 @@
-﻿CREATE PROCEDURE GetUsersList(
-	take INT,
-	skip INT,
-    order_by VARCHAR(32)
-)
+﻿CREATE PROCEDURE GetUsersList()
 
 BEGIN
 
 	SELECT
+        data.id as user_id,
         data.name,
         data.surname,
         data.location,
@@ -14,11 +11,11 @@ BEGIN
         data.post,
         data.biography,
         data.rating,
-        s1.sex as sex,
-        s2.sex as sex_preference,
-        rel.status as  relationship_status,
-        a1.attitude as attitude_to_smoking,
-        a2.attitude as attitude_to_alcohol
+        s1.sex AS sex,
+        s2.sex AS sex_preference,
+        rel.status  AS relationship_status,
+        a1.attitude AS attitude_to_smoking,
+        a2.attitude AS attitude_to_alcohol
     FROM
         user_full_data AS data
     LEFT JOIN
@@ -31,9 +28,20 @@ BEGIN
         attitudes AS a1 ON data.attitude_to_smoking = a1.id
     LEFT JOIN
         attitudes AS a2 ON data.attitude_to_alcohol = a2.id
-    ORDER BY
-        CASE WHEN order_by = 'id'  THEN data.id  END,
-        CASE WHEN order_by = 'age' THEN -data.age END DESC,
-        CASE WHEN order_by = 'rating' THEN data.rating END DESC
-    LIMIT take OFFSET skip;
+    JOIN
+        user_data ON user_data.id = data.id AND user_data.email IS NOT NULL;
+
+    SELECT
+        location.session_id,
+        location.country,
+        location.city,
+        location.initial_latitude,
+        location.initial_longitude,
+        location.current_latitude,
+        location.current_longitude,
+        sessions.user_id
+    FROM
+        sessions_geopositions AS location
+    JOIN
+        sessions ON location.session_id = sessions.session_id;
 END

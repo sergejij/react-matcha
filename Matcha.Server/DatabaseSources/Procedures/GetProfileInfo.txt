@@ -15,7 +15,7 @@ BEGIN
             data.biography,
             s1.sex as sex,
             s2.sex as sex_preference,
-            rel.status as  relationship_status,
+            rel.status  as relationship_status,
             a1.attitude as attitude_to_smoking,
             a2.attitude as attitude_to_alcohol
         FROM
