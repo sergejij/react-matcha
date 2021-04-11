@@ -5,6 +5,8 @@ import { Content } from '../../styled';
 import Aside from '../../components/Aside/Aside';
 import Profile from '../Profile/Profile';
 import { FilterFormStyled } from './styled';
+import { usersApi } from '../../api/api';
+import Button from "../../components/Button";
 
 const FilterForm = () => {
   return (
@@ -22,14 +24,26 @@ const Search = () => {
   const [isShownFilterForm, setIsShownFilterForm] = React.useState(false);
 
   React.useEffect(() => {
-    axios.get('http://localhost:3000/db.json')
+    usersApi.getUsers(0, 20)
       .then(({ data }) => {
-        setUsers(data.users);
-      });
+          console.log("GET USERS:", data);
+          setUsers(data.Content.users);
+      },
+      (err) => {
+          console.log("error:", err);
+      })
+        .catch(err => console.log("ERRRor:", err))
+
   }, []);
 
   const toggleFilterForm = () => {
     setIsShownFilterForm(prevState => !prevState)
+  }
+
+  const createUsers = () => {
+      usersApi.createUsers(20)
+          .then()
+          .catch();
   }
 
   return (
@@ -49,6 +63,7 @@ const Search = () => {
         isShownFilterForm &&
             <FilterForm />
       }
+      <Button onClick={createUsers}>Create users</Button>
     </Content>
   );
 };

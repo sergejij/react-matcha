@@ -20,6 +20,7 @@ export default () => {
     userInfoApi.getUserInfo(id)
       .then(
         (data) => {
+            console.log('222222222222222222:', data);
           setAmIAuthorized(() => true);
           setUserData(data.data.Content);
           if (!(!!data.data.Content.sex &&
@@ -33,22 +34,25 @@ export default () => {
           }
       },
       (err) => {
+            console.log("33333333333333333:", err);
         if (err.response.status === 401) {
           setAmIAuthorized(() => false);
           localStorage.clear();
         }
       },
-      (err) => console.error(err));
+      (err) => console.log("11111111111111:", err));
   }, []);
 
   React.useEffect(() => {
     usersAPI.getProfileAvatar()
       .then(
       ({ data }) => {
+          console.log('55555555555555:', data);
           console.log(data.Content);
-          setIsProfilePhotoEmpty(!data.Content.avatar);
+          setIsProfilePhotoEmpty(data.Content.avatar == null);
       },
       (err) => {
+          console.log('666666666666666666:', err);
         if (err.response.status === 401) {
           setAmIAuthorized(() => false);
           localStorage.clear();
@@ -61,6 +65,7 @@ export default () => {
     return <Redirect to="/login" />;
   }
 
+  console.log("123:", isRequiredEmpty, isProfilePhotoEmpty);
   return (
       isRequiredEmpty || isProfilePhotoEmpty /*true*/ ? (
           (Object.keys(userData).length !== 0) &&
