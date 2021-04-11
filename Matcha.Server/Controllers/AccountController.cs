@@ -82,8 +82,12 @@ namespace Matcha.Server.Controllers
 
             _ = GeopositionController.DetectAndSaveSessionGeopositionAsync(Request, long.Parse(userId), long.Parse(sessionId));
 
-            Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId);
-            Response.Cookies.Append(ResponseContentConstants.UserId, userId);
+            var cookieOptions = new CookieOptions
+            {
+                SameSite = SameSiteMode.Lax,
+            };
+            Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId, cookieOptions);
+            Response.Cookies.Append(ResponseContentConstants.UserId, userId, cookieOptions);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {

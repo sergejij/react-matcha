@@ -32,9 +32,9 @@ BEGIN
         SET user_id = LAST_INSERT_ID();
 
         INSERT INTO user_full_data (
-            id, name, surname
+            id, name, surname, relationship_status
         ) VALUES (
-            user_id, name, surname
+            user_id, name, surname, (SELECT id FROM relationship_statuses WHERE relationship_statuses.status = 'Не выбрано')
         );
 
         RETURN user_id;
