@@ -489,30 +489,14 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("interests")]
-        public async Task<IActionResult> GetInterestsListAsync([FromQuery] long? userId)
+        public IActionResult GetInterestsListAsync([FromQuery] long? userId)
         {
-            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
-                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
-
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("GetInterestsList", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", userId ?? UserId)
-            });
-
-            connection.Open();
-            
-            var interests = new HashSet<string>();
-
-            using var reader = await command.ExecuteReaderAsync();
-            while (reader.Read())
-                interests.Add(reader.GetString(0));
+            if (userId.HasValue is false)
+                userId = UserId;
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
-                                                                  { "interests", interests }
+                                                                  { "interests", UsersCache.GetUserInterests(userId.Value) }
                                                               })
                 .ToResult();
         }

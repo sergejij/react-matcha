@@ -14,11 +14,13 @@ namespace Matcha.Server.Models.Users
 
         public OrderMethodsEnum OrderBy { get; set; }
 
-        public int? minAge { get; set; }
+        public int? MinAge { get; set; }
 
-        public int? maxAge { get; set; }
+        public int? MaxAge { get; set; }
 
-        public int? minRating { get; set; }
+        public int? MinRating { get; set; }
+
+        public int? MinCommonInterests { get; set; }
 
         #region Валидация модели
 
