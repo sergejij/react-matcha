@@ -43,6 +43,36 @@ export const userInfoApi = {
     });
   },
 
+  patchSex(value) {
+    return instance.patch(`/profile/sex`, {
+      "sex": value
+    });
+  },
+
+  patchSexPreference(value) {
+    return instance.patch(`/profile/sex_preference`, {
+      "sexPreference": value
+    });
+  },
+
+  patchRelationshipStatus(value) {
+    return instance.patch(`/profile/relationship_status`, {
+      "relationshipStatus": value
+    });
+  },
+
+  patchAttitudeToAlcohol(value) {
+    return instance.patch(`/profile/attitude_to_alcohol`, {
+      "attitudeToAlcohol": value
+    });
+  },
+
+  patchAttitudeToSmoking(value) {
+    return instance.patch(`/profile/attitude_to_smoking`, {
+      "attitudeToSmoking": value
+    });
+  },
+
   patchUserInfo(key, value) {
     return instance.patch(`/profile/info`, {
       "field": key,

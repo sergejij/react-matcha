@@ -31,8 +31,8 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
 
   const changeInfoField = () => {
     setFieldEditing(false);
-    userInfoApi
-      .patchUserInfo(fieldKey, value)
+
+    userInfoApi[fieldKey](value)
       .then(
         () => {},
         (err) => {
@@ -188,31 +188,31 @@ const ProfileInfo = ({ userData }) => {
           <ProfileInfoField
             list={sexesList}
             fieldName="Пол"
-            fieldKey="sex"
+            fieldKey="patchSex"
             fieldValue={userData.sex}
           />
           <ProfileInfoField
             list={relationshipsList}
             fieldName="Статус отношений"
-            fieldKey="relationshipStatus"
+            fieldKey="patchRelationshipStatus"
             fieldValue={userData.relationshipStatus}
           />
           <ProfileInfoField
             list={sexesList}
             fieldName="Сексуальное предпочтение"
-            fieldKey="sexPreference"
+            fieldKey="patchSexPreference"
             fieldValue={userData.sexPreference}
           />
           <ProfileInfoField
             list={attitudesList}
             fieldName="Отношение к алкоголю"
-            fieldKey="attitudeToAlcohol"
+            fieldKey="patchAttitudeToAlcohol"
             fieldValue={userData.attitudeToAlcohol}
           />
           <ProfileInfoField
             list={attitudesList}
             fieldName="Отношение к курению"
-            fieldKey="attitudeToSmoking"
+            fieldKey="patchAttitudeToSmoking"
             fieldValue={userData.attitudeToSmoking}
           />
           <div>
