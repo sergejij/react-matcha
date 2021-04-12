@@ -180,9 +180,19 @@ namespace Matcha.Server.UsersCache
             return _users.ToDictionary(arg => arg.Key, arg => arg.Value.Profile.Info);
         }
 
+        public Dictionary<long, (ProfileInfoModel, HashSet<string>)> GetProfilesWithInterests()
+        {
+            return _users.ToDictionary(arg => arg.Key, arg => (arg.Value.Profile.Info, arg.Value.Profile.Interests));
+        }
+
         public Dictionary<long, HashSet<SessionModel>> GetSessions()
         {
             return _users.ToDictionary(arg => arg.Key, arg => arg.Value.Sessions.Values.ToHashSet());
+        }
+
+        public HashSet<string> GetUserInterests(long userId)
+        {
+            return _users[userId].Profile.Interests;
         }
 
         #endregion

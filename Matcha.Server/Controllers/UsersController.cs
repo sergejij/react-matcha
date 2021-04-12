@@ -33,6 +33,7 @@ namespace Matcha.Server.Controllers
                 case OrderMethodsEnum.Id:
                 {
                     usersList = UsersCache.GetProfiles()
+                            .Where(arg => arg.Key != UserId)
                             .Select(arg => arg.Value);
                     break;
                 }
@@ -40,20 +41,22 @@ namespace Matcha.Server.Controllers
                 case OrderMethodsEnum.Age:
                 {
                     usersList = UsersCache.GetProfiles()
+                            .Where(arg => arg.Key != UserId)
                             .Select(arg => arg.Value)
                             .OrderByDescending(arg => arg.Age.HasValue)
                             .ThenBy(arg => arg.Age)
-                            .Where(arg => !sortParameters.minAge.HasValue || arg.Age >= sortParameters.minAge.Value)
-                            .Where(arg => !sortParameters.maxAge.HasValue || arg.Age <= sortParameters.maxAge.Value);
+                            .Where(arg => !sortParameters.MinAge.HasValue || arg.Age >= sortParameters.MinAge.Value)
+                            .Where(arg => !sortParameters.MaxAge.HasValue || arg.Age <= sortParameters.MaxAge.Value);
                     break;
                 }
 
                 case OrderMethodsEnum.Rating:
                 {
                     usersList = UsersCache.GetProfiles()
+                            .Where(arg => arg.Key != UserId)
                             .Select(arg => arg.Value)
                             .OrderByDescending(arg => arg.Rating)
-                            .Where(arg => !sortParameters.minRating.HasValue || arg.Rating >= sortParameters.minRating.Value);
+                            .Where(arg => !sortParameters.MinRating.HasValue || arg.Rating >= sortParameters.MinRating.Value);
                     break;
                 }
 
@@ -65,6 +68,20 @@ namespace Matcha.Server.Controllers
 
                         break;
                 }
+
+                case OrderMethodsEnum.CommonInterests:
+                    {
+                        var myInterests = UsersCache.GetUserInterests(UserId);
+
+                        usersList = UsersCache.GetProfilesWithInterests()
+                            .Where(arg => arg.Key != UserId)
+                            .Where(arg => arg.Value.Item2.Intersect(myInterests).Count() >= sortParameters.MinCommonInterests)
+                            .OrderByDescending(arg => arg.Value.Item2.Intersect(myInterests).Count())
+                            .Select(arg => arg.Value.Item1);
+
+                        break;
+                    }
+
 
                 default:
                     throw new System.Exception();
