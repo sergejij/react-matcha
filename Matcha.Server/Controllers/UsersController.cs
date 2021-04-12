@@ -76,6 +76,7 @@ namespace Matcha.Server.Controllers
                         usersList = UsersCache.GetProfilesWithInterests()
                             .Where(arg => arg.Key != UserId)
                             .Where(arg => arg.Value.Item2.Intersect(myInterests).Count() >= sortParameters.MinCommonInterests)
+                            .OrderByDescending(arg => arg.Value.Item2.Intersect(myInterests).Count())
                             .Select(arg => arg.Value.Item1);
 
                         break;
