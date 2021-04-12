@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Matcha.Server.Models.Users
 {
-    public sealed record SortParametersModel : IValidatableObject
+    public sealed record SortParametersModel 
     {
         [Required]
         public int Page { get; set; }
@@ -11,26 +12,16 @@ namespace Matcha.Server.Models.Users
         [Required]
         public int Size { get; set; }
 
-        private string OrderByStr { get; set; }
-
         public OrderMethodsEnum OrderBy { get; set; }
 
         public int? minAge { get; set; }
 
         public int? maxAge { get; set; }
 
+        public int? minRating { get; set; }
+
         #region Валидация модели
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (OrderByStr is null)
-                OrderByStr = "id";
-
-            if (KnownOrderMethodsStrings.ContainsKey(OrderByStr) is false)
-                yield return new ValidationResult($"Неизвестный тип сортировки: {OrderByStr}. Поддерживаемые сортировки: {string.Join(',', KnownOrderMethodsStrings.Values)}");
-
-            OrderBy = KnownOrderMethodsStrings[OrderByStr];
-        }
 
         #endregion
 
@@ -42,7 +33,7 @@ namespace Matcha.Server.Models.Users
             Age,
             Distance,
             Rating,
-            CommonTags
+            CommonInterests
         }
 
         private readonly Dictionary<string, OrderMethodsEnum> KnownOrderMethodsStrings = new()
@@ -51,7 +42,7 @@ namespace Matcha.Server.Models.Users
             { "age", OrderMethodsEnum.Age },
             { "distance", OrderMethodsEnum.Distance },
             { "rating", OrderMethodsEnum.Rating },
-            { "commonTags", OrderMethodsEnum.CommonTags }
+            { "commonTags", OrderMethodsEnum.CommonInterests }
         };
 
         #endregion

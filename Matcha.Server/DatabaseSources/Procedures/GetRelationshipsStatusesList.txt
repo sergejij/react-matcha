@@ -1,4 +1,5 @@
 ﻿CREATE PROCEDURE GetRelationshipsStatusesList()
 BEGIN
-	SELECT status FROM relationship_statuses;
+	SELECT status FROM relationship_statuses
+	ORDER BY id;
 END

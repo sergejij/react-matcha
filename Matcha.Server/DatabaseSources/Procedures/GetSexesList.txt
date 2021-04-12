@@ -1,4 +1,5 @@
 ﻿CREATE PROCEDURE GetSexesList()
 BEGIN
-	SELECT sex FROM sexes;
+	SELECT sex FROM sexes
+	ORDER BY id;
 END

@@ -470,6 +470,8 @@ namespace Matcha.Server.Controllers
         [Route("interests")]
         public async Task<IActionResult> UpdateInterestsAsync(InterestsModel interests)
         {
+            UsersCache.UpdateInterests(UserId, interests.Interests);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
 

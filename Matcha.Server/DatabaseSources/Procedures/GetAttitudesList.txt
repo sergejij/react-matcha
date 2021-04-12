@@ -1,4 +1,5 @@
 ﻿CREATE PROCEDURE GetAttitudesList()
 BEGIN
-	SELECT attitude FROM attitudes;
+	SELECT attitude FROM attitudes
+	ORDER BY id;
 END

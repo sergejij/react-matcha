@@ -2,6 +2,10 @@
 
 BEGIN
 
+    DECLARE end INT;
+    DECLARE cur INT;
+    DECLARE user_id BIGINT;
+
 	SELECT
         data.id as user_id,
         data.name,
@@ -30,6 +34,22 @@ BEGIN
         attitudes AS a2 ON data.attitude_to_alcohol = a2.id
     JOIN
         user_data ON user_data.id = data.id AND user_data.email IS NOT NULL;
+
+
+    SELECT COUNT(*) FROM user_data INTO end;
+
+    SET cur = 0;
+
+    WHILE cur < end
+    DO
+        SET user_id = (SELECT id FROM user_data LIMIT cur, 1);
+
+        SELECT user_id, GROUP_CONCAT(interest) AS interests
+        FROM interests_list
+        WHERE interests_list.id IN
+            (SELECT interest_id FROM users_interests WHERE users_interests.user_id = user_id);
+        SET cur = cur + 1;
+    END WHILE;
 
     SELECT
         location.session_id,

@@ -5,6 +5,7 @@
 	PRIMARY KEY(id)
 );
 
-INSERT INTO attitudes (attitude) VALUES ('Положительное');
-INSERT INTO attitudes (attitude) VALUES ('Нейтральное');
+INSERT INTO attitudes (attitude) VALUES ('Не выбрано');
 INSERT INTO attitudes (attitude) VALUES ('Отрицательное');
+INSERT INTO attitudes (attitude) VALUES ('Нейтральное');
+INSERT INTO attitudes (attitude) VALUES ('Положительное');

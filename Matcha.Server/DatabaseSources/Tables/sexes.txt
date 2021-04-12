@@ -5,6 +5,6 @@
     PRIMARY KEY(id)
 );
 
-INSERT INTO sexes (sex) VALUES ('Мужской');
+INSERT INTO sexes (sex) VALUES ('Не выбрано');
 INSERT INTO sexes (sex) VALUES ('Женский');
-INSERT INTO sexes (sex) VALUES ('Гендерная самоидентификация это социальный конструкт');
+INSERT INTO sexes (sex) VALUES ('Мужской');

@@ -1,10 +1,10 @@
-﻿CREATE PROCEDURE GetInterestsList(
+﻿CREATE PROCEDURE GetUserInterests(
 	user_id BIGINT
 )
 
 BEGIN
 
-	SELECT interest
+	SELECT GROUP_CONCAT(interest)
 	FROM interests_list
 	WHERE interests_list.id IN
 		(SELECT interest_id FROM users_interests WHERE users_interests.user_id = user_id);

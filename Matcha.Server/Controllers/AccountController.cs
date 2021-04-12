@@ -84,7 +84,8 @@ namespace Matcha.Server.Controllers
 
             var cookieOptions = new CookieOptions
             {
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
             Response.Cookies.Append(ResponseContentConstants.SessionId, sessionId, cookieOptions);
             Response.Cookies.Append(ResponseContentConstants.UserId, userId, cookieOptions);
@@ -117,9 +118,14 @@ namespace Matcha.Server.Controllers
                 await command.ExecuteNonQueryAsync();
             }
 
-            var cookieExpiredOption = new CookieOptions { Expires = DateTime.Now.AddDays(-1) };
-            Response.Cookies.Append(ResponseContentConstants.SessionId, string.Empty, cookieExpiredOption);
-            Response.Cookies.Append(ResponseContentConstants.UserId, string.Empty, cookieExpiredOption);
+            var cookieOption = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(-1),
+                SameSite = SameSiteMode.None,
+                Secure = true
+            };
+            Response.Cookies.Append(ResponseContentConstants.SessionId, string.Empty, cookieOption);
+            Response.Cookies.Append(ResponseContentConstants.UserId, string.Empty, cookieOption);
 
             return ResponseModel.OK.ToResult();
         }

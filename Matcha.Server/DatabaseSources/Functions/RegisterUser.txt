@@ -32,9 +32,19 @@ BEGIN
         SET user_id = LAST_INSERT_ID();
 
         INSERT INTO user_full_data (
-            id, name, surname, relationship_status
+            id, name, surname,
+            relationship_status,
+            attitude_to_alcohol,
+            attitude_to_smoking,
+            sex,
+            sex_preference
         ) VALUES (
-            user_id, name, surname, (SELECT id FROM relationship_statuses WHERE relationship_statuses.status = 'Не выбрано')
+            user_id, name, surname,
+            (SELECT id FROM relationship_statuses WHERE relationship_statuses.status = 'Не выбрано'),
+            (SELECT id FROM attitudes WHERE attitudes.attitude = 'Не выбрано'),
+            (SELECT id FROM attitudes WHERE attitudes.attitude = 'Не выбрано'),
+            (SELECT id FROM sexes WHERE sexes.sex = 'Не выбрано'),
+            (SELECT id FROM sexes WHERE sexes.sex = 'Не выбрано')
         );
 
         RETURN user_id;

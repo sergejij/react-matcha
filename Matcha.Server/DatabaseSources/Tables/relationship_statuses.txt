@@ -6,7 +6,7 @@
 );
 
 INSERT INTO relationship_statuses (status) VALUES ('Не выбрано');
-INSERT INTO relationship_statuses (status) VALUES ('Замужем');
-INSERT INTO relationship_statuses (status) VALUES ('Женат');
 INSERT INTO relationship_statuses (status) VALUES ('Свободен');
 INSERT INTO relationship_statuses (status) VALUES ('В поиске');
+INSERT INTO relationship_statuses (status) VALUES ('Замужем');
+INSERT INTO relationship_statuses (status) VALUES ('Женат');

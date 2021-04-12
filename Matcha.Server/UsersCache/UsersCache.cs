@@ -35,24 +35,32 @@ namespace Matcha.Server.UsersCache
                 _users.Add(userId, new UserCacheModel
                 {
                     Sessions = new Dictionary<long, SessionModel>(),
-                    Profile = new ProfileInfoModel
+                    Profile = new UserCachedProfile
                     {
-                        Name = reader.StringOrEmpty("name"),
-                        Surname = reader.StringOrEmpty("surname"),
-                        Sex = reader.StringOrEmpty("sex"),
-                        SexPreference = reader.StringOrEmpty("sex_preference"),
-                        RelationshipStatus = reader.StringOrEmpty("relationship_status"),
-                        Biography = reader.StringOrEmpty("biography"),
-                        Location = reader.StringOrEmpty("location"),
-                        Age = reader.NullableInt("age"),
-                        AttitudeToAlcohol = reader.StringOrEmpty("attitude_to_alcohol"),
-                        AttitudeToSmoking = reader.StringOrEmpty("attitude_to_smoking"),
-                        Rating = Convert.ToInt32(reader["rating"].ToString())
-                    }
+                        Info = new ProfileInfoModel
+                        {
+                            Name = reader.StringOrEmpty("name"),
+                            Surname = reader.StringOrEmpty("surname"),
+                            Sex = reader.StringOrEmpty("sex"),
+                            SexPreference = reader.StringOrEmpty("sex_preference"),
+                            RelationshipStatus = reader.StringOrEmpty("relationship_status"),
+                            Biography = reader.StringOrEmpty("biography"),
+                            Location = reader.StringOrEmpty("location"),
+                            Age = reader.NullableInt("age"),
+                            AttitudeToAlcohol = reader.StringOrEmpty("attitude_to_alcohol"),
+                            AttitudeToSmoking = reader.StringOrEmpty("attitude_to_smoking"),
+                            Rating = Convert.ToInt32(reader["rating"].ToString())
+                        }
+                    } 
                 });
             }
 
-            reader.NextResult();
+            while (reader.NextResult() && reader.Read() && reader.FieldCount == 2)
+            {
+                var userId = Convert.ToInt64(reader["user_id"]);
+
+                _users[userId].Profile.Interests = reader["interests"].ToString().Split(',').ToHashSet();
+            }
 
             while (reader.Read())
             {
@@ -114,48 +122,53 @@ namespace Matcha.Server.UsersCache
 
         public void UpdateBiography(long userId, string biography)
         {
-            _users[userId].Profile.Biography = biography;
+            _users[userId].Profile.Info.Biography = biography;
         }
 
         public void InitProfileInfo(long userId, ProfileInfoModel profileInfo)
         {
-            _users[userId].Profile = profileInfo;
+            _users[userId].Profile.Info = profileInfo;
         }
 
         public void UpdateProfileInfo(long userId, ProfileInfoModel profileInfo)
         {
             var profile = _users[userId].Profile;
 
-            profile.Name = profileInfo.Name;
-            profile.Surname = profileInfo.Surname;
-            profile.Age = profileInfo.Age;
-            profile.Post = profileInfo.Post;
-            profile.Location = profileInfo.Location;
+            profile.Info.Name = profileInfo.Name;
+            profile.Info.Surname = profileInfo.Surname;
+            profile.Info.Age = profileInfo.Age;
+            profile.Info.Post = profileInfo.Post;
+            profile.Info.Location = profileInfo.Location;
         }
 
         public void UpdateSex(long userId, string sex)
         {
-            _users[userId].Profile.Sex = sex;
+            _users[userId].Profile.Info.Sex = sex;
         }
 
         public void UpdateSexPreference(long userId, string sexPreference)
         {
-            _users[userId].Profile.SexPreference = sexPreference;
+            _users[userId].Profile.Info.SexPreference = sexPreference;
         }
 
         public void UpdateRelatioshipStatus(long userId, string relationshipStatus)
         {
-            _users[userId].Profile.RelationshipStatus = relationshipStatus;
+            _users[userId].Profile.Info.RelationshipStatus = relationshipStatus;
         }
 
         public void UpdateAttitudeToAlcohol(long userId, string attitudeToAlcohol)
         {
-            _users[userId].Profile.AttitudeToAlcohol = attitudeToAlcohol;
+            _users[userId].Profile.Info.AttitudeToAlcohol = attitudeToAlcohol;
         }
 
         public void UpdateAttitudeToSmoking(long userId, string attitudeToSmoking)
         {
-            _users[userId].Profile.AttitudeToSmoking = attitudeToSmoking;
+            _users[userId].Profile.Info.AttitudeToSmoking = attitudeToSmoking;
+        }
+
+        public void UpdateInterests(long userId, HashSet<string> interests)
+        {
+            _users[userId].Profile.Interests = interests;
         }
 
         #endregion
@@ -164,7 +177,7 @@ namespace Matcha.Server.UsersCache
 
         public Dictionary<long, ProfileInfoModel> GetProfiles()
         {
-            return _users.ToDictionary(arg => arg.Key, arg => arg.Value.Profile);
+            return _users.ToDictionary(arg => arg.Key, arg => arg.Value.Profile.Info);
         }
 
         public Dictionary<long, HashSet<SessionModel>> GetSessions()
@@ -184,9 +197,16 @@ namespace Matcha.Server.UsersCache
 
         private sealed record UserCacheModel
         {
-            public ProfileInfoModel Profile { get; set; }
+            public UserCachedProfile Profile { get; set; }
 
             public Dictionary<long, SessionModel> Sessions { get; set; }
+        }
+
+        public sealed record UserCachedProfile
+        {
+            public ProfileInfoModel Info { get; set; }
+
+            public HashSet<string> Interests { get; set; }
         }
 
         public sealed record SessionModel
