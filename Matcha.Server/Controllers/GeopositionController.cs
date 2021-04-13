@@ -15,7 +15,7 @@ namespace Matcha.Server.Controllers
 {
     [Route("geoposition")]
     [ApiController]
-    [AuthorizeFilter]
+    //[AuthorizeFilter]
     [ExceptionHandlerFilter]
     public class GeopositionController : BaseMatchaController
     {
@@ -43,7 +43,7 @@ namespace Matcha.Server.Controllers
 
         public static async Task DetectAndSaveSessionGeopositionAsync(HttpRequest request, long userId, long sessionId)
         {
-            var OS = ParseUserAgent(request.Headers["User-Agent"].ToString());
+            var OS = ParseUserAgent(request.Headers["user-agent"].ToString());
             var IP = GetRequestIP(request)?.ToString();
 
             //TODO: после этого метода Request диспосается. Думаю дело в асинхронности
