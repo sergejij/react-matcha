@@ -200,6 +200,15 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK.ToResult();
         }
 
+        [HttpDelete]
+        [Route("photo")]
+        public IActionResult DeletePhoto([FromQuery][Required] int id)
+        {
+            MediaClient.MediaClient.Image.DeletePhoto(UserId, id);
+
+            return ResponseModel.OK.ToResult();
+        }
+
         [HttpGet]
         [Route("photos")]
         public IActionResult GetPhotos([FromQuery] long? userId)
