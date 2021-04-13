@@ -116,13 +116,15 @@ namespace Matcha.Server.UsersCache
             sessionRecord.CurrentGeoposition = new GeoCoordinate(location.Latitude, location.Longitude);
         }
 
-        public void SaveInitialSessionGeoposition(long userId, long sessionId, LocationModel location)
+        public void SaveInitialSessionGeoposition(long userId, long sessionId, LocationModel location, string IP, string OS)
         {
             var sessionRecord = _users[userId].Sessions[sessionId];
 
             sessionRecord.Country = location.Country;
             sessionRecord.City = location.City;
             sessionRecord.InitialGeoposition = new GeoCoordinate(location.Latitude, location.Longitude);
+            sessionRecord.IP = IP;
+            sessionRecord.OS = OS;
         }
 
         public void UpdateBiography(long userId, string biography)

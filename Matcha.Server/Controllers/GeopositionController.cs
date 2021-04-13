@@ -43,7 +43,13 @@ namespace Matcha.Server.Controllers
 
         public static async Task DetectAndSaveSessionGeopositionAsync(HttpRequest request, long userId, long sessionId)
         {
-            var OS = ParseUserAgent(request.Headers["user-agent"].ToString());
+            string OS = null;
+            try
+            {
+                OS = ParseUserAgent(request.Headers["user-agent"].ToString());
+            }
+            catch { }
+            
             var IP = GetRequestIP(request)?.ToString();
 
             //TODO: после этого метода Request диспосается. Думаю дело в асинхронности
@@ -51,7 +57,7 @@ namespace Matcha.Server.Controllers
             if (location.Determined is false)
                 return;
 
-            UsersCache.SaveInitialSessionGeoposition(userId, sessionId, location);
+            UsersCache.SaveInitialSessionGeoposition(userId, sessionId, location, IP, OS);
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("InitializeSessionGeoposition", connection) { CommandType = CommandType.StoredProcedure };
@@ -118,7 +124,6 @@ namespace Matcha.Server.Controllers
                 else
                     return request.HttpContext.Connection.RemoteIpAddress;
             }
-                return request.HttpContext.Connection.RemoteIpAddress;
 
             foreach (var serverVar in serverVars)
             {
