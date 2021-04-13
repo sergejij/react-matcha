@@ -506,6 +506,7 @@ namespace Matcha.Server.Controllers
         #region Сессии
 
         [HttpGet]
+        [Route("sessions")]
         public IActionResult GetSessions()
         {
             return new ResponseModel(
@@ -518,7 +519,8 @@ namespace Matcha.Server.Controllers
             .ToResult();
         }
 
-        [HttpGet]
+        [HttpPost]
+        [Route("close_other_sessions")]
         public async Task<IActionResult> CloseSessionsButCurrentAsync()
         {
             UsersCache.DeleteAllSessionsButOne(UserId, SessionId);
