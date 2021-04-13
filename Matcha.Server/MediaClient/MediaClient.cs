@@ -102,6 +102,14 @@ namespace Matcha.Server.MediaClient
                 }
             }
 
+            public static void DeletePhoto(long userId, int photoId)
+            {
+                var photoPath = Path.Combine(BaseDir, userId.ToString(), photoId.ToString());
+
+                if (File.Exists(photoPath))
+                    File.Delete(photoPath);
+            }
+
             #endregion
         }
     }

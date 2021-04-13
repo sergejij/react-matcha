@@ -9,12 +9,13 @@ using server.Response;
 using System.Data;
 using System.Net;
 using System.Threading.Tasks;
+using UAParser;
 
 namespace Matcha.Server.Controllers
 {
     [Route("geoposition")]
     [ApiController]
-    [AuthorizeFilter]
+    //[AuthorizeFilter]
     [ExceptionHandlerFilter]
     public class GeopositionController : BaseMatchaController
     {
@@ -42,11 +43,21 @@ namespace Matcha.Server.Controllers
 
         public static async Task DetectAndSaveSessionGeopositionAsync(HttpRequest request, long userId, long sessionId)
         {
+            string OS = null;
+            try
+            {
+                OS = ParseUserAgent(request.Headers["user-agent"].ToString());
+            }
+            catch { }
+            
+            var IP = GetRequestIP(request)?.ToString();
+
+            //TODO: после этого метода Request диспосается. Думаю дело в асинхронности
             var location = await DetectClientGeopositionAsync(request);
             if (location.Determined is false)
                 return;
 
-            UsersCache.SaveInitialSessionGeoposition(userId, sessionId, location);
+            UsersCache.SaveInitialSessionGeoposition(userId, sessionId, location, IP, OS);
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("InitializeSessionGeoposition", connection) { CommandType = CommandType.StoredProcedure };
@@ -57,7 +68,9 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("country", location.Country),
                 new MySqlParameter("city", location.City),
                 new MySqlParameter("longitude", location.Longitude),
-                new MySqlParameter("latitude", location.Latitude)
+                new MySqlParameter("latitude", location.Latitude),
+                new MySqlParameter("OS", OS),
+                new MySqlParameter("IP", IP)
             });
 
             connection.Open();
@@ -65,6 +78,13 @@ namespace Matcha.Server.Controllers
         }
 
         #region Вспомогательные методы
+
+        private static string ParseUserAgent(string userAgent)
+        {
+            var parser = Parser.GetDefault();
+
+            return parser.ParseOS(userAgent).ToString();
+        }
 
         private static async Task<LocationModel> DetectClientGeopositionAsync(HttpRequest request)
         {
@@ -74,10 +94,6 @@ namespace Matcha.Server.Controllers
                 return LocationModel.Unknown;
             else
             {
-                // TODO: remove
-                if (IP.ToString().Equals("127.0.0.1"))
-                    IP = IPAddress.Parse("195.170.42.12");
-
                 var apiUri = $"http://ip-api.com/json/{IP}?fields=status,country,city,lat,lon&lang=ru";
 
                 var response = await new WebClient().DownloadStringTaskAsync(apiUri);
@@ -101,14 +117,26 @@ namespace Matcha.Server.Controllers
         private static IPAddress GetRequestIP(HttpRequest request)
         {
             if (request.HttpContext.Connection.RemoteIpAddress is not null)
-                return request.HttpContext.Connection.RemoteIpAddress;
+            {
+                // TODO: remove
+                if (request.HttpContext.Connection.RemoteIpAddress.ToString().Equals("127.0.0.1"))
+                    return IPAddress.Parse("195.170.42.12");
+                else
+                    return request.HttpContext.Connection.RemoteIpAddress;
+            }
 
             foreach (var serverVar in serverVars)
             {
                 var value = request.HttpContext.GetServerVariable(serverVar);
 
                 if (value is not null)
+                {
+                    // TODO: remove
+                    if (value.Equals("127.0.0.1"))
+                        value = "195.170.42.12";
+
                     return IPAddress.Parse(value);
+                }
             }
 
             return null;

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Dynamic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -196,6 +197,15 @@ namespace Matcha.Server.Controllers
         public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
         {
             MediaClient.MediaClient.Image.SavePhoto(UserId, photo);
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        [HttpDelete]
+        [Route("photo")]
+        public IActionResult DeletePhoto([FromQuery][Required] int id)
+        {
+            MediaClient.MediaClient.Image.DeletePhoto(UserId, id);
 
             return ResponseModel.OK.ToResult();
         }
@@ -499,6 +509,58 @@ namespace Matcha.Server.Controllers
                                                                   { "interests", UsersCache.GetUserInterests(userId.Value) }
                                                               })
                 .ToResult();
+        }
+
+        #endregion
+
+        #region Сессии
+
+        [HttpGet]
+        [Route("sessions")]
+        public IActionResult GetSessions()
+        {
+            var sessionsDict = UsersCache.GetSessionsByUserId(UserId);
+
+            var dyns = new List<dynamic>();
+
+            foreach ((var session_id, var session_model) in sessionsDict)
+            {
+
+                dynamic dyn = new ExpandoObject();
+                dyn.id = session_id;
+                dyn.IP = session_model.IP;
+                dyn.OS = session_model.OS;
+                dyn.Country = session_model.Country;
+                dyn.City = session_model.City;
+
+                dyns.Add(dyn);
+            }
+
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "sessions", dyns }
+                })
+            .ToResult();
+        }
+
+        [HttpPost]
+        [Route("close_other_sessions")]
+        public async Task<IActionResult> CloseSessionsButCurrentAsync()
+        {
+            UsersCache.DeleteAllSessionsButOne(UserId, SessionId);
+
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.Add(new MySqlParameter("untouchable_session_id", SessionId));
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            return ResponseModel.OK.ToResult();
         }
 
         #endregion

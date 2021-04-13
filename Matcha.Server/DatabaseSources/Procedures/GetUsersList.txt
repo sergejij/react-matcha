@@ -59,6 +59,8 @@ BEGIN
         location.initial_longitude,
         location.current_latitude,
         location.current_longitude,
+        location.OS,
+        location.IP,
         sessions.user_id
     FROM
         sessions_geopositions AS location

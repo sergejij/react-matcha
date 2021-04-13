@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Matcha.Server.Models.Profile;
+using System;
 using System.Data;
 
 namespace Matcha.Server.Extensions
@@ -33,6 +34,21 @@ namespace Matcha.Server.Extensions
                 return default;
             else
                 return Convert.ToInt32(value);
+        }
+
+        public static GeoCoordinate TryParseGeoCoordinate(this IDataReader reader, string latitudeField, string longitudeField)
+        {
+            try
+            {
+                return new GeoCoordinate(
+                    Convert.ToDouble(reader[latitudeField]),
+                    Convert.ToDouble(reader[longitudeField])
+                );
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

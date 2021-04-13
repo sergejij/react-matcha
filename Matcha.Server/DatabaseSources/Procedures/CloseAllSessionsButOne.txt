@@ -1,0 +1,10 @@
+﻿CREATE PROCEDURE CloseAllSessionsButOne (
+    untouchable_session_id BIGINT
+)
+BEGIN
+
+    DELETE
+    FROM sessions
+    WHERE sessions.session_id != untouchable_session_id;
+
+END
