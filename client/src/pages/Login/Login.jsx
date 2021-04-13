@@ -56,7 +56,7 @@ export default () => {
       </Header>
       <Content>
         <Headline style={{ color: COLORS.PINK }}>Найди свою судьбу</Headline>
-        <Button view="main" size="L" onClick={toggleRegistrationForm}>Создать аккаунт</Button>
+        <Button view="main" size={window.innerWidth > 400 ? "L" : "M"} onClick={toggleRegistrationForm}>Создать аккаунт</Button>
       </Content>
       <Footer>
         <Text>copyright © 2021. ubartemi - dbendu</Text>

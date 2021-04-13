@@ -4,10 +4,16 @@ import COLORS from '../../constants';
 export const ChatsAsideStyled = styled.div`
   width: 300px;
   position: sticky;
-  height: 100vh;
+  height: 100%;
   box-shadow: 0 0 4px 0 rgba(93, 83, 94, 0.32);
   background-color: ${COLORS.LIGHT_GRAY};
   top: 0;
+
+  @media (max-width: 900px) {
+    position: fixed;
+    width: 50px;
+    padding-top: 30px;
+  }
 `;
 
 export const ChatsAsideHeader = styled.div`

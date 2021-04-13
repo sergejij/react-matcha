@@ -1,11 +1,10 @@
 import React from 'react';
 import WallpaperIcon from '@material-ui/icons/Wallpaper';
 import { ProfilePhotoStyled } from './styled';
-import { usersAPI } from '../../../api/api';
+import {userPhotosApi} from '../../../api/api';
 import { MyLink } from '../../../styled';
 import COLORS from '../../../constants';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-
 
 const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber }) => {
   const uploadPhoto = (e) => {
@@ -14,7 +13,7 @@ const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber }) => {
 
     formData.append('avatar', file);
 
-    usersAPI.uploadProfileAvatar(formData)
+      userPhotosApi.putAvatar(formData)
       .then(
         (data) => {
           console.log(data);

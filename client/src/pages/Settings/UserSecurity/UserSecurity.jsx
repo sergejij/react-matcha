@@ -111,7 +111,7 @@ const UserSecurity = () => {
           />
         </label>
 
-        <Button onClick={changeEmail} view="main" size="M" color="yellow">
+        <Button onClick={changeEmail} view="main" size={window.innerWidth > 700 ? "M" : "S"} color="yellow">
           Сохранить
         </Button>
       </SettingsDataRow>
@@ -135,7 +135,7 @@ const UserSecurity = () => {
         </SettingsPasswords>
 
 
-        <Button onClick={changeLogin} view="main" size="M" color="yellow">
+        <Button onClick={changeLogin} view="main" size={window.innerWidth > 700 ? "M" : "S"} color="yellow">
           Сохранить
         </Button>
       </SettingsDataRow>
@@ -153,7 +153,7 @@ const UserSecurity = () => {
         </label>
         </SettingsPasswords>
 
-        <Button onClick={changePassword} view="main" size="M" color="yellow">
+        <Button onClick={changePassword} view="main" size={window.innerWidth > 700 ? "M" : "S"} color="yellow">
           Сохранить
         </Button>
       </SettingsDataRow>

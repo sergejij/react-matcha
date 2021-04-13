@@ -43,6 +43,13 @@ export const Footer = styled.div`
 export const Headline = styled.h1`
   font-size: 5em;
   margin-bottom: 90px;
+
+  @media (max-width: 800px) and (min-width: 500px) {
+    font-size: 3em;
+  }
+  @media (max-width: 500px) and (min-width: 100px) {
+    font-size: 2em;
+  }
 `;
 
 export const Modal = styled.div`
@@ -79,6 +86,13 @@ export const LoginFormStyled = styled.div`
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
   padding: 5px;
+
+  @media (max-width: 500px) and (min-width: 100px) {
+    width: 200px;
+    height: 300px;
+    margin-left: -100px;
+    margin-top: -150px;
+  }
   
   & svg {
     position: absolute;
@@ -121,7 +135,19 @@ export const RegistrationFormStyled = styled.div`
   padding: 5px;
   background-color: ${COLORS.LIGHT_GRAY};
   border-radius: 13px;
-  
+
+  @media (max-width: 500px) and (min-width: 400px) {
+    width: 300px;
+    height: 500px;
+    margin-left: -150px;
+    margin-top: -250px;
+  }
+  @media (max-width: 400px) and (min-width: 100px) {
+    width: 250px;
+    height: 400px;
+    margin-left: -125px;
+    margin-top: -200px;
+  }
   & svg {
     position: absolute;
     top: 5%;

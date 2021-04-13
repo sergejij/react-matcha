@@ -24,17 +24,39 @@ const ProfileTabs = ({ userData, id }) => {
   return (
     <Tabs defaultIndex={0}>
       <ProfileTabsStyled>
-        {
-          tabs.map((tab, index) => (
-            <ProfileTabsLink
-              key={`${tab}_${index}`}
-              onClick={(e) => tabClick(e, index)}
-              className={activeTabs === index && 'active'}
-            >
-              {tab}
-            </ProfileTabsLink>
-          ))
-        }
+          <ProfileTabsLink
+              key="photo{0}"
+              onClick={() => setActiveTabs(0)}
+              className={activeTabs === 0 && 'active'}
+          >
+              Фото
+          </ProfileTabsLink>
+          <ProfileTabsLink
+              key="photo{1}"
+              onClick={() => setActiveTabs(1)}
+              className={activeTabs === 1 && 'active'}
+          >
+              Информация
+          </ProfileTabsLink>
+          { id === localStorage.getItem('id') &&
+              <>
+                  <ProfileTabsLink
+                      key="photo{2}"
+                      onClick={() => setActiveTabs(2)}
+                      className={activeTabs === 2 && 'active'}
+                  >
+                      Посетители
+                  </ProfileTabsLink>
+                  <ProfileTabsLink
+                      key="photo{3}"
+                      onClick={() => setActiveTabs(3)}
+                      className={activeTabs === 3 && 'active'}
+                  >
+                      Лайки
+                  </ProfileTabsLink>
+              </>
+          }
+
       </ProfileTabsStyled>
 
       <TabPanel>

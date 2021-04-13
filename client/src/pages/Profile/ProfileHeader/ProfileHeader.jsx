@@ -1,7 +1,7 @@
 import React from 'react';
 import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
 import Button from '../../../components/Button';
-import { usersAPI } from '../../../api/api';
+import {userPhotosApi} from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
 const getAge = (year) => {
@@ -20,7 +20,7 @@ const ProfileHeader = ({ userData, id }) => {
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
-    usersAPI.getProfileAvatar()
+    userPhotosApi.getAvatar()
       .then(
         (data) => {
             setUserAvatar('data:image/bmp;base64,' + data.data.Content.avatar);
@@ -51,10 +51,10 @@ const ProfileHeader = ({ userData, id }) => {
           <span>{`${getAge(userData.age)}`}</span>
         </p>
 
-        <Buttons>
+        {id !== localStorage.getItem('id') && <Buttons>
           <Button size="S" like view="out"/>
           <Button size="S" dislike view="main"/>
-        </Buttons>
+        </Buttons>}
       </div>
     </ProfileHeaderBox>
   );

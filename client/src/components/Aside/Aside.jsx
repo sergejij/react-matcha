@@ -12,12 +12,12 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setCurrentUserId, isChat,
+  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setCurrentUserId, isChat, isMobile
 }) => (
   <ChatsAsideStyled>
-    <ChatsAsideHeader>
+    {!isMobile && <ChatsAsideHeader>
       <span>{headline}</span>
-    </ChatsAsideHeader>
+    </ChatsAsideHeader>}
     {
       isSearch && (
         <FilterBox onClick={onClickFilter}>
@@ -29,16 +29,16 @@ const Aside = ({
       {
         isSettings ? (
           <>
-            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting="Данные пользователя">
+            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting={!isMobile && "Данные пользователя"}>
               <PersonOutlineIcon />
             </SettingsItem>
-            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting="Безопасность пользователя">
+            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting={!isMobile && "Безопасность пользователя"}>
               <SecurityIcon />
             </SettingsItem>
-            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting="Фото пользователя">
+            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting={!isMobile && "Фото пользователя"}>
               <CropOriginalIcon />
             </SettingsItem>
-            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting="Активные сессии">
+            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting={!isMobile && "Активные сессии"}>
               <SettingsInputCompositeIcon />
             </SettingsItem>
 

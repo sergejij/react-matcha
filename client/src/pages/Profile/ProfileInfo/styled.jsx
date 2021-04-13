@@ -99,9 +99,17 @@ export const ProfileInfoPairs = styled.div`
   }
   @media (max-width: 700px) and (min-width: 500px) {
     width: 300px;
+    font-size: 15px;
+    p {
+      line-height: 20px;
+    }
   }
   @media (max-width: 500px) and (min-width: 200px) {
     width: 200px;
+    font-size: 13px;
+    p {
+      line-height: 16px;
+    }
   }
 `;
 
@@ -138,6 +146,10 @@ export const ProfileInterestsStyled = styled.div`
   align-items: center;
   gap: 1em 3em;
   margin-bottom: 30px;
+
+  @media (max-width: 500px) and (min-width: 200px) {
+    font-size: 14px;
+  }
 `;
 
 export const ProfileInterest = styled.div`

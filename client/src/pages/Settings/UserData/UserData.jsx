@@ -4,10 +4,10 @@ import {
   SettingsDataHeaderBoxStyled,
   SettingsDataHeaderPhotoImg,
   SettingsDataRow, ShareLocationStyled,
-  SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit, UserDataStyled,
+  SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit,
 } from './styled';
 import Button from '../../../components/Button';
-import { userAuthApi, userInfoApi, userPhotosApi, usersAPI } from '../../../api/api';
+import { userInfoApi, userPhotosApi, usersAPI } from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
 const SettingsDataHeaderBox = ({ userData }) => (
@@ -160,7 +160,7 @@ const SettingsData = () => {
         setIsSharedLocation={setIsSharedLocation}
       />
 
-      <Button onClick={changeUserInfo} view="main" size="M" color="yellow">
+      <Button onClick={changeUserInfo} view="main" size={window.innerWidth > 700 ? 'M' : window.innerWidth > 500 ? 'S' : 'XS'} color="yellow">
         Сохранить
       </Button>
     </SettingsDataStyled>
@@ -211,7 +211,7 @@ const UserData = () => {
 
     formData.append('avatar', file);
 
-    usersAPI.uploadProfileAvatar(formData)
+      userPhotosApi.putAvatar(formData)
       .then(() => {
         userPhotosApi
           .getAvatar()

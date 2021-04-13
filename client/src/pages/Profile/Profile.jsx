@@ -7,7 +7,7 @@ import ProfilePage from './styled';
 import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 import ModalAddData from '../../components/ModalAddData/ModalAddData';
-import { userInfoApi, usersAPI } from '../../api/api';
+import {userInfoApi, userPhotosApi} from '../../api/api';
 
 export default () => {
   const id = useParams().id;
@@ -43,7 +43,7 @@ export default () => {
   }, []);
 
   React.useEffect(() => {
-    usersAPI.getProfileAvatar()
+      userPhotosApi.getAvatar()
       .then(
       ({ data }) => {
           setIsProfilePhotoEmpty(data.Content.avatar == null);
@@ -62,9 +62,8 @@ export default () => {
     return <Redirect to="/login" />;
   }
 
-  console.log("123:", isRequiredEmpty, isProfilePhotoEmpty);
   return (
-      isRequiredEmpty || isProfilePhotoEmpty /*true*/ ? (
+      isRequiredEmpty || isProfilePhotoEmpty ? (
           (Object.keys(userData).length !== 0) &&
           <ModalAddData setIsRequiredEmpty={setIsRequiredEmpty} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} userData={userData} />
       ) : (

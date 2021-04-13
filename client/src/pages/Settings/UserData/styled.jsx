@@ -4,12 +4,12 @@ import COLORS from '../../../constants';
 
 export const SettingsPage = styled.div`
   width: calc(100% - 300px);
-  margin: 3% auto 0;
-`;
-
-export const UserDataStyled = styled.div`
-  width: 50%;
-  margin: 3% auto 0;
+  margin: 3% auto 3%;
+  overflow: hidden;
+  @media (max-width: 900px) and (min-width: 100px){
+    width: calc(100% - 50px);
+    margin-right: 0;
+  }
 `;
 
 export const SettingsDataHeaderBoxStyled = styled.div`
@@ -29,12 +29,59 @@ export const SettingsDataHeaderBoxStyled = styled.div`
       margin-left: 40px;
     }
   }
+
+  @media (max-width: 1600px) and (min-width: 1300px){
+    h2 {
+      font-size: 26px;
+    }
+  }
+
+  @media (max-width: 1400px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  @media (max-width: 1300px) and (min-width: 1000px) {
+    h2 {
+      font-size: 22px;
+    }
+  }
+
+  @media (max-width: 1000px) and (min-width: 500px) {
+    h2 {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    h2 {
+      font-size: 14px;
+    }
+  }
 `;
 
 export const SettingsDataHeaderPhotoContainer = styled.div`
   position: relative;
   width: 200px;
   margin-right: 50px;
+
+  @media (max-width: 1600px) and (min-width: 1400px){
+      width: 150px;
+  }
+
+  @media (max-width: 1400px) and (min-width: 1000px) {
+      width: 130px;
+      margin-right: 0;
+  }
+
+  @media (max-width: 1000px) and (min-width: 500px) {
+    width: 100px;
+    margin-right: 0;
+  }
+
+  @media (max-width: 500px) {
+    width: 90px;
+    margin-right: 0;
+  }
 `;
 
 export const SettingsDataHeaderPhotoImg = styled.img`
@@ -88,6 +135,50 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
     transition: .2s ease-in-out;
     background-color: ${darken(0.2, COLORS.YELLOW)};
   }
+
+  @media (max-width: 1600px) and (min-width: 1400px){
+    top: 62%;
+    left: 62%;
+    width: 35px;
+    height: 35px;
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  @media (max-width: 1400px) and (min-width: 1000px) {
+    top: 60%;
+    left: 60%;
+    width: 30px;
+    height: 30px;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  @media (max-width: 1000px) and (min-width: 500px) {
+    top: 58%;
+    left: 58%;
+    width: 25px;
+    height: 25px;
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    top: 55%;
+    left: 55%;
+    width: 25px;
+    height: 25px;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
 
 export const SettingsDataStyled = styled.div`
@@ -107,6 +198,9 @@ export const SettingsDataRow = styled.div`
   
   @media screen and (max-width: 1100px) {
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
   }
   
   & label {
@@ -126,16 +220,36 @@ export const SettingsDataRow = styled.div`
       font-size: 16px;
       color: black;
       
-      @media screen and (max-width: 1700px) {
+      @media (max-width: 1700px) and (min-width: 1500px) {
         width: 250px;
       }
       
-      @media screen and (max-width: 1500px) {
+      @media (max-width: 1500px) and (min-width: 1300px){
         width: 200px;
       }
       
-      @media screen and (max-width: 1300px) {
+      @media (max-width: 1300px) and (min-width: 1100px) {
         width: 150px;
+      }
+      
+      @media (max-width: 1100px) and (min-width: 600px) {
+        width: 300px;
+      }
+
+      @media (max-width: 600px) and (min-width: 450px) {
+        width: 250px;
+      }
+      
+      @media (max-width: 450px) and (min-width: 350px) {
+        width: 200px;
+      }
+      
+      @media (max-width: 350px) and (min-width: 50px) {
+        width: 150px;
+      }
+
+      @media screen and (max-width: 1100px) {
+        margin-bottom: 30px;
       }
     }
   }
@@ -148,6 +262,10 @@ export const SettingsPasswords = styled.div`
   justify-content: space-between;
   height: 170px;
   margin-top: 60px;
+
+  @media (max-width: 1100px) {
+    margin-bottom: 40px;
+  }
 `;
 
 export const ShareLocationStyled = styled.div`
@@ -158,8 +276,16 @@ export const ShareLocationStyled = styled.div`
   width: 100%;
   
   & label {
-    margin-left: 20px;
     font-size: 18px;
     color: ${COLORS.DARK};
+    padding-left: 10px;
+    @media (max-width: 500px) and (min-width: 100px) {
+      font-size: 14px;
+    }
   }
+
+  @media (max-width: 1100px) and (min-width: 100px) {
+    margin-top: 0;
+  }
+  
 `;

@@ -4,23 +4,26 @@ import COLORS from '../../../constants';
 export const SessionBlockStyled = styled.div`
   display: flex;
   align-items: center;
-  width: 70%;
+  width: 600px;
   margin-bottom: 20px;
   
   & svg {
     margin: 40px;
     color: ${COLORS.DARK};
-    
-    
-  }
-  
-  & div {
   }
   
   & .close {
     margin-left: auto;
     cursor:pointer;
     color: red;
+  }
+
+  @media (max-width: 1100px) and (min-width: 600px) {
+    width: 400px;
+  }
+  
+  @media (max-width: 600px) and (min-width: 100px) {
+    width: 300px;
   }
   
   transition: .2s ease-in-out;
