@@ -6,7 +6,11 @@ export const ProfileInfoStyled = styled.div`
   justify-content: space-between;
   margin-top: 5%;
   margin-bottom: 5%;
-  
+
+  @media (max-width: 1000px) and (min-width: 200px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const UpdateField = styled.div`
@@ -70,6 +74,7 @@ export const ProfileInfoPairs = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  padding-bottom: 40px;
   
   & div {
     display: flex;
@@ -88,6 +93,16 @@ export const ProfileInfoPairs = styled.div`
       color: black;
     }
   }
+
+  @media (max-width: 1000px) and (min-width: 700px) {
+    width: 500px;
+  }
+  @media (max-width: 700px) and (min-width: 500px) {
+    width: 300px;
+  }
+  @media (max-width: 500px) and (min-width: 200px) {
+    width: 200px;
+  }
 `;
 
 export const ProfileInfoBio = styled.div`
@@ -99,6 +114,19 @@ export const ProfileInfoBio = styled.div`
   p {
     display: inline;
     word-break: break-all;
+  }
+  
+  padding: 30px;
+
+  @media (max-width: 1000px) and (min-width: 700px) {
+    width: 500px;
+  }
+  @media (max-width: 700px) and (min-width: 500px) {
+    width: 300px;
+  }
+  @media (max-width: 500px) and (min-width: 200px) {
+    font-size: 15px;
+    width: 200px;
   }
 `;
 

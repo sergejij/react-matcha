@@ -40,7 +40,7 @@ const ProfileHeader = ({ userData, id }) => {
   }
 
   return (
-    <ProfileHeaderBox>
+    <ProfileHeaderBox isNeedWrap={window.innerWidth < 500}>
       <ProfileHeaderPhoto src={userAvatar} alt="Фото профиля" />
 
       <div>
@@ -52,8 +52,8 @@ const ProfileHeader = ({ userData, id }) => {
         </p>
 
         <Buttons>
-          <Button size="S" view="out">Не нравится</Button>
-          <Button size="S" view="main">Нравится</Button>
+          <Button size="S" like view="out"/>
+          <Button size="S" dislike view="main"/>
         </Buttons>
       </div>
     </ProfileHeaderBox>

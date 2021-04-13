@@ -7,6 +7,7 @@ export const ProfileTabsStyled = styled(TabList)`
   display:flex;
   justify-content: space-evenly;
   margin-top: 5%;
+  margin-bottom: 40px;
 `;
 
 export const ProfileTabsLink = styled(Tab)`
@@ -16,6 +17,15 @@ export const ProfileTabsLink = styled(Tab)`
   cursor: pointer;
   position: relative;
   list-style: none;
+  margin-right: 10px;
+
+  @media (max-width: 900px) and (min-width: 600px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
   
   &.active:after {
     width: 100%;
