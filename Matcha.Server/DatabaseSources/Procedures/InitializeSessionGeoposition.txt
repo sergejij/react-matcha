@@ -3,7 +3,9 @@
 	country VARCHAR(128),
 	city VARCHAR(128),
 	longitude DOUBLE,
-	latitude DOUBLE
+	latitude DOUBLE,
+	OS VARCHAR(64),
+	IP VARCHAR(64)
 )
 
 BEGIN
@@ -12,7 +14,9 @@ BEGIN
 		sessions_geopositions.country = country,
 		sessions_geopositions.city = city,
 		sessions_geopositions.initial_longitude = longitude,
-		sessions_geopositions.initial_latitude = latitude
+		sessions_geopositions.initial_latitude = latitude,
+		sessions_geopositions.OS = OS,
+		sessions_geopositions.IP = IP
 	WHERE
 		sessions_geopositions.session_id = session_id;
 END

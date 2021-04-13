@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Dynamic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -518,12 +519,31 @@ namespace Matcha.Server.Controllers
         [Route("sessions")]
         public IActionResult GetSessions()
         {
+            var sessionsDict = UsersCache.GetSessionsByUserId(UserId);
+
+            var dyns = new List<dynamic>();
+
+            foreach ((var session_id, var session_model) in sessionsDict)
+            {
+
+                dynamic dyn = new ExpandoObject();
+                dyn.id = session_id;
+                dyn.IP = session_model.IP;
+                dyn.OS = session_model.OS;
+                dyn.Country = session_model.Country;
+                dyn.City = session_model.City;
+                dyn.InitialGeoposition = session_model.InitialGeoposition;
+                dyn.CurrentGeoposition = session_model.CurrentGeoposition;
+
+                dyns.Add(dyn);
+            }
+
             return new ResponseModel(
                 HttpStatusCode.OK,
                 null,
                 new Dictionary<string, object>
                 {
-                    { "sessions", UsersCache.GetSessionsByUserId(UserId) }
+                    { "sessions", dyns }
                 })
             .ToResult();
         }

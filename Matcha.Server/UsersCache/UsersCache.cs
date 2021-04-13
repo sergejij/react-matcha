@@ -242,6 +242,10 @@ namespace Matcha.Server.UsersCache
 
         public sealed record SessionModel
         {
+            public string OS { get; set; }
+
+            public string IP { get; set; }
+
             public string Country { get; set; }
 
             public string City { get; set; }

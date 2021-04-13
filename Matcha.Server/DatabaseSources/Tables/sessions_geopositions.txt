@@ -6,6 +6,8 @@
 	initial_latitude DOUBLE,
 	current_longitude DOUBLE,
 	current_latitude DOUBLE,
+	OS VARCHAR(64),
+	IP VARCHAR(64),
 
 	PRIMARY KEY(session_id),
 	FOREIGN KEY(session_id) REFERENCES sessions(session_id) ON DELETE CASCADE

@@ -109,7 +109,7 @@ namespace Matcha.Server.Controllers
 
 
                 default:
-                    throw new System.Exception();
+                    throw new Exception();
             }
 
             usersList = usersList.Skip(skip).Take(take);
