@@ -3,6 +3,7 @@ using Matcha.Server.Models.Profile;
 using Matcha.Server.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 using server.Response;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -62,6 +63,30 @@ namespace Matcha.Server.Controllers
 
                 case OrderMethodsEnum.Distance:
                 {
+                        //var me = UsersCache.GetUserCacheModel(UserId);
+                        //var myCurrentSession = me.Sessions[SessionId];
+
+                        //if (myCurrentSession.CurrentGeoposition is null && myCurrentSession.InitialGeoposition is null)
+                        //    return null; // return orderbiyd
+
+                        //var myGeoposition = myCurrentSession.CurrentGeoposition ?? myCurrentSession.InitialGeoposition;
+
+
+                        //var data = UsersCache.GetUsersCache().Where(arg => arg.Key != UserId);
+
+                        //var profilesWithNearestSession = new Dictionary<ProfileInfoModel, double>();
+                        //foreach ((var user_id, var user_data) in data)
+                        //{
+                        //    var sessionsList = user_data.Sessions.Values;
+
+                        //    var sessionsWithDistance = sessionsList
+                        //        .Where(arg => arg.CurrentGeoposition is not null || arg.InitialGeoposition is not null)
+                        //        .Select(arg => (arg, arg.CurrentGeoposition is not null ? ))
+                                //.Select(arg => (arg, arg.)
+
+                            //sessionsList.Select()
+                        //}
+                            //.GroupBy(arg => arg.)
                         //var sessions = UsersCache.GetSessions();
                         //usersList = UsersCache.GetProfiles()
 

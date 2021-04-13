@@ -502,5 +502,38 @@ namespace Matcha.Server.Controllers
         }
 
         #endregion
+
+        #region Сессии
+
+        [HttpGet]
+        public IActionResult GetSessions()
+        {
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "sessions", UsersCache.GetSessionsByUserId(UserId) }
+                })
+            .ToResult();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CloseSessionsButCurrentAsync()
+        {
+            UsersCache.DeleteAllSessionsButOne(UserId, SessionId);
+
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.Add(new MySqlParameter("untouchable_session_id", SessionId));
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        #endregion
     }
 }

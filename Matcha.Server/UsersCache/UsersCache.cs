@@ -1,5 +1,6 @@
 ﻿using Matcha.Server.Extensions;
 using Matcha.Server.Models.Profile;
+using Matcha.Server.Models.Users;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -71,10 +72,8 @@ namespace Matcha.Server.UsersCache
                 {
                     Country = reader.StringOrEmpty("country"),
                     City = reader.StringOrEmpty("city"),
-                    InitialLongitude = reader.NullableDouble("initial_longitude"),
-                    InitialLatitude =  reader.NullableDouble("initial_latitude"),
-                    CurrentLongitude = reader.NullableDouble("current_longitude"),
-                    CurrentLatitude = reader.NullableDouble("current_latitude")
+                    InitialGeoposition = reader.TryParseGeoCoordinate("initial_latitude", "initial_longitude"),
+                    CurrentGeoposition = reader.TryParseGeoCoordinate("current_latitude", "current_longitude")
                 });
             }
         }
@@ -102,12 +101,19 @@ namespace Matcha.Server.UsersCache
             _users[userId].Sessions.Remove(sessionId);
         }
 
+        public void DeleteAllSessionsButOne(long userId, long sessionId)
+        {
+            var untouchableSession = _users[userId].Sessions[sessionId];
+
+            _users[userId].Sessions.Clear();
+            _users[userId].Sessions.Add(sessionId, untouchableSession);
+        }
+
         public void UpdateGeolocation(long userId, long sessionId, LocationModel location)
         {
             var sessionRecord = _users[userId].Sessions[sessionId];
 
-            sessionRecord.CurrentLatitude = location.Latitude;
-            sessionRecord.CurrentLongitude = location.Longitude;
+            sessionRecord.CurrentGeoposition = new GeoCoordinate(location.Latitude, location.Longitude);
         }
 
         public void SaveInitialSessionGeoposition(long userId, long sessionId, LocationModel location)
@@ -116,8 +122,7 @@ namespace Matcha.Server.UsersCache
 
             sessionRecord.Country = location.Country;
             sessionRecord.City = location.City;
-            sessionRecord.InitialLatitude = location.Latitude;
-            sessionRecord.InitialLongitude = location.Longitude;
+            sessionRecord.InitialGeoposition = new GeoCoordinate(location.Latitude, location.Longitude);
         }
 
         public void UpdateBiography(long userId, string biography)
@@ -190,6 +195,22 @@ namespace Matcha.Server.UsersCache
             return _users.ToDictionary(arg => arg.Key, arg => arg.Value.Sessions.Values.ToHashSet());
         }
 
+        public Dictionary<long, SessionModel> GetSessionsByUserId(long userId)
+        {
+            return _users[userId].Sessions;
+        }
+
+        public Dictionary<long, UserCacheModel> GetUsersCache()
+        {
+            return _users;
+        }
+
+        public UserCacheModel GetUserCacheModel(long userId)
+        {
+            return _users[userId];
+        }
+
+
         public HashSet<string> GetUserInterests(long userId)
         {
             return _users[userId].Profile.Interests;
@@ -205,7 +226,7 @@ namespace Matcha.Server.UsersCache
 
         #region Структуры
 
-        private sealed record UserCacheModel
+        public sealed record UserCacheModel
         {
             public UserCachedProfile Profile { get; set; }
 
@@ -225,13 +246,9 @@ namespace Matcha.Server.UsersCache
 
             public string City { get; set; }
 
-            public double? InitialLatitude { get; set; }
+            public GeoCoordinate InitialGeoposition { get; set; }
 
-            public double? InitialLongitude { get; set; }
-
-            public double? CurrentLatitude { get; set; }
-
-            public double? CurrentLongitude { get; set; }
+            public GeoCoordinate CurrentGeoposition { get; set; }
         }
 
         #endregion
