@@ -532,8 +532,6 @@ namespace Matcha.Server.Controllers
                 dyn.OS = session_model.OS;
                 dyn.Country = session_model.Country;
                 dyn.City = session_model.City;
-                dyn.InitialGeoposition = session_model.InitialGeoposition;
-                dyn.CurrentGeoposition = session_model.CurrentGeoposition;
 
                 dyns.Add(dyn);
             }
