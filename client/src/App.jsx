@@ -27,8 +27,6 @@ function App() {
   function sendGeoPosition(position) {
     const {latitude, longitude} = position.coords;
 
-    console.log(position);
-
     userInfoApi
       .sendLocation(latitude, longitude)
       .then(
@@ -49,8 +47,6 @@ function App() {
   }
 
   intervalId = setInterval(() => {
-    console.log("EVERE 5 seconds");
-    console.log(localStorage.getItem('id'));
     if (localStorage.getItem('id')) {
       navigator.geolocation.getCurrentPosition(
         sendGeoPosition,
@@ -58,7 +54,7 @@ function App() {
           enableHighAccuracy: true,
         })
     }
-  }, 5000);
+  }, 5000000);
 
   React.useEffect(() => {
     axios.get('http://localhost:3000/db.json')

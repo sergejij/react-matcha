@@ -7,19 +7,23 @@ import ProfilePage from './styled';
 import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 import ModalAddData from '../../components/ModalAddData/ModalAddData';
-import {userInfoApi, userPhotosApi} from '../../api/api';
+import {userInfoApi, userPhotosApi, usersApi} from '../../api/api';
 
-export default () => {
-  const id = useParams().id;
+export default ({ userId }) => {
+  const id = userId || useParams().id;
+
+  console.log("IDD:", id);
   const [isRequiredEmpty, setIsRequiredEmpty] = React.useState(false);
   const [isProfilePhotoEmpty, setIsProfilePhotoEmpty] = React.useState(false);
   const [userData, setUserData] = React.useState({});
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
+  const myId = localStorage.getItem('id');
 
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(
         (data) => {
+            console.log("DATAAAAAAAAAAAAAAAA:", data);
           setAmIAuthorized(() => true);
           setUserData(data.data.Content);
           if (!(!!data.data.Content.sex &&
@@ -40,7 +44,7 @@ export default () => {
         }
       },
       (err) => console.error('Error getUserInfo:', err));
-  }, []);
+  }, [id]);
 
   React.useEffect(() => {
       userPhotosApi.getAvatar()
@@ -60,6 +64,18 @@ export default () => {
 
   if (!amIAuthorized) {
     return <Redirect to="/login" />;
+  }
+
+  if (myId !== id) {
+      usersApi
+          .putVisit(id)
+          .then(
+              () => {
+
+                  },
+              (err) => console.error("ERROR putVisit:", err)
+          )
+          .catch((err) => console.error("ERROR putVisit:", err))
   }
 
   return (

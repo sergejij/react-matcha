@@ -2,7 +2,7 @@ import React from 'react';
 import { AsideItem, AsidePhoto } from './styled';
 
 const User = ({
-  name, img, isActive, chooseConversation, id, isChat,
+  name, img, isActive, chooseConversation, id, isChat, surname, isMobile
 }) => {
   return (
     <AsideItem
@@ -11,7 +11,7 @@ const User = ({
       className={isActive && 'active'}
     >
       <AsidePhoto src={img} alt="Фото профиля" />
-      <p>{name}</p>
+      {!isMobile && <p>{name} {surname}</p>}
     </AsideItem>
   );
 }

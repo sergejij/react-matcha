@@ -6,6 +6,9 @@ import {
 import { ProfileTabsLink, ProfileTabsStyled } from './styled';
 import ProfilePhotos from '../ProfilePhotos/ProfilePhotos';
 import ProfileInfo from '../ProfileInfo/ProfileInfo';
+import ProfileVisitors from "../ProfileVisitors/ProfileVisitors";
+import ProfileLikes from "../ProfileLikes/ProfileLikes";
+import {usersApi} from "../../../api/api";
 
 const tabs = [
   'Фото',
@@ -16,11 +19,39 @@ const tabs = [
 
 const ProfileTabs = ({ userData, id }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
+  const [visitors, setVisitors] = React.useState([]);
+  const [likes, setLikes] = React.useState([]);
 
   const tabClick = (e, index) => {
     e.preventDefault();
     setActiveTabs(index);
   };
+
+  React.useEffect(() => {
+      usersApi
+          .getVisits(1, 200)
+          .then(
+              ({ data }) => {
+                  console.log('Visitors:', data);
+                  setVisitors(data.Content.profiles);
+              },
+              (err) => console.log("ERROR getVisitors:", err)
+          )
+          .catch((err) => console.log("ERROR getVisitors:", err));
+  }, []);
+
+  React.useEffect(() => {
+      usersApi
+          .getLikes(1, 200)
+          .then(
+              ({ data }) => {
+                  console.log('Likes:', data);
+              },
+              (err) => console.log("ERROR getLikes:", err)
+          )
+          .catch((err) => console.log("ERROR getLikes:", err));
+  }, []);
+
   return (
     <Tabs defaultIndex={0}>
       <ProfileTabsStyled>
@@ -67,12 +98,12 @@ const ProfileTabs = ({ userData, id }) => {
         <ProfileInfo userData={userData} />
       </TabPanel>
 
-      {/*<TabPanel>*/}
-      {/*  <ProfileVisitors users={users} />*/}
-      {/*</TabPanel>*/}
+      <TabPanel>
+        <ProfileVisitors visitors={visitors} />
+      </TabPanel>
 
       {/*<TabPanel>*/}
-      {/*  <ProfileLikes users={users} />*/}
+      {/*  <ProfileLikes likes={likes} />*/}
       {/*</TabPanel>*/}
     </Tabs>
   );

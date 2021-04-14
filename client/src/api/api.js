@@ -17,8 +17,22 @@ export const usersApi = {
     return instance.get(`/users/list?page=${page}&size=${size}`);
   },
 
-}
+  getLikes(page, size) {
+    return instance.get(`/users/likes?page=${page}&size=${size}`);
+  },
 
+  getVisits(page, size) {
+    return instance.get(`/users/visits?page=${page}&size=${size}`);
+  },
+
+  putLike(likedProfileId) {
+    return instance.post(`/profile/like_notification?likedProfileId=${likedProfileId}`);
+  },
+
+  putVisit(visitedProfileId) {
+    return instance.post(`/profile/visit_notification?visitedProfileId=${visitedProfileId}`);
+  },
+}
 
 export const userInfoApi = {
   getUserInfo(id) {
@@ -124,8 +138,8 @@ export const userInterestsApi = {
 }
 
 export const userPhotosApi = {
-  getAvatar() {
-    return instance.get(`/profile/avatar`);
+  getAvatar(userId) {
+    return instance.get(`/profile/avatar${userId ? `?userId=${userId}` : ''}`);
   },
 
   postAvatar(formData) {

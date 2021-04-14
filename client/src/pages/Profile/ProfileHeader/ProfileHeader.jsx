@@ -20,7 +20,7 @@ const ProfileHeader = ({ userData, id }) => {
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
-    userPhotosApi.getAvatar()
+    userPhotosApi.getAvatar(id)
       .then(
         (data) => {
             setUserAvatar('data:image/bmp;base64,' + data.data.Content.avatar);
@@ -33,7 +33,7 @@ const ProfileHeader = ({ userData, id }) => {
           }
           console.error("Error:", err);
         });
-  }, []);
+  }, [id]);
 
   if (!amIAuthorized) {
     return <Redirect to="/login" />;

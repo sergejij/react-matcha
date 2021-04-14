@@ -18,7 +18,7 @@ export const ProfileHeaderBox = styled.div`
     }
   }
 
-  @media (max-width: 1100px) and (min-width: 900px){
+  @media (max-width: 1400px) and (min-width: 1100px){
     img {
       width: 170px;
       height: 170px;
@@ -28,7 +28,7 @@ export const ProfileHeaderBox = styled.div`
     }
   }
 
-  @media (max-width: 900px) and (min-width: 700px) {
+  @media (max-width: 1100px) and (min-width: 1000px) {
     img {
       width: 150px;
       height: 150px;
@@ -37,7 +37,7 @@ export const ProfileHeaderBox = styled.div`
       font-size: 25px;
     }
   }
-  @media (max-width: 700px) and (min-width: 600px) {
+  @media (max-width: 1000px) and (min-width: 600px) {
     img {
       width: 130px;
       height: 130px;
