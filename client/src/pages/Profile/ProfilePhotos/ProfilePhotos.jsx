@@ -1,25 +1,19 @@
 import React from 'react';
 import { ProfilePhotosStyled } from './styled';
 
-import zero from '../../../assets/images/Profile/0.jpeg';
-import first from '../../../assets/images/Profile/1.jpg';
-import second from '../../../assets/images/Profile/2.jpg';
-import third from '../../../assets/images/Profile/3.jpg';
-import fourth from '../../../assets/images/Profile/4.jpg';
 import Slider from './Slider/Slider';
 import { Link, Redirect } from 'react-router-dom';
-import { usersAPI } from '../../../api/api';
-
-const PHOTO_SET = [zero, first, second, third, fourth];
+import {userPhotosApi} from '../../../api/api';
 
 const ProfilePhotos = () => {
   const [photos, setPhotos] = React.useState([]);
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
-    usersAPI.getProfilePhotos()
+      userPhotosApi.getPhotos()
       .then(
         ({ data }) => {
+            console.log(data);
           setPhotos(data.Content.photos);
         },
         (err) => {

@@ -99,7 +99,7 @@ export const userInfoApi = {
   },
 
   sendLocation(latitude, longitude) {
-    return instance.put(`/profile/coordinates`, {
+    return instance.patch(`/geoposition/update`, {
       latitude, longitude
     })
   }
@@ -150,10 +150,8 @@ export const userPhotosApi = {
     });
   },
 
-  putProfilePhoto(formData) {
-    return instance.put(`/profile/photo`, formData, {
-      'Content-Type': `multipart/form-data;`
-    });
+  deletePhoto(id) {
+    return instance.delete(`/profile/photo?id=${id}`);
   },
 }
 
@@ -195,6 +193,16 @@ export const userAuthApi = {
   },
 }
 
+export const userSessionApi = {
+  getSessions() {
+    return instance.get(`/profile/sessions`);
+  },
+
+  closeAllSessions() {
+    return instance.get(`profile/close_other_sessions`);
+  },
+}
+
 export const usersAPI = {
   getUser(id) {
     return instance.get(`/profile/get_info?userId=${id}`);
@@ -207,26 +215,6 @@ export const usersAPI = {
   },
 
 
-
-  getProfileAvatar() {
-    return instance.get(`/profile/avatar`);
-  },
-
-  getProfilePhotos() {
-    return instance.get(`/profile/photos`);
-  },
-
-  uploadProfileAvatar(formData) {
-    return instance.put(`/profile/avatar`, formData, {
-      'Content-Type': `multipart/form-data;`,
-    });
-  },
-
-  uploadProfilePhoto(formData) {
-    return instance.put(`/profile/photo`, formData, {
-      'Content-Type': `multipart/form-data;`
-    });
-  },
 
   register(email, login, name, surname, password) {
     return instance.post(`/account/register`, {

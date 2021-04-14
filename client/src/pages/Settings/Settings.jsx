@@ -17,7 +17,7 @@ export default () => {
 
   return (
     <Content>
-      <Aside activeSetting={activeSetting} match={match} isSettings headline="Настройки" />
+      <Aside isMobile={window.innerWidth < 900} activeSetting={activeSetting} match={match} isSettings headline="Настройки" />
       <SettingsPage>
         <Switch>
           <Route onClick={() => setActiveSetting(0)} path={`${match.path}/user-data`}>

@@ -27,6 +27,20 @@ const AsideItem = styled(NavLink)`
     border-right: 8px solid ${COLORS.YELLOW};
     box-shadow: 0 0 6px -1px rgba(93, 83, 94, 0.32);
   }
+
+  @media (max-width: 900px) {
+    justify-content: center;
+    svg {
+      margin-right: 0;
+    }
+  }
+
+  @media (max-width: 500px) {
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
 export default AsideItem;

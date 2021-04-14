@@ -14,7 +14,7 @@ export const UserPhotoRow = styled.div`
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 70px;
 `;
 
 export const UserPhotoChange = styled.img`
@@ -22,6 +22,40 @@ export const UserPhotoChange = styled.img`
   height: 349px;
   border-radius: 13px;
   transition: .2s ease-in-out;
+
+  @media (max-width: 500px) {
+    width: 200px;
+    height: 280px;
+  }
+`;
+
+export const UserPhotoBlock = styled.div`
+  width: 250px;
+  height: 400px;
+  border-radius: 13px;
+  border-bottom: 1px solid ${COLORS.YELLOW};
+
+  @media (max-width: 500px) {
+    width: 200px;
+    height: 350px;
+  }
+`;
+
+export const EditingBlock = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  width: 250px;
+  height: 51px;
+  border-radius: 13px;
+  
+  & svg {
+    cursor: pointer;
+  }
+
+  @media (max-width: 500px) {
+    width: 200px;
+  }
 `;
 
 export const AddPhotoStyled = styled.label`
@@ -36,12 +70,17 @@ export const AddPhotoStyled = styled.label`
   cursor: pointer;
   transition: .2s ease-in-out;
   
-  & svg {
+  & svg, img {
+    cursor: pointer;
     position: absolute;
     color: ${COLORS.GRAY};
   }
   
   &:hover {
     background-color: #f3f2f2;
+  }
+
+  @media (max-width: 500px) {
+    width: 200px;
   }
 `;

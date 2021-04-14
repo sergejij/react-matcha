@@ -8,9 +8,9 @@ const Button = styled.button`
   color: ${(props) => (props.view === 'main' ? '#FFF' : props.color === "BLACK" ? "#000" : COLORS.PINK)};
   background-color: ${(props) => (props.view === 'main' ? (props.color === 'PINK' ? COLORS.PINK : COLORS.YELLOW) : 'transparent')};
   border-color: ${(props) => (props.view === 'main' ? 'transparent' : props.color === "BLACK" ? "#000" : COLORS.PINK)};
-  width: ${(props) => (props.like ? '40px' : props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '350px')};
-  height: ${(props) => (props.like ? '40px' : props.size === 'S' ? '40px' : props.size === 'M' ? '45px' : '55px')};
-  font-size: ${(props) => (props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
+  width: ${(props) => (props.like ? '40px' : props.size === 'XS' ? '140px' : props.size === 'S' ? '160px' : props.size === 'M' ? '200px' : '350px')};
+  height: ${(props) => (props.like ? '40px' : props.size === 'XS' ? '30px' : props.size === 'S' ? '40px' : props.size === 'M' ? '45px' : '55px')};
+  font-size: ${(props) => (props.size === 'XS' ? '14px' : props.size === 'S' ? '16px' : props.size === 'M' ? '20px' : '24px')};
     
   border-width: 1px;
   border-style: solid;

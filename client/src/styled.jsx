@@ -18,6 +18,10 @@ export const Content = styled.div`
   display:flex;
   justify-content: space-between;
   width: calc(100% - 130px);
+
+  @media (max-width: 700px) and (min-width: 100px) {
+    width: 100%;
+  }
 `;
 
 export const IconPencil = styled.div`

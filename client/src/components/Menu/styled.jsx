@@ -17,13 +17,13 @@ export const BoxMenu = styled.div`
 `;
 
 export const MobileMenuStyled = styled.div`
-  position: absolute;
+  position: fixed;
   display:flex;
   flex-direction: column;
   align-items: center;
   background-color: ${COLORS.DARK};
-  height: 100vh;
-  width: 100%;
+  height: 100%;
+  width: 100vw;
   top: 0;
 `;
 
@@ -63,7 +63,7 @@ export const MobileMenuLink = styled(NavLink)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80px;
+  height: 40px;
   margin: 20px;
   text-decoration:none;
   color: ${COLORS.GRAY};
@@ -90,7 +90,7 @@ export const MobileMenuLink = styled(NavLink)`
 `;
 
 export const BurgerStyled = styled.div`
-  position: absolute;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
