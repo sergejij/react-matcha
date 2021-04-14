@@ -1,0 +1,17 @@
+﻿CREATE PROCEDURE GetLikedUsersList (
+	user_id BIGINT,
+	skip INT,
+	take INT
+)
+
+BEGIN
+
+	SELECT
+		likes.liker_id as id, user.name, user.surname
+	FROM
+		likes
+	JOIN
+		user_full_data AS user ON likes.liker_id = user.id
+	WHERE likes.liked_id = user_id
+	LIMIT skip, take;
+END

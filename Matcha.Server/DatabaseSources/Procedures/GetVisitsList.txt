@@ -1,0 +1,17 @@
+﻿CREATE PROCEDURE GetVisitsList (
+	user_id BIGINT,
+	skip INT,
+	take INT
+)
+
+BEGIN
+
+	SELECT
+		visits.visiter_id as id, user.name, user.surname
+	FROM
+		visits
+	JOIN
+		user_full_data AS user ON visits.visiter_id = user.id
+	WHERE visits.visited_id = user_id
+	LIMIT skip, take;
+END
