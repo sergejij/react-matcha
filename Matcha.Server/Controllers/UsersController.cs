@@ -2,6 +2,7 @@
 using Matcha.Server.Models.Profile;
 using Matcha.Server.Models.Users;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using server.Response;
 using System;
 using System.Collections.Generic;
@@ -119,6 +120,90 @@ namespace Matcha.Server.Controllers
                 { "users", usersList }
             })
             .ToResult();
+        }
+
+        [HttpGet]
+        [Route("likes")]
+        public async Task<IActionResult> GetLikesList([FromQuery][Required] int page, [FromQuery][Required] int size)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetLikedUsersList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("skip", (page - 1) * size),
+                new MySqlParameter("take", size)
+            });
+
+            connection.Open();
+            using var reader = await command.ExecuteReaderAsync();
+
+            var profiles = new List<ProfilePreviewModel>();
+
+            while (reader.Read())
+            {
+                var profile = new ProfilePreviewModel
+                {
+                    Id = Convert.ToInt64(reader["id"]),
+                    Name = reader["name"].ToString(),
+                    Surname = reader["surname"].ToString(),
+                };
+                profile.Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(profile.Id);
+
+                profiles.Add(profile);
+            }
+
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "profiles", profiles }
+                })
+                .ToResult();
+        }
+
+        [HttpGet]
+        [Route("visits")]
+        public async Task<IActionResult> GetVisitsList([FromQuery][Required] int page, [FromQuery][Required] int size)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetVisitsList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("skip", (page - 1) * size),
+                new MySqlParameter("take", size)
+            });
+
+            connection.Open();
+            using var reader = await command.ExecuteReaderAsync();
+
+            var profiles = new List<ProfilePreviewModel>();
+
+            while (reader.Read())
+            {
+                var profile = new ProfilePreviewModel
+                {
+                    Id = Convert.ToInt64(reader["id"]),
+                    Name = reader["name"].ToString(),
+                    Surname = reader["surname"].ToString(),
+                };
+                profile.Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(profile.Id);
+
+                profiles.Add(profile);
+            }
+
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "profiles", profiles }
+                })
+                .ToResult();
         }
     }
 }
