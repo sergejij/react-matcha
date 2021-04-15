@@ -120,8 +120,8 @@ export const userInfoApi = {
 }
 
 export const userInterestsApi = {
-  getInterests() {
-    return instance.get(`/profile/interests`);
+  getInterests(userId) {
+    return instance.get(`/profile/interests${userId ? `?userId=${userId}` : ''}`);
   },
 
   postInterests(interests) {
@@ -154,8 +154,8 @@ export const userPhotosApi = {
     });
   },
 
-  getPhotos() {
-    return instance.get(`/profile/photos`);
+  getPhotos(userId) {
+    return instance.get(`/profile/photos${userId ? `?userId=${userId}` : ''}`);
   },
 
   postPhotos(formData) {
@@ -213,7 +213,13 @@ export const userSessionApi = {
   },
 
   closeAllSessions() {
-    return instance.get(`profile/close_other_sessions`);
+    return instance.post(`/profile/close_other_sessions`);
+  },
+
+  closeSession(sessionId) {
+    return instance.post(`/profile/close_session_remotely`, {
+      sessionId: sessionId,
+    });
   },
 }
 

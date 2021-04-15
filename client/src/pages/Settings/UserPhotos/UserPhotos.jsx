@@ -94,6 +94,7 @@ const UserPhotos = () => {
       .getPhotos()
       .then(
         ({ data }) => {
+            console.log("PHOTOS:", data);
           setPhotos(data.Content.photos);
         },
         (err) => {
@@ -114,8 +115,6 @@ const UserPhotos = () => {
   return (
     <UserPhotosStyled>
       <UserPhotoRow>
-        {/*{photos[0] && photos[0].Content ?*/}
-        {/*  // <UserPhoto srcImg={ 'data:image/bmp;base64,' + photos[0].Content}/> :*/}
         <AddPhoto
             srcImg={(photos[0] && photos[0].Content) && ('data:image/bmp;base64,' + photos[0].Content)}
             setIsUpdated={setIsUpdated} photoId="0"

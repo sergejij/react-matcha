@@ -20,18 +20,18 @@ export const ProfileHeaderBox = styled.div`
 
   @media (max-width: 1400px) and (min-width: 1100px){
     img {
-      width: 170px;
-      height: 170px;
+      width: 150px;
+      height: 150px;
     }
     h2 {
-      font-size: 30px;
+      font-size: 28px;
     }
   }
 
   @media (max-width: 1100px) and (min-width: 1000px) {
     img {
-      width: 150px;
-      height: 150px;
+      width: 130px;
+      height: 130px;
     }
     h2 {
       font-size: 25px;
@@ -39,8 +39,8 @@ export const ProfileHeaderBox = styled.div`
   }
   @media (max-width: 1000px) and (min-width: 600px) {
     img {
-      width: 130px;
-      height: 130px;
+      width: 120px;
+      height: 120px;
     }
     h2 {
       font-size: 20px;

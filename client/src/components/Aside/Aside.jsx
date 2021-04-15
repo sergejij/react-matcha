@@ -12,7 +12,7 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setCurrentUserId, isChat, isMobile
+  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setId, isChat, isMobile, id
 }) => {
     return (
         <ChatsAsideStyled>
@@ -48,12 +48,11 @@ const Aside = ({
                         users.map((user, index) => (
                             <User
                                 key={`${user}_${index}`}
-                                isActive={index === 0}
+                                isActive={index === user.Id}
                                 name={user.Name}
-                                surname={user.Surname}
                                 img={ProfileImg}
-                                id={index}
-                                chooseConversation={() => setCurrentUserId(3)}
+                                id={user.Id}
+                                chooseConversation={() => setId(user.Id)}
                                 isChat={isChat}
                                 isMobile={isMobile}
                             />

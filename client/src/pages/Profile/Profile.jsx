@@ -18,12 +18,12 @@ export default ({ userId }) => {
   const [userData, setUserData] = React.useState({});
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
   const myId = localStorage.getItem('id');
+  const isMyProfile = myId === id;
 
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(
         (data) => {
-            console.log("DATAAAAAAAAAAAAAAAA:", data);
           setAmIAuthorized(() => true);
           setUserData(data.data.Content);
           if (!(!!data.data.Content.sex &&
@@ -66,7 +66,7 @@ export default ({ userId }) => {
     return <Redirect to="/login" />;
   }
 
-  if (myId !== id) {
+  if (!isMyProfile) {
       usersApi
           .putVisit(id)
           .then(
@@ -79,13 +79,13 @@ export default ({ userId }) => {
   }
 
   return (
-      isRequiredEmpty || isProfilePhotoEmpty ? (
+      (isRequiredEmpty || isProfilePhotoEmpty) && isMyProfile ? (
           (Object.keys(userData).length !== 0) &&
           <ModalAddData setIsRequiredEmpty={setIsRequiredEmpty} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} userData={userData} />
       ) : (
         <ProfilePage>
           <ProfileHeader userData={userData} id={id} />
-          <ProfileTabs userData={userData} id={id} />
+          <ProfileTabs isMyProfile={isMyProfile} defaultTab={0} userData={userData} id={id} />
         </ProfilePage>
       )
   );

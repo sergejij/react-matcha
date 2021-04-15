@@ -17,15 +17,14 @@ const tabs = [
   'Лайки',
 ];
 
-const ProfileTabs = ({ userData, id }) => {
+const ProfileTabs = ({ defaultTab, userData, id, isMyProfile }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
   const [visitors, setVisitors] = React.useState([]);
   const [likes, setLikes] = React.useState([]);
 
-  const tabClick = (e, index) => {
-    e.preventDefault();
-    setActiveTabs(index);
-  };
+  React.useEffect(() => {
+      setActiveTabs(defaultTab);
+  }, [id]);
 
   React.useEffect(() => {
       usersApi
@@ -56,14 +55,14 @@ const ProfileTabs = ({ userData, id }) => {
     <Tabs defaultIndex={0}>
       <ProfileTabsStyled>
           <ProfileTabsLink
-              key="photo{0}"
+              key="photo0"
               onClick={() => setActiveTabs(0)}
               className={activeTabs === 0 && 'active'}
           >
               Фото
           </ProfileTabsLink>
           <ProfileTabsLink
-              key="photo{1}"
+              key="photo1"
               onClick={() => setActiveTabs(1)}
               className={activeTabs === 1 && 'active'}
           >
@@ -72,14 +71,14 @@ const ProfileTabs = ({ userData, id }) => {
           { id === localStorage.getItem('id') &&
               <>
                   <ProfileTabsLink
-                      key="photo{2}"
+                      key="photo2"
                       onClick={() => setActiveTabs(2)}
                       className={activeTabs === 2 && 'active'}
                   >
                       Посетители
                   </ProfileTabsLink>
                   <ProfileTabsLink
-                      key="photo{3}"
+                      key="photo3"
                       onClick={() => setActiveTabs(3)}
                       className={activeTabs === 3 && 'active'}
                   >
@@ -87,15 +86,14 @@ const ProfileTabs = ({ userData, id }) => {
                   </ProfileTabsLink>
               </>
           }
-
       </ProfileTabsStyled>
 
       <TabPanel>
-        <ProfilePhotos />
+        <ProfilePhotos id={id} />
       </TabPanel>
 
       <TabPanel>
-        <ProfileInfo userData={userData} />
+        <ProfileInfo isMyProfile={isMyProfile} userData={userData} id={id} />
       </TabPanel>
 
       <TabPanel>

@@ -24,7 +24,7 @@ export const ProfileInterests = ({ interests }) => (
     </ProfileInterestsStyled>
 );
 
-const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
+const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue, isMyProfile}) => {
   const [value, setValue] = React.useState('');
   const [fieldEditing, setFieldEditing] = React.useState(false);
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
@@ -53,10 +53,16 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
     return <Redirect to="/login" />;
   }
 
+  const onClickLabel = () => {
+      if (isMyProfile) {
+          setFieldEditing(true)
+      }
+  }
+
   return (
     <div>
       <p>{fieldName}:</p>
-      {!fieldEditing && <label onClick={() => setFieldEditing(true)} className="info-value">{value}</label>}
+      {!fieldEditing && <label onClick={onClickLabel} className="info-value">{value}</label>}
       {fieldEditing &&
       <UpdateField>
         <select name="select" onChange={(e) => setValue(e.target.value)}>
@@ -77,7 +83,7 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
   );
 }
 
-const ProfileInfo = ({ userData }) => {
+const ProfileInfo = ({ userData, id, isMyProfile }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [interests, setInterests] = React.useState([]);
   const [bio, setBio] = React.useState('');
@@ -96,7 +102,7 @@ const ProfileInfo = ({ userData }) => {
 
     React.useEffect(() => {
         userInterestsApi
-            .getInterests()
+            .getInterests(id)
             .then(
                 ({data}) => {
                     const values = data.Content.interests;
@@ -147,7 +153,7 @@ const ProfileInfo = ({ userData }) => {
           }
         })
       .catch(err => console.log("ERROR getRelationshipsList:", err))
-  }, []);
+  }, [userData]);
 
     const changeBio = () => {
         setBioEditing(false);
@@ -191,45 +197,48 @@ const ProfileInfo = ({ userData }) => {
     return <Redirect to="/login" />;
   }
 
-
-  console.log("USERDATA:", userData);
   return(
     <>
       <ProfileInfoStyled>
-        <ProfileInfoPairs>
+        <ProfileInfoPairs isMyProfile={isMyProfile}>
           <ProfileInfoField
             list={sexesList}
             fieldName="Пол"
             fieldKey="patchSex"
             fieldValue={userData.sex}
+            isMyProfile={isMyProfile}
           />
           <ProfileInfoField
             list={relationshipsList}
             fieldName="Статус отношений"
             fieldKey="patchRelationshipStatus"
             fieldValue={userData.relationshipStatus}
+            isMyProfile={isMyProfile}
           />
           <ProfileInfoField
             list={sexesList}
             fieldName="Сексуальное предпочтение"
             fieldKey="patchSexPreference"
             fieldValue={userData.sexPreference}
+            isMyProfile={isMyProfile}
           />
           <ProfileInfoField
             list={attitudesList}
             fieldName="Отношение к алкоголю"
             fieldKey="patchAttitudeToAlcohol"
             fieldValue={userData.attitudeToAlcohol}
+            isMyProfile={isMyProfile}
           />
           <ProfileInfoField
             list={attitudesList}
             fieldName="Отношение к курению"
             fieldKey="patchAttitudeToSmoking"
             fieldValue={userData.attitudeToSmoking}
+            isMyProfile={isMyProfile}
           />
           <div>
             <p>Рейтинг:</p>
-            <p>1234</p>
+            <p>{userData.rating}</p>
           </div>
         </ProfileInfoPairs>
 

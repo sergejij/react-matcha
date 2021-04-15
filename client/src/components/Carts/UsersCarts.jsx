@@ -11,8 +11,6 @@ const UsersCarts = ({ users, buttonText }) => {
     e.preventDefault();
   };
 
-  console.log(users);
-
   return (
     <CartsStyled>
       {

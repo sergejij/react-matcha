@@ -85,16 +85,16 @@ export const ProfileInfoPairs = styled.div`
   
   & .info-value {
     color: ${COLORS.DARK};
-    border-bottom: 1px dotted ${COLORS.DARK};
-    cursor: pointer;
+    border-bottom: ${(props) => (props.isMyProfile ? `1px dotted ${COLORS.DARK}` : 'none')};
+    cursor: ${(props) => (props.isMyProfile ? 'pointer' : 'auto')};;
     
     &:hover {
       border-color: black;
-      color: black;
+      color: ${(props) => (props.isMyProfile ? 'black' : COLORS.DARK)};
     }
   }
 
-  @media (max-width: 1000px) and (min-width: 700px) {
+  @media (max-width: 1200px) and (min-width: 700px) {
     width: 500px;
   }
   @media (max-width: 700px) and (min-width: 500px) {

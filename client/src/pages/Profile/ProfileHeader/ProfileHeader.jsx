@@ -1,7 +1,7 @@
 import React from 'react';
 import { Buttons, ProfileHeaderPhoto, ProfileHeaderBox } from './styled';
 import Button from '../../../components/Button';
-import {userPhotosApi} from '../../../api/api';
+import {userPhotosApi, usersApi} from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
 const getAge = (year) => {
@@ -22,21 +22,36 @@ const ProfileHeader = ({ userData, id }) => {
   React.useEffect(() => {
     userPhotosApi.getAvatar(id)
       .then(
-        (data) => {
-            setUserAvatar('data:image/bmp;base64,' + data.data.Content.avatar);
+        ({data}) => {
+            setUserAvatar('data:image/bmp;base64,' + data.Content.avatar);
         },
         (err) => {
-          console.log("ERR:",err.response);
+          console.log("ERR getAvatar:", err);
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
             localStorage.clear();
           }
-          console.error("Error:", err);
         });
   }, [id]);
 
   if (!amIAuthorized) {
     return <Redirect to="/login" />;
+  }
+
+  const like = () => {
+    usersApi
+        .putLike(id)
+        .then(
+            () => {},
+            (err) => {
+              console.log("ERR putLike:", err);
+              if (err.response.status === 401) {
+                setAmIAuthorized(() => false);
+                localStorage.clear();
+              }
+            }
+        )
+        .catch((err) => console.log("ERR putLike:", err));
   }
 
   return (
@@ -52,7 +67,7 @@ const ProfileHeader = ({ userData, id }) => {
         </p>
 
         {id !== localStorage.getItem('id') && <Buttons>
-          <Button size="S" like view="out"/>
+          <Button onClick={like} size="S" like view="out"/>
           <Button size="S" dislike view="main"/>
         </Buttons>}
       </div>

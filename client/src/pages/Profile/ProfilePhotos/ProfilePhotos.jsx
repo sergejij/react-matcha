@@ -5,12 +5,12 @@ import Slider from './Slider/Slider';
 import { Link, Redirect } from 'react-router-dom';
 import {userPhotosApi} from '../../../api/api';
 
-const ProfilePhotos = () => {
+const ProfilePhotos = ({ id }) => {
   const [photos, setPhotos] = React.useState([]);
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   React.useEffect(() => {
-      userPhotosApi.getPhotos()
+      userPhotosApi.getPhotos(id)
       .then(
         ({ data }) => {
             console.log(data);

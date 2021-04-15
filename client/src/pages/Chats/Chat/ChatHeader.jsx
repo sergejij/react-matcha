@@ -3,9 +3,9 @@ import { ChatHeaderStyled } from './styled';
 import ChatsUser from '../ChatsUser/ChatsUser';
 import ProfileImg from '../../../assets/images/Chats/liza.png';
 
-const ChatHeader = ({ user }) => (
+const ChatHeader = ({ userId }) => (
   <ChatHeaderStyled>
-    <ChatsUser user={user} isActive img={ProfileImg}  />
+    <ChatsUser userId={userId} isActive img={ProfileImg}  />
   </ChatHeaderStyled>
 );
 
