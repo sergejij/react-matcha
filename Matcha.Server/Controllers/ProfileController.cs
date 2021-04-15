@@ -300,7 +300,8 @@ namespace Matcha.Server.Controllers
                 { "post", reader.StringOrEmpty("post") },
                 { "sex", reader.StringOrEmpty("sex") },
                 { "sexPreference", reader.StringOrEmpty("sex_preference") },
-                { "biography", reader.StringOrEmpty("biography") }
+                { "biography", reader.StringOrEmpty("biography") },
+                { "rating", reader.StringOrEmpty("rating") }
             };
 
             return new ResponseModel(HttpStatusCode.OK, null, fields).ToResult();
