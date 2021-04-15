@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE GetUsersFullDataList()
+﻿CREATE PROCEDURE test (
+    my_id BIGINT
+)
 
 BEGIN
 
@@ -30,7 +32,14 @@ BEGIN
     LEFT JOIN
         attitudes AS a2 ON data.attitude_to_alcohol = a2.id
     LEFT JOIN
-        user_data ON user_data.id = data.id AND user_data.email IS NOT NULL;
+        user_data ON user_data.id = data.id AND user_data.email IS NOT NULL
+    WHERE
+        NOT EXISTS(SELECT * FROM dislikes AS d WHERE
+                                                   (d.who = data.id AND d.whom = my_id) /* не показываем пользователей, которым мы не нравимся */
+                                                   OR
+                                                   (d.who = my_id AND d.whom = data.id)) /* не показываем пользователей, которые не нравятся нам */
+        AND
+        NOT EXISTS(SELECT * FROM likes AS l WHERE l.who = my_id AND l.whom = data.id); /* не показываем профили, которые мы уже оценили */
 
     SELECT
         location.session_id,
