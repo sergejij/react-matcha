@@ -8,6 +8,7 @@
 	current_latitude DOUBLE,
 	OS VARCHAR(64),
 	IP VARCHAR(64),
+	browser(128) /* TODO: одинаковый размер */
 
 	PRIMARY KEY(session_id),
 	FOREIGN KEY(session_id) REFERENCES sessions(session_id) ON DELETE CASCADE

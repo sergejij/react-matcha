@@ -1,0 +1,21 @@
+﻿CREATE PROCEDURE GetUserSessions (
+	user_id BIGINT
+)
+
+BEGIN
+
+	SELECT
+		sessions.session_id,
+		session_info.OS,
+		session_info.IP,
+		session_info.browser,
+		session_info.country,
+		session_info.city
+	FROM
+		sessions
+	JOIN
+		sessions_geopositions AS session_info ON session_info.session_id = sessions.session_id
+	WHERE
+		sessions.user_id = user_id;
+
+END

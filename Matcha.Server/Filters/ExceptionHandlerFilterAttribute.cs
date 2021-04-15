@@ -6,6 +6,7 @@ using System.Net;
 
 namespace Matcha.Server.Filters
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ExceptionHandlerFilterAttribute : Attribute, IExceptionFilter
     {
         public void OnException(ExceptionContext context)

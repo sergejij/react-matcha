@@ -23,8 +23,6 @@ namespace Matcha.Server.Controllers
         [Route("update")]
         public async Task<IActionResult> UpdateSessionLocation(LocationModel location)
         {
-            UsersCache.UpdateGeolocation(UserId, SessionId, location);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("UpdateSessionGeoposition", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -41,12 +39,14 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK.ToResult();
         }
 
-        public static async Task DetectAndSaveSessionGeopositionAsync(HttpRequest request, long userId, long sessionId)
+        public static async Task DetectAndSaveSessionGeopositionAsync(HttpRequest request, long sessionId)
         {
             string OS = null;
+            string browser = null;
+
             try
             {
-                OS = ParseUserAgent(request.Headers["user-agent"].ToString());
+                (OS, browser) = ParseUserAgent(request.Headers["user-agent"].ToString());
             }
             catch { }
             
@@ -56,8 +56,6 @@ namespace Matcha.Server.Controllers
             var location = await DetectClientGeopositionAsync(request);
             if (location.Determined is false)
                 return;
-
-            UsersCache.SaveInitialSessionGeoposition(userId, sessionId, location, IP, OS);
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("InitializeSessionGeoposition", connection) { CommandType = CommandType.StoredProcedure };
@@ -70,7 +68,8 @@ namespace Matcha.Server.Controllers
                 new MySqlParameter("longitude", location.Longitude),
                 new MySqlParameter("latitude", location.Latitude),
                 new MySqlParameter("OS", OS),
-                new MySqlParameter("IP", IP)
+                new MySqlParameter("IP", IP),
+                new MySqlParameter("browser", browser)
             });
 
             connection.Open();
@@ -79,11 +78,13 @@ namespace Matcha.Server.Controllers
 
         #region Вспомогательные методы
 
-        private static string ParseUserAgent(string userAgent)
+        private static (string, string) ParseUserAgent(string userAgent)
         {
             var parser = Parser.GetDefault();
 
-            return parser.ParseOS(userAgent).ToString();
+            var ret = parser.Parse(userAgent);
+
+            return (ret.OS.ToString(), ret.UA.Family.ToString());
         }
 
         private static async Task<LocationModel> DetectClientGeopositionAsync(HttpRequest request)
