@@ -1,5 +1,6 @@
 ﻿using Matcha.Server.Extensions;
 using Matcha.Server.Filters;
+using Matcha.Server.Models;
 using Matcha.Server.Models.Profile;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -180,9 +181,6 @@ namespace Matcha.Server.Controllers
         [Route("avatar")]
         public IActionResult GetAvatar([FromQuery] long? userId)
         {
-            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
-                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
-
             var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId ?? UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
@@ -214,9 +212,6 @@ namespace Matcha.Server.Controllers
         [Route("photos")]
         public IActionResult GetPhotos([FromQuery] long? userId)
         {
-            if (userId.HasValue && UsersCache.UserExists(userId.Value) is false)
-                return new ResponseModel(HttpStatusCode.NotFound, "Пользователь с таким идентификатором не существует").ToResult();
-
             var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId ?? UserId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
@@ -262,8 +257,6 @@ namespace Matcha.Server.Controllers
         [Route("biography")]
         public async Task<IActionResult> UpdateBiographyAsync(UpdateBiographyModel biography)
         {
-            UsersCache.UpdateBiography(UserId, biography.Biography);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("UpdateBiography", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -317,8 +310,6 @@ namespace Matcha.Server.Controllers
         [Route("info")]
         public async Task<IActionResult> InitProfileInfoAsync(ProfileInfoModel profileInfo)
         {
-            UsersCache.InitProfileInfo(UserId, profileInfo);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("PutProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -353,8 +344,6 @@ namespace Matcha.Server.Controllers
         [Route("info")]
         public async Task<IActionResult> UpdateInfoAsync(ProfileInfoModel profileInfo)
         {
-            UsersCache.UpdateProfileInfo(UserId, profileInfo);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("UpdateProfileInfo", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -388,8 +377,6 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            UsersCache.UpdateSex(UserId, dropDownField.Sex);
-
             return ResponseModel.OK.ToResult();
         }
 
@@ -404,8 +391,6 @@ namespace Matcha.Server.Controllers
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
-
-            UsersCache.UpdateSexPreference(UserId, dropDownField.SexPreference);
 
             return ResponseModel.OK.ToResult();
         }
@@ -422,8 +407,6 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            UsersCache.UpdateRelatioshipStatus(UserId, dropDownField.RelationshipStatus);
-
             return ResponseModel.OK.ToResult();
         }
 
@@ -439,8 +422,6 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            UsersCache.UpdateAttitudeToAlcohol(UserId, dropDownField.AttitudeToAlcohol);
-
             return ResponseModel.OK.ToResult();
         }
 
@@ -455,8 +436,6 @@ namespace Matcha.Server.Controllers
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
-
-            UsersCache.UpdateAttitudeToSmoking(UserId, dropDownField.AttitudeToSmoking);
 
             return ResponseModel.OK.ToResult();
         }
@@ -480,8 +459,6 @@ namespace Matcha.Server.Controllers
         [Route("interests")]
         public async Task<IActionResult> UpdateInterestsAsync(InterestsModel interests)
         {
-            UsersCache.UpdateInterests(UserId, interests.Interests);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("AddInterestsList", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -499,15 +476,33 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("interests")]
-        public IActionResult GetInterestsListAsync([FromQuery] long? userId)
+        public async Task<IActionResult> GetInterestsListAsync([FromQuery] long? userId)
         {
             if (userId.HasValue is false)
                 userId = UserId;
 
-            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                              {
-                                                                  { "interests", UsersCache.GetUserInterests(userId.Value) }
-                                                              })
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetUserInterests", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", userId),
+                new MySqlParameter("interests", MySqlDbType.VarChar) { Direction = ParameterDirection.ReturnValue }
+            });
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            var interestsList = command.Parameters["interests"]?.Value.ToString()
+                .Split(',');
+
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "interests", interestsList }
+                })
                 .ToResult();
         }
 
@@ -517,23 +512,29 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("sessions")]
-        public IActionResult GetSessions()
+        public async Task<IActionResult> GetSessions()
         {
-            var sessionsDict = UsersCache.GetSessionsByUserId(UserId);
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetUserSessions", connection) { CommandType = CommandType.StoredProcedure };
 
-            var dyns = new List<dynamic>();
+            command.Parameters.Add(new MySqlParameter("user_id", UserId));
 
-            foreach ((var session_id, var session_model) in sessionsDict)
+            connection.Open();
+            using var reader = await command.ExecuteReaderAsync();
+
+            var sessions = new List<SessionInfoModel>();
+
+            while (reader.Read())
             {
-
-                dynamic dyn = new ExpandoObject();
-                dyn.id = session_id;
-                dyn.IP = session_model.IP;
-                dyn.OS = session_model.OS;
-                dyn.Country = session_model.Country;
-                dyn.City = session_model.City;
-
-                dyns.Add(dyn);
+                sessions.Add(new SessionInfoModel
+                {
+                    Id = Convert.ToInt64(reader["session_id"]),
+                    OS = reader.StringOrEmpty("OS"),
+                    IP = reader.StringOrEmpty("IP"),
+                    Browser = reader.StringOrEmpty("browser"),
+                    Country = reader.StringOrEmpty("country"),
+                    City = reader.StringOrEmpty("city")
+                });
             }
 
             return new ResponseModel(
@@ -541,7 +542,7 @@ namespace Matcha.Server.Controllers
                 null,
                 new Dictionary<string, object>
                 {
-                    { "sessions", dyns }
+                    { "sessions", sessions }
                 })
             .ToResult();
         }
@@ -550,12 +551,29 @@ namespace Matcha.Server.Controllers
         [Route("close_other_sessions")]
         public async Task<IActionResult> CloseSessionsButCurrentAsync()
         {
-            UsersCache.DeleteAllSessionsButOne(UserId, SessionId);
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.Add(new MySqlParameter("untouchable_session_id", SessionId));
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            return ResponseModel.OK.ToResult();
+        }
+
+        [HttpPost]
+        [Route("close_session_remotely")]
+        public async Task<IActionResult> CloseSessionById(CloseSessionModel session)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("CloseSessionById", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("session_id", session.SessionId)
+            });
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
@@ -627,3 +645,6 @@ namespace Matcha.Server.Controllers
         #endregion
     }
 }
+
+//TODO: делать везде проверку на существование информации и соответствие безопасности
+//TODO: может быть сделать авторизацию по токену

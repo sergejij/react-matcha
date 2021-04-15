@@ -2,68 +2,11 @@
 
 BEGIN
 
-    DECLARE end INT;
-    DECLARE cur INT;
-    DECLARE user_id BIGINT;
-
 	SELECT
-        data.id as user_id,
-        data.name,
-        data.surname,
-        data.location,
-        data.age,
-        data.post,
-        data.biography,
-        data.rating,
-        s1.sex AS sex,
-        s2.sex AS sex_preference,
-        rel.status  AS relationship_status,
-        a1.attitude AS attitude_to_smoking,
-        a2.attitude AS attitude_to_alcohol
+        user_full_data.id,
+        user_full_data.name,
+        user_full_data.surname
     FROM
-        user_full_data AS data
-    LEFT JOIN
-        sexes AS s1 ON data.sex = s1.id
-    LEFT JOIN
-        sexes AS s2 ON data.sex_preference = s2.id
-    LEFT JOIN
-        relationship_statuses AS rel ON data.relationship_status = rel.id
-    LEFT JOIN
-        attitudes AS a1 ON data.attitude_to_smoking = a1.id
-    LEFT JOIN
-        attitudes AS a2 ON data.attitude_to_alcohol = a2.id
-    JOIN
-        user_data ON user_data.id = data.id AND user_data.email IS NOT NULL;
+        user_full_data;
 
-
-    SELECT COUNT(*) FROM user_data INTO end;
-
-    SET cur = 0;
-
-    WHILE cur < end
-    DO
-        SET user_id = (SELECT id FROM user_data LIMIT cur, 1);
-
-        SELECT user_id, GROUP_CONCAT(interest) AS interests
-        FROM interests_list
-        WHERE interests_list.id IN
-            (SELECT interest_id FROM users_interests WHERE users_interests.user_id = user_id);
-        SET cur = cur + 1;
-    END WHILE;
-
-    SELECT
-        location.session_id,
-        location.country,
-        location.city,
-        location.initial_latitude,
-        location.initial_longitude,
-        location.current_latitude,
-        location.current_longitude,
-        location.OS,
-        location.IP,
-        sessions.user_id
-    FROM
-        sessions_geopositions AS location
-    JOIN
-        sessions ON location.session_id = sessions.session_id;
 END

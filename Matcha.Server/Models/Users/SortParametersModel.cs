@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Matcha.Server.Models.Users
 {
-    public sealed record SortParametersModel 
+    public sealed record SortParametersModel
     {
         [Required]
         public int Page { get; set; }
@@ -14,18 +12,9 @@ namespace Matcha.Server.Models.Users
 
         public OrderMethodsEnum OrderBy { get; set; }
 
-        public int? MinAge { get; set; }
+        public int? Min { get; set; }
 
-        public int? MaxAge { get; set; }
-
-        public int? MinRating { get; set; }
-
-        public int? MinCommonInterests { get; set; }
-
-        #region Валидация модели
-
-
-        #endregion
+        public int? Max { get; set; }
 
         #region Вспомогательные структуры
 
@@ -37,15 +26,6 @@ namespace Matcha.Server.Models.Users
             Rating,
             CommonInterests
         }
-
-        private readonly Dictionary<string, OrderMethodsEnum> KnownOrderMethodsStrings = new()
-        {
-            { "id", OrderMethodsEnum.Id },
-            { "age", OrderMethodsEnum.Age },
-            { "distance", OrderMethodsEnum.Distance },
-            { "rating", OrderMethodsEnum.Rating },
-            { "commonTags", OrderMethodsEnum.CommonInterests }
-        };
 
         #endregion
     }

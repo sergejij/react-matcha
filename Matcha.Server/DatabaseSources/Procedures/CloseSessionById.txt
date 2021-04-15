@@ -1,0 +1,14 @@
+﻿CREATE PROCEDURE CloseSessionById (
+	user_id BIGINT,
+	session_id BIGINT
+)
+
+BEGIN
+
+	DELETE
+	FROM
+		sessions
+	WHERE
+		sessions.user_id = user_id AND sessions.session_id = session_id;
+
+END

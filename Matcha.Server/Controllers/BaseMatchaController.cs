@@ -7,13 +7,6 @@ namespace Matcha.Server.Controllers
 {
     public class BaseMatchaController : ControllerBase
     {
-        protected static UsersCache.UsersCache UsersCache;
-
-        static BaseMatchaController()
-        {
-            UsersCache = Server.UsersCache.UsersCache.Instanse;
-        }
-
         protected long UserId
         {
             get

@@ -46,7 +46,7 @@ namespace Matcha.Server.Controllers
 
             try
             {
-                (OS, browser) = ParseUserAgent(request.Headers["user-agent"].ToString());
+                ParseUserAgent(request.Headers["user-agent"].ToString(), out OS, out browser);
             }
             catch { }
             
@@ -56,6 +56,8 @@ namespace Matcha.Server.Controllers
             var location = await DetectClientGeopositionAsync(request);
             if (location.Determined is false)
                 return;
+
+            //TODO: даже если местоположение определить не удалось, сохранять инфо из юзерагента
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("InitializeSessionGeoposition", connection) { CommandType = CommandType.StoredProcedure };
@@ -78,13 +80,14 @@ namespace Matcha.Server.Controllers
 
         #region Вспомогательные методы
 
-        private static (string, string) ParseUserAgent(string userAgent)
+        private static void ParseUserAgent(string userAgent, out string OS, out string browser)
         {
             var parser = Parser.GetDefault();
 
             var ret = parser.Parse(userAgent);
 
-            return (ret.OS.ToString(), ret.UA.Family.ToString());
+            OS = ret.OS.ToString();
+            browser = ret.UA.Family.ToString();
         }
 
         private static async Task<LocationModel> DetectClientGeopositionAsync(HttpRequest request)
