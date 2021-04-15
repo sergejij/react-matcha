@@ -1,6 +1,8 @@
 ﻿CREATE TABLE visits (
-	visiter_id BIGINT NOT NULL,
-	visited_id BIGINT NOT NULL,
+	who BIGINT NOT NULL,
+	whom BIGINT NOT NULL,
 
-	PRIMARY KEY(visiter_id, visited_id)
+	PRIMARY KEY(who, whom),
+	FOREIGN KEY(who) REFERENCES user_data(id) ON DELETE CASCADE,
+	FOREIGN KEY(whom) REFERENCES user_data(id) ON DELETE CASCADE
 );

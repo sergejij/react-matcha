@@ -5,7 +5,7 @@
 
 BEGIN
 
-	RETURN EXISTS((SELECT * FROM likes WHERE likes.liker_id = first_id AND likes.liked_id = second_id))
-	   AND EXISTS((SELECT * FROM likes WHERE likes.liker_id = second_id AND likes.liked_id = first_id));
+	RETURN EXISTS((SELECT * FROM likes WHERE likes.who = first_id AND likes.whom = second_id))
+	   AND EXISTS((SELECT * FROM likes WHERE likes.who = second_id AND likes.whom = first_id));
 
 END

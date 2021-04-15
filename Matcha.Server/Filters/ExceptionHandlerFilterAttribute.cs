@@ -20,9 +20,9 @@ namespace Matcha.Server.Filters
             if (mySqlException is not null)
             {
                 if (mySqlException.Number > 500)
-                    SetResult(context, mySqlException.Message, (HttpStatusCode)500);
+                    SetResult(context, $"Необработанная ошибка базы данных: {mySqlException.Message}", (HttpStatusCode)500);
                 else //TODO: удалить сообщение с внутренней ошибкой
-                    SetResult(context, $"Необработанная ошибка базы данных: {mySqlException.Message}", (HttpStatusCode)mySqlException.Number);
+                    SetResult(context, mySqlException.Message, (HttpStatusCode)mySqlException.Number);
                 return;
             }
             else if (matchaException is not null)

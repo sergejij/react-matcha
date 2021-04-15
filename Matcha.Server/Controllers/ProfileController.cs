@@ -1,4 +1,5 @@
-﻿using Matcha.Server.Extensions;
+﻿using Matcha.Server.CustomExceptions;
+using Matcha.Server.Extensions;
 using Matcha.Server.Filters;
 using Matcha.Server.Models;
 using Matcha.Server.Models.Profile;
@@ -584,19 +585,22 @@ namespace Matcha.Server.Controllers
 
         #endregion
 
-        #region Уведомления
+        #region Лайки-дизлайки-посещения
 
         [HttpPost]
-        [Route("visit_notification")]
-        public IActionResult ProfileVisitEvent([FromQuery][Required] long visitedProfileId)
+        [Route("visit")]
+        public IActionResult VisitProfile([FromQuery][Required] long userId)
         {
+            if (userId == UserId)
+                return ResponseModel.OK.ToResult();
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("AddProfileVisiter", connection) { CommandType = CommandType.StoredProcedure };
+            using var command = new MySqlCommand("VisitProfile", connection) { CommandType = CommandType.StoredProcedure };
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("visiter_id", UserId),
-                new MySqlParameter("visited_id", visitedProfileId)
+                new MySqlParameter("who", UserId),
+                new MySqlParameter("whom", userId)
             });
 
             connection.Open();
@@ -606,18 +610,21 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpPost]
-        [Route("like_notification")]
-        public IActionResult ProfileLikeEvent([FromQuery][Required] long likedProfileId)
+        [Route("like")]
+        public IActionResult LikeProfile([FromQuery][Required] long userId)
         {
+            if (userId == UserId)
+                throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить лайк самому себе");
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             connection.Open();
 
-            using (var command = new MySqlCommand("AddProfileLike", connection) { CommandType = CommandType.StoredProcedure })
+            using (var command = new MySqlCommand("LikeProfile", connection) { CommandType = CommandType.StoredProcedure })
             {
                 command.Parameters.AddRange(new[]
                 {
-                    new MySqlParameter("liker_id", UserId),
-                    new MySqlParameter("liked_id", likedProfileId)
+                    new MySqlParameter("who", UserId),
+                    new MySqlParameter("whom", userId)
                 });
 
                 command.ExecuteNonQuery();
@@ -628,7 +635,7 @@ namespace Matcha.Server.Controllers
                 command.Parameters.AddRange(new[]
                 {
                     new MySqlParameter("first_id", UserId),
-                    new MySqlParameter("second_id", likedProfileId),
+                    new MySqlParameter("second_id", userId),
 
                     new MySqlParameter("mutual", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
                 });
@@ -641,6 +648,28 @@ namespace Matcha.Server.Controllers
                                                                   })
                     .ToResult();
             }
+        }
+
+        [HttpPost]
+        [Route("dislike")]
+        public IActionResult DislikeProfile([FromQuery][Required] long userId)
+        {
+            if (userId == UserId)
+                throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить дизлайк самому себе");
+
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("DislikeProfile", connection) { CommandType = CommandType.StoredProcedure };
+            
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("who", UserId),
+                new MySqlParameter("whom", userId)
+            });
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return ResponseModel.OK.ToResult();
         }
 
         #endregion
