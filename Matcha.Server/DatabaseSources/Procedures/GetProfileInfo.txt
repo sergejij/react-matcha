@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE GetProfileInfo(
+﻿CREATE PROCEDURE GetProfileInfo (
     user_id BIGINT
 )
 
@@ -13,6 +13,7 @@ BEGIN
             data.age,
             data.post,
             data.biography,
+            data.rating,
             s1.sex as sex,
             s2.sex as sex_preference,
             rel.status  as relationship_status,

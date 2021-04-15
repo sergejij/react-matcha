@@ -5,7 +5,8 @@
 	longitude DOUBLE,
 	latitude DOUBLE,
 	OS VARCHAR(64),
-	IP VARCHAR(64)
+	IP VARCHAR(64),
+	browser VARCHAR(128)
 )
 
 BEGIN
@@ -16,7 +17,8 @@ BEGIN
 		sessions_geopositions.initial_longitude = longitude,
 		sessions_geopositions.initial_latitude = latitude,
 		sessions_geopositions.OS = OS,
-		sessions_geopositions.IP = IP
+		sessions_geopositions.IP = IP,
+		sessions_geopositions.browser = browser
 	WHERE
 		sessions_geopositions.session_id = session_id;
 END

@@ -1,0 +1,61 @@
+﻿CREATE PROCEDURE test (
+    my_id BIGINT
+)
+
+BEGIN
+
+	SELECT
+        data.id as user_id,
+        data.name,
+        data.surname,
+        data.location,
+        data.age,
+        data.post,
+        data.biography,
+        data.rating,
+        s1.sex AS sex,
+        s2.sex AS sex_preference,
+        rel.status  AS relationship_status,
+        a1.attitude AS attitude_to_smoking,
+        a2.attitude AS attitude_to_alcohol,
+        (select GROUP_CONCAT(interests_list.interest) FROM interests_list WHERE interests_list.id IN (SELECT users_interests.interest_id FROM users_interests WHERE users_interests.user_id = data.id)) as interests
+    FROM
+        user_full_data AS data
+    LEFT JOIN
+        sexes AS s1 ON data.sex = s1.id
+    LEFT JOIN
+        sexes AS s2 ON data.sex_preference = s2.id
+    LEFT JOIN
+        relationship_statuses AS rel ON data.relationship_status = rel.id
+    LEFT JOIN
+        attitudes AS a1 ON data.attitude_to_smoking = a1.id
+    LEFT JOIN
+        attitudes AS a2 ON data.attitude_to_alcohol = a2.id
+    LEFT JOIN
+        user_data ON user_data.id = data.id AND user_data.email IS NOT NULL
+    WHERE
+        NOT EXISTS(SELECT * FROM dislikes AS d WHERE
+                                                   (d.who = data.id AND d.whom = my_id) /* не показываем пользователей, которым мы не нравимся */
+                                                   OR
+                                                   (d.who = my_id AND d.whom = data.id)) /* не показываем пользователей, которые не нравятся нам */
+        AND
+        NOT EXISTS(SELECT * FROM likes AS l WHERE l.who = my_id AND l.whom = data.id); /* не показываем профили, которые мы уже оценили */
+
+    SELECT
+        location.session_id,
+        location.country,
+        location.city,
+        location.initial_latitude,
+        location.initial_longitude,
+        location.current_latitude,
+        location.current_longitude,
+        location.OS,
+        location.IP,
+        location.browser,
+        sessions.user_id
+    FROM
+        sessions_geopositions AS location
+    JOIN
+        sessions ON location.session_id = sessions.session_id;
+
+END

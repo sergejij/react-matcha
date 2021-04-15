@@ -1,5 +1,6 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Account;
+using Matcha.Server.Models.Profile;
 using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -78,9 +79,7 @@ namespace Matcha.Server.Controllers
             var userId = command.Parameters["user_id"].Value.ToString();
             var sessionId = command.Parameters["session_id"].Value.ToString();
 
-            UsersCache.AddSession(long.Parse(userId), long.Parse(sessionId));
-
-            _ = GeopositionController.DetectAndSaveSessionGeopositionAsync(Request, long.Parse(userId), long.Parse(sessionId));
+            _ = GeopositionController.DetectAndSaveSessionGeopositionAsync(Request, long.Parse(sessionId));
 
             var cookieOptions = new CookieOptions
             {
@@ -103,8 +102,6 @@ namespace Matcha.Server.Controllers
         {
             if (Authorized)
             {
-                UsersCache.DeleteSession(UserId, SessionId);
-
                 using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
                 using var command = new MySqlCommand("Logout", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -141,17 +138,10 @@ namespace Matcha.Server.Controllers
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("ConfirmEmail", connection) { CommandType = CommandType.StoredProcedure };
 
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("code", code.ToString()),
-                new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
-            });
+            command.Parameters.Add(new MySqlParameter("code", code.ToString()));
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
-
-            var user_id = Convert.ToInt64(command.Parameters["user_id"].Value);
-            UsersCache.AddUser(user_id);
 
             return ResponseModel.OK.ToResult();
         }

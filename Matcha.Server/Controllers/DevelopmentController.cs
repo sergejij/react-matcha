@@ -1,11 +1,17 @@
 ﻿using Matcha.Server.Filters;
+using Matcha.Server.Models.Profile;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using server.Response;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
+using UAParser;
 
 namespace Matcha.Server.Controllers
 {
@@ -13,13 +19,6 @@ namespace Matcha.Server.Controllers
     [Route("dev")]
     public class DevelopmentController : BaseMatchaController
     {
-        [HttpGet]
-        [Route("users_list")]
-        public IActionResult GetUsersList()
-        {
-            return new JsonResult(UsersCache.GetProfiles());
-        }
-
         [HttpGet]
         [Route("reset")]
         public IActionResult Reset()
@@ -45,43 +44,6 @@ namespace Matcha.Server.Controllers
                 Directory.Delete(AppConfig.Constants.PhotosDirectory, true);
 
             return ResponseModel.OK.ToResult();
-        }
-
-        [HttpGet]
-        [Route("test")]
-        public IActionResult Test()
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("Test", connection)
-            {
-                CommandType = System.Data.CommandType.StoredProcedure
-            };
-
-            connection.Open();
-            using var reader = command.ExecuteReader();
-
-            var strs = new List<(string, string)>();
-
-            while (reader.Read())
-            {
-                strs.Add((reader["a"].ToString(), reader["b"].ToString()));
-            }
-
-            reader.NextResult();
-
-            var ints = new List<(int, int)>();
-
-            while (reader.Read())
-            {
-                ints.Add((int.Parse(reader["c"].ToString()), int.Parse(reader["d"].ToString())));
-            }
-
-            return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-            {
-                { "strs", strs },
-                { "ints", ints }
-            })
-                .ToResult();
         }
 
         #region Тестовые пользователи

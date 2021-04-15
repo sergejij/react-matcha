@@ -1,0 +1,13 @@
+﻿CREATE PROCEDURE GetProfilePreviewInfo (
+	user_id BIGINT,
+
+	OUT name VARCHAR(128),
+	OUT surname VARCHAR(128)
+)
+
+BEGIN
+
+	SELECT user_full_data.name INTO name FROM user_full_data WHERE user_full_data.id = user_id;
+	SELECT user_full_data.surname INTO surname FROM user_full_data WHERE user_full_data.id = user_id;
+
+END

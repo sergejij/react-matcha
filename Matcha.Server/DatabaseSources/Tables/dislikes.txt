@@ -1,4 +1,4 @@
-﻿CREATE TABLE likes (
+﻿CREATE TABLE dislikes (
 	who BIGINT NOT NULL,
 	whom BIGINT NOT NULL,
 

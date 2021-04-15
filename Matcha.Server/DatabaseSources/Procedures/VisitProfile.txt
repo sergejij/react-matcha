@@ -1,0 +1,24 @@
+﻿CREATE PROCEDURE VisitProfile (
+    who BIGINT,
+    whom BIGINT
+)
+
+BEGIN
+
+    IF NOT EXISTS(SELECT * FROM user_data WHERE user_data.id = whom)
+    THEN
+        SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 404, MESSAGE_TEXT = 'Пользователь с таким ID не существует';
+    END IF;
+    IF NOT EXISTS(SELECT * FROM visits AS v WHERE v.who = who AND v.whom = whom)
+    THEN
+        INSERT INTO visits (who, whom) VALUES (who, whom);
+
+        UPDATE
+            user_full_data AS data
+        SET
+            data.rating = data.rating + 1
+        WHERE
+            data.id = whom;
+    END IF;
+
+END
