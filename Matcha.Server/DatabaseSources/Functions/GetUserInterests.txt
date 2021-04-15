@@ -1,0 +1,12 @@
+﻿CREATE FUNCTION GetUserInterests(
+	user_id BIGINT
+) RETURNS VARCHAR(2048)
+
+BEGIN
+
+	RETURN (SELECT GROUP_CONCAT(interest)
+	FROM interests_list
+	WHERE interests_list.id IN
+		(SELECT interest_id FROM users_interests WHERE users_interests.user_id = user_id));
+
+END
