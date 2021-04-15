@@ -19,7 +19,8 @@ const FilterForm = () => {
   )
 }
 const Search = () => {
-  const [users, setUsers] = React.useState([]);
+  // const [users, setUsers] = React.useState([]);
+  const [users1, setUsers1] = React.useState([]);
   const [currentUserId, setCurrentUserId] = React.useState(null);
   const [isShownFilterForm, setIsShownFilterForm] = React.useState(false);
 
@@ -27,43 +28,45 @@ const Search = () => {
     usersApi.getUsers(0, 20)
       .then(({ data }) => {
           console.log("GET USERS:", data);
-          setUsers(data.Content.users);
+          setUsers1(data.Content.users);
       },
       (err) => {
           console.log("error:", err);
       })
-        .catch(err => console.log("ERRRor:", err))
+        .catch(err => console.log("ERROR:", err))
 
   }, []);
+    // React.useEffect(() => {
+    //     axios.get('http://localhost:3000/db.json')
+    //         .then(({ data }) => {
+    //             setUsers(data.users);
+    //         });
+    // }, []);
 
   const toggleFilterForm = () => {
     setIsShownFilterForm(prevState => !prevState)
   }
 
-  const createUsers = () => {
-      usersApi.createUsers(20)
-          .then()
-          .catch();
-  }
+  // console.log("USERS:", users);
+  console.log("USERS1:", users1);
 
   return (
     <Content>
       <Aside
+        isMobile={window.innerWidth < 900}
         setCurrentUserId={setCurrentUserId}
-        isSettings={false}
         isSearch
         onClickFilter={toggleFilterForm}
         headline="Поиск пары"
-        users={users}
+        users={users1}
       />
       <Route path={`/search/${currentUserId}`}>
-        <Profile identifier={currentUserId} />
+        <Profile userId={currentUserId} />
       </Route>
       {
         isShownFilterForm &&
             <FilterForm />
       }
-      <Button onClick={createUsers}>Create users</Button>
     </Content>
   );
 };

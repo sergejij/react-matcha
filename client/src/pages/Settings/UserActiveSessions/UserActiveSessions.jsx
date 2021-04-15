@@ -12,7 +12,6 @@ const SessionBlock = ({ id, IP, OS, Country, City }) => {
       <div>
         <h3>{OS}</h3>
         <p>{`${IP} - ${City}, ${Country}`}</p>
-        <p>{`ID - ${id}`}</p>
       </div>
       <CloseIcon className="close" style={{ fontSize: "25px" }} color="error" />
     </SessionBlockStyled>

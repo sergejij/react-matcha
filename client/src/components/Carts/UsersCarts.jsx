@@ -11,16 +11,20 @@ const UsersCarts = ({ users, buttonText }) => {
     e.preventDefault();
   };
 
+  console.log(users);
+
   return (
     <CartsStyled>
       {
         users.map((user, index) => (
-          <Cart to={`/profile/${user.id}`} img={zero} key={`${user.name}_${index}`}>
+          <Cart
+              to={`/profile/${user.Id}`}
+              img={'data:image/bmp;base64,' + user.Avatar}
+              key={`${user.Name}_${index}`}
+          >
             <div>
               <Text color="white" size="18px">
-                {user.name}
-                {' '}
-                {user.age}
+                {user.Name}
               </Text>
               <Button onClick={communicate} size="S" view="main">{buttonText}</Button>
             </div>

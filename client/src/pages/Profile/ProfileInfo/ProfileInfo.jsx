@@ -25,10 +25,13 @@ export const ProfileInterests = ({ interests }) => (
 );
 
 const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
-  const [value, setValue] = React.useState(fieldValue);
+  const [value, setValue] = React.useState('');
   const [fieldEditing, setFieldEditing] = React.useState(false);
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
+  React.useEffect(() => {
+      setValue(fieldValue);
+  }, [])
   const changeInfoField = () => {
     setFieldEditing(false);
 
@@ -77,7 +80,7 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue}) => {
 const ProfileInfo = ({ userData }) => {
   const [inputValue, setInputValue] = React.useState('');
   const [interests, setInterests] = React.useState([]);
-  const [bio, setBio] = React.useState(userData.biography);
+  const [bio, setBio] = React.useState('');
   const [bioEditing, setBioEditing] = React.useState(false);
   const [interestsEditing, setInterestsEditing] = React.useState(false);
 
@@ -87,42 +90,33 @@ const ProfileInfo = ({ userData }) => {
 
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
-  const changeBio = () => {
-    setBioEditing(false);
-    userInfoApi
-      .changeBio(bio)
-      .then(
-        () => {},
-        (err) => {
-          if (err.response.status === 401) {
-            setAmIAuthorized(() => false);
-            localStorage.clear();
-          }
-        }
-      )
-      .catch((err) => console.log("ERROR patchUserInfo bio:", err))
-  }
+  React.useEffect(() => {
+      setBio(userData.biography);
+  }, [userData]);
+
+    React.useEffect(() => {
+        userInterestsApi
+            .getInterests()
+            .then(
+                ({data}) => {
+                    const values = data.Content.interests;
+                    setInterests(values);
+                    setInputValue(values.join(" "));
+                },
+                (err) => {
+                    if (err.response.status === 401) {
+                        setAmIAuthorized(() => false);
+                        localStorage.clear();
+                    }
+                    console.error("ERROR getInterests:", err)
+                }
+            )
+            .catch((err) => console.error("ERROR getInterests:", err))
+    }, [userData]);
+
+
 
   React.useEffect(() => {
-    userInterestsApi
-      .getInterests()
-      .then(
-        ({data}) => {
-          const values = data.Content.interests;
-          setInterests(values);
-          console.log("INTERESTS:", values);
-          setInputValue(values.join(" "));
-        },
-        (err) => {
-          if (err.response.status === 401) {
-            setAmIAuthorized(() => false);
-            localStorage.clear();
-          }
-          console.error("ERROR getInterests:", err)
-        }
-        )
-      .catch((err) => console.error("ERROR getInterests:", err))
-
     userInfoApi
       .getSexesList()
       .then(
@@ -155,6 +149,22 @@ const ProfileInfo = ({ userData }) => {
       .catch(err => console.log("ERROR getRelationshipsList:", err))
   }, []);
 
+    const changeBio = () => {
+        setBioEditing(false);
+        userInfoApi
+            .changeBio(bio)
+            .then(
+                () => {},
+                (err) => {
+                    if (err.response.status === 401) {
+                        setAmIAuthorized(() => false);
+                        localStorage.clear();
+                    }
+                }
+            )
+            .catch((err) => console.log("ERROR patchUserInfo bio:", err))
+    }
+
   const saveInterests = () => {
     setInterestsEditing(false);
     const newInterests = inputValue.split(" ")
@@ -181,6 +191,8 @@ const ProfileInfo = ({ userData }) => {
     return <Redirect to="/login" />;
   }
 
+
+  console.log("USERDATA:", userData);
   return(
     <>
       <ProfileInfoStyled>

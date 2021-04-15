@@ -33,6 +33,11 @@ export const AsidePhoto = styled.img`
   text-align: center;
   box-shadow: 0 0 12px 2px rgba(93, 83, 94, 0.32);
   margin-right: 15px;
+
+  @media (max-width: 900px) and (min-width: 10px) {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 export const AsideIcon = styled.div`

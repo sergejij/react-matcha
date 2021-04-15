@@ -13,54 +13,58 @@ import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
   match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setCurrentUserId, isChat, isMobile
-}) => (
-  <ChatsAsideStyled>
-    {!isMobile && <ChatsAsideHeader>
-      <span>{headline}</span>
-    </ChatsAsideHeader>}
-    {
-      isSearch && (
-        <FilterBox onClick={onClickFilter}>
-          <FilterListIcon />
-        </FilterBox>
-      )
-    }
-    <ChatsAsideItems isSearch={isSearch}>
-      {
-        isSettings ? (
-          <>
-            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting={!isMobile && "Данные пользователя"}>
-              <PersonOutlineIcon />
-            </SettingsItem>
-            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting={!isMobile && "Безопасность пользователя"}>
-              <SecurityIcon />
-            </SettingsItem>
-            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting={!isMobile && "Фото пользователя"}>
-              <CropOriginalIcon />
-            </SettingsItem>
-            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting={!isMobile && "Активные сессии"}>
-              <SettingsInputCompositeIcon />
-            </SettingsItem>
+}) => {
+    return (
+        <ChatsAsideStyled>
+            {!isMobile && <ChatsAsideHeader>
+                <span>{headline}</span>
+            </ChatsAsideHeader>}
+            {
+                isSearch && (
+                    <FilterBox onClick={onClickFilter}>
+                        <FilterListIcon />
+                    </FilterBox>
+                )
+            }
+            <ChatsAsideItems isSearch={isSearch}>
+                {
+                    isSettings ? (
+                        <>
+                            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting={!isMobile && "Данные пользователя"}>
+                                <PersonOutlineIcon />
+                            </SettingsItem>
+                            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting={!isMobile && "Безопасность пользователя"}>
+                                <SecurityIcon />
+                            </SettingsItem>
+                            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting={!isMobile && "Фото пользователя"}>
+                                <CropOriginalIcon />
+                            </SettingsItem>
+                            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting={!isMobile && "Активные сессии"}>
+                                <SettingsInputCompositeIcon />
+                            </SettingsItem>
 
-          </>
-        ) : (
-          users.map((user, index) => (
-            <User
-              key={`${user}_${index}`}
-              isActive={index === 0}
-              name={user.name}
-              img={ProfileImg}
-              id={user.id}
-              chooseConversation={() => setCurrentUserId(user.id)}
-              isChat={isChat}
-            />
-          ))
-        )
-      }
-    </ChatsAsideItems>
+                        </>
+                    ) : (
+                        users.map((user, index) => (
+                            <User
+                                key={`${user}_${index}`}
+                                isActive={index === 0}
+                                name={user.Name}
+                                surname={user.Surname}
+                                img={ProfileImg}
+                                id={index}
+                                chooseConversation={() => setCurrentUserId(3)}
+                                isChat={isChat}
+                                isMobile={isMobile}
+                            />
+                        ))
+                    )
+                }
+            </ChatsAsideItems>
 
-  </ChatsAsideStyled>
+        </ChatsAsideStyled>
 
-);
+    );
+}
 
 export default Aside;
