@@ -5,7 +5,7 @@ import Slider from './Slider/Slider';
 import { Link, Redirect } from 'react-router-dom';
 import {userPhotosApi} from '../../../api/api';
 
-const ProfilePhotos = ({ id }) => {
+const ProfilePhotos = ({ id, isMyProfile }) => {
   const [photos, setPhotos] = React.useState([]);
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
@@ -37,7 +37,7 @@ const ProfilePhotos = ({ id }) => {
         .filter((item) => item.Id !== null)
         .map((item) => 'data:image/bmp;base64,' + item.Content)}
       />
-      <Link to="/settings/user-photos">Обновить/добавить фотографии</Link>
+      {isMyProfile && <Link to="/settings/user-photos">Обновить/добавить фотографии</Link>}
     </ProfilePhotosStyled>
   );
 }

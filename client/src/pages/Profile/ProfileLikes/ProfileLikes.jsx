@@ -2,9 +2,9 @@ import React from 'react';
 import ProfileLikesStyled from './styled';
 import UsersCarts from '../../../components/Carts/UsersCarts';
 
-const ProfileLikes = ({ users }) => (
+const ProfileLikes = ({ likes }) => (
   <ProfileLikesStyled>
-    <UsersCarts users={users} buttonText="Нравится" />
+    <UsersCarts users={likes} buttonText="Нравится" />
   </ProfileLikesStyled>
 );
 

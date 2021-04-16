@@ -17,7 +17,7 @@ const tabs = [
   'Лайки',
 ];
 
-const ProfileTabs = ({ defaultTab, userData, id, isMyProfile }) => {
+const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
   const [visitors, setVisitors] = React.useState([]);
   const [likes, setLikes] = React.useState([]);
@@ -37,6 +37,19 @@ const ProfileTabs = ({ defaultTab, userData, id, isMyProfile }) => {
               (err) => console.log("ERROR getVisitors:", err)
           )
           .catch((err) => console.log("ERROR getVisitors:", err));
+  }, []);
+
+  React.useEffect(() => {
+      usersApi
+          .getLikes(1, 200)
+          .then(
+              ({ data }) => {
+                  console.log('Likes:', data);
+                  setLikes(data.Content.profiles);
+              },
+              (err) => console.log("ERROR getLikes:", err)
+          )
+          .catch((err) => console.log("ERROR getLikes:", err));
   }, []);
 
   React.useEffect(() => {
@@ -89,7 +102,7 @@ const ProfileTabs = ({ defaultTab, userData, id, isMyProfile }) => {
       </ProfileTabsStyled>
 
       <TabPanel>
-        <ProfilePhotos id={id} />
+        <ProfilePhotos isMyProfile={isMyProfile} id={id} />
       </TabPanel>
 
       <TabPanel>
@@ -100,9 +113,9 @@ const ProfileTabs = ({ defaultTab, userData, id, isMyProfile }) => {
         <ProfileVisitors visitors={visitors} />
       </TabPanel>
 
-      {/*<TabPanel>*/}
-      {/*  <ProfileLikes likes={likes} />*/}
-      {/*</TabPanel>*/}
+      <TabPanel>
+        <ProfileLikes likes={likes} />
+      </TabPanel>
     </Tabs>
   );
 };

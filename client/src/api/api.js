@@ -25,12 +25,16 @@ export const usersApi = {
     return instance.get(`/users/visits?page=${page}&size=${size}`);
   },
 
-  putLike(likedProfileId) {
-    return instance.post(`/profile/like_notification?likedProfileId=${likedProfileId}`);
+  putLike(userId) {
+    return instance.post(`/profile/like?userId=${userId}`);
   },
 
-  putVisit(visitedProfileId) {
-    return instance.post(`/profile/visit_notification?visitedProfileId=${visitedProfileId}`);
+  putDislike(userId) {
+    return instance.post(`/profile/dislike?userId=${userId}`);
+  },
+
+  putVisit(userId) {
+    return instance.post(`/profile/visit?userId=${userId}`);
   },
 }
 

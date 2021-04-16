@@ -23,14 +23,14 @@ export default ({ userId }) => {
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(
-        (data) => {
+        ({data}) => {
           setAmIAuthorized(() => true);
-          setUserData(data.data.Content);
-          if (!(!!data.data.Content.sex &&
-            !!data.data.Content.age &&
-            !!data.data.Content.relationshipStatus &&
-            !!data.data.Content.sexPreference &&
-            !!data.data.Content.biography)) {
+          setUserData(data.Content);
+          if (!(!!data.Content.sex &&
+            !!data.Content.age &&
+            !!data.Content.relationshipStatus &&
+            !!data.Content.sexPreference &&
+            !!data.Content.biography)) {
             setIsRequiredEmpty(true);
           } else {
             setIsRequiredEmpty(false);

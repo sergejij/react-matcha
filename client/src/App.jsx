@@ -54,7 +54,7 @@ function App() {
           enableHighAccuracy: true,
         })
     }
-  }, 5000000);
+  }, 200000);
 
   React.useEffect(() => {
     axios.get('http://localhost:3000/db.json')

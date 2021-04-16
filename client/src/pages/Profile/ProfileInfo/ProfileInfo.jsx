@@ -96,6 +96,7 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
 
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
+  console.log("UUUUUSERDATA:", userData);
   React.useEffect(() => {
       setBio(userData.biography);
   }, [userData]);
@@ -248,9 +249,9 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
             <p>
               {bio}
             </p>
-            <IconPencil onClick={() => setBioEditing(true)} size="18px">
+            {isMyProfile && <IconPencil onClick={() => setBioEditing(true)} size="18px">
               <CreateIcon />
-            </IconPencil>
+            </IconPencil>}
           </>}
 
           {bioEditing &&
@@ -265,9 +266,9 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
 
       <h2>
         Интересы:
-        <IconPencil onClick={() => setInterestsEditing(true)} size="28px">
+        {isMyProfile && <IconPencil onClick={() => setInterestsEditing(true)} size="28px">
           <CreateIcon />
-        </IconPencil>
+        </IconPencil>}
       </h2>
       {interestsEditing &&
       <UpdateInterests>

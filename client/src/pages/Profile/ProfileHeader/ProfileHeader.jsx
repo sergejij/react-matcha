@@ -54,6 +54,22 @@ const ProfileHeader = ({ userData, id }) => {
         .catch((err) => console.log("ERR putLike:", err));
   }
 
+  const dislike = () => {
+    usersApi
+        .putDislike(id)
+        .then(
+            () => {},
+            (err) => {
+              console.log("ERR putDislike:", err);
+              if (err.response.status === 401) {
+                setAmIAuthorized(() => false);
+                localStorage.clear();
+              }
+            }
+        )
+        .catch((err) => console.log("ERR putDislike:", err));
+  }
+
   return (
     <ProfileHeaderBox isNeedWrap={window.innerWidth < 500}>
       <ProfileHeaderPhoto src={userAvatar} alt="Фото профиля" />
@@ -68,7 +84,7 @@ const ProfileHeader = ({ userData, id }) => {
 
         {id !== localStorage.getItem('id') && <Buttons>
           <Button onClick={like} size="S" like view="out"/>
-          <Button size="S" dislike view="main"/>
+          <Button onClick={dislike} size="S" dislike view="main"/>
         </Buttons>}
       </div>
     </ProfileHeaderBox>

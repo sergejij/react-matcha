@@ -114,7 +114,8 @@ export const ProfileInfoPairs = styled.div`
 `;
 
 export const ProfileInfoBio = styled.div`
-  width: 45%; 
+  width: 45%;
+  font-size: 16px;
   & svg {
     margin-top: 8px;
   }
@@ -122,9 +123,12 @@ export const ProfileInfoBio = styled.div`
   p {
     display: inline;
     word-break: break-all;
+    @media (max-width: 700px) and (min-width: 5px) {
+      font-weight: 400;
+    }
   }
   
-  padding: 30px;
+  margin: 0 50px;
 
   @media (max-width: 1000px) and (min-width: 700px) {
     width: 500px;

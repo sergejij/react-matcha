@@ -9,14 +9,24 @@ export const FilterFormStyled = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   left: 21%;
   top: 12%;
   background-color: white;
-  opacity: 0.8;
+  opacity: 0.9;
   border-radius: 13px;
-  padding: 5px;
   border: 1px solid ${COLORS.LIGHT_GRAY};
+  padding: 20px;
+  
+  & div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  
+  & #slider {
+    margin: 20px 0;
+  }
   
   & svg {
     position: absolute;

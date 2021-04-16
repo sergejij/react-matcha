@@ -85,9 +85,12 @@ const Menu = () => {
       });
   }
 
+    const refresh = () => {
+        setTimeout(() => window.location.reload(true));
+    };
   return window.innerWidth > 700 ? (
     <BoxMenu>
-      <MenuIconLink to={`/profile/${id}`} exact activeClassName="active">
+      <MenuIconLink onClick={refresh} to={`/profile/${id}`} exact activeClassName="active">
         <PersonIcon style={{ width: 50, height: 50 }} />
         <Text size="15px">Профиль</Text>
       </MenuIconLink>

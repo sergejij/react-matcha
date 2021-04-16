@@ -11,6 +11,10 @@ const UsersCarts = ({ users, buttonText }) => {
     e.preventDefault();
   };
 
+  const refresh = () => {
+    setTimeout(() => window.location.reload(true));
+  };
+
   return (
     <CartsStyled>
       {
@@ -19,6 +23,7 @@ const UsersCarts = ({ users, buttonText }) => {
               to={`/profile/${user.Id}`}
               img={'data:image/bmp;base64,' + user.Avatar}
               key={`${user.Name}_${index}`}
+              onClick={refresh}
           >
             <div>
               <Text color="white" size="18px">
