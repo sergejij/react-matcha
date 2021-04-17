@@ -49,7 +49,7 @@ namespace Matcha.Server.Controllers
             _logger.Log(LogLevel.Trace, "Exit");
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
 
-            return default;
+            return ResponseModel.OK.ToResult();
         }
     }
 }
