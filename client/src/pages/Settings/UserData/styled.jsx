@@ -62,24 +62,29 @@ export const SettingsDataHeaderBoxStyled = styled.div`
 export const SettingsDataHeaderPhotoContainer = styled.div`
   position: relative;
   width: 200px;
+  height: 200px;
   margin-right: 50px;
 
   @media (max-width: 1600px) and (min-width: 1400px){
       width: 150px;
+      height: 150px;
   }
 
   @media (max-width: 1400px) and (min-width: 1000px) {
       width: 130px;
+      height: 130px;
       margin-right: 0;
   }
 
   @media (max-width: 1000px) and (min-width: 500px) {
     width: 100px;
+    height: 100px;
     margin-right: 0;
   }
 
   @media (max-width: 500px) {
     width: 90px;
+    height: 90px;
     margin-right: 0;
   }
 `;
@@ -87,7 +92,7 @@ export const SettingsDataHeaderPhotoContainer = styled.div`
 export const SettingsDataHeaderPhotoImg = styled.img`
   border-radius: 100%;
   width: 100%;
-  height: auto;
+  height: 100%;
   text-align: center;
   box-shadow: 0 0 12px 2px rgba(93, 83, 94, 0.32);
   margin-right: 5%;
@@ -98,8 +103,8 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 67%;
-  left: 67%;
+  top: 75%;
+  left: 75%;
   
   border-radius: 100%;
   width: 40px;
@@ -137,8 +142,8 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
   }
 
   @media (max-width: 1600px) and (min-width: 1400px){
-    top: 62%;
-    left: 62%;
+    top: 72%;
+    left: 72%;
     width: 35px;
     height: 35px;
     svg {
@@ -148,8 +153,6 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
   }
 
   @media (max-width: 1400px) and (min-width: 1000px) {
-    top: 60%;
-    left: 60%;
     width: 30px;
     height: 30px;
     svg {
@@ -159,8 +162,6 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
   }
 
   @media (max-width: 1000px) and (min-width: 500px) {
-    top: 58%;
-    left: 58%;
     width: 25px;
     height: 25px;
     svg {
@@ -170,8 +171,6 @@ export const SettingsDataHeaderPhotoEdit = styled.label`
   }
 
   @media (max-width: 500px) {
-    top: 55%;
-    left: 55%;
     width: 25px;
     height: 25px;
     svg {
