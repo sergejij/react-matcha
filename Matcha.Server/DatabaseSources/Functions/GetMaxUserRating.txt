@@ -2,6 +2,6 @@
 
 BEGIN
 
-	RETURN MAX(SELECT rating FROM user_full_data);
+	RETURN (SELECT MAX(rating) FROM user_full_data);
 
 END

@@ -1,0 +1,7 @@
+﻿CREATE FUNCTION GetMaxUserAge () RETURNS INT
+
+BEGIN
+
+	RETURN (SELECT MAX(age) FROM user_full_data);
+
+END

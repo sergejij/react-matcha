@@ -228,6 +228,33 @@ namespace Matcha.Server.Controllers
         }
 
         [HttpGet]
+        [Route("max_age")]
+        public async Task<IActionResult> GetMaxUserAge()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetMaxUserAge", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.Add(
+                new MySqlParameter("max_age", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.ReturnValue
+                }
+            );
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "maxAge", command.Parameters["max_age"].Value }
+                })
+                .ToResult();
+        }
+
+        [HttpGet]
         [Route("likes")]
         public async Task<IActionResult> GetLikesList([FromQuery][Required] int page, [FromQuery][Required] int size)
         {
