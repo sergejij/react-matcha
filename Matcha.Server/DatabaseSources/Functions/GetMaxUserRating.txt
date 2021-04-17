@@ -1,0 +1,7 @@
+﻿CREATE FUNCTION GetMaxUserRating () RETURNS INT
+
+BEGIN
+
+	RETURN (SELECT MAX(rating) FROM user_full_data);
+
+END

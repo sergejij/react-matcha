@@ -8,6 +8,7 @@ using server.Response;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -146,7 +147,8 @@ namespace Matcha.Server.Controllers
                     {
                         matches = profiles
                             .OrderByDescending(arg => arg.Value.Rating)
-                            .Where(arg => !sortParameters.Min.HasValue || arg.Value.Rating >= sortParameters.Min.Value);
+                            .Where(arg => arg.Value.Rating >= sortParameters.Min.Value)
+                            .Where(arg => arg.Value.Rating <= sortParameters.Max.Value);
                         break;
                     }
 
@@ -155,8 +157,8 @@ namespace Matcha.Server.Controllers
                         matches = profiles
                             .OrderByDescending(arg => arg.Value.Age.HasValue)
                             .ThenBy(arg => arg.Value.Age)
-                            .Where(arg => !sortParameters.Min.HasValue || arg.Value.Age >= sortParameters.Min.Value)
-                            .Where(arg => !sortParameters.Max.HasValue || arg.Value.Age <= sortParameters.Max.Value);
+                            .Where(arg => arg.Value.Age >= sortParameters.Min.Value)
+                            .Where(arg => arg.Value.Age <= sortParameters.Max.Value);
                         break;
                     }
 
@@ -165,7 +167,8 @@ namespace Matcha.Server.Controllers
                         var me = profiles[UserId];
 
                         matches = profiles
-                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= (sortParameters.Min ?? 1))
+                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= sortParameters.Min.Value)
+                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() <= sortParameters.Max.Value)
                             .OrderByDescending(arg => me.Interests.Intersect(arg.Value.Interests).Count());
                         break;
                     }
@@ -197,121 +200,61 @@ namespace Matcha.Server.Controllers
                 })
                 .ToResult();
         }
-        //public async Task<IActionResult> GetUsersList([Required][FromQuery] SortParametersModel sortParameters)
-        //{
-        //    using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-        //    using var command = new MySqlCommand("GetUsersFullDataList", connection) { CommandType = System.Data.CommandType.StoredProcedure };
 
-        //    command.Parameters.AddRange(new[]
-        //    {
-        //        new MySqlParameter("order_by", sortParameters.OrderBy.ToString()),
-        //        new MySqlParameter("min", sortParameters.)
-        //        new MySqlParameter("skip", (sortParameters.Page - 1) * sortParameters.Size),
-        //        new MySqlParameter("take", sortParameters.Size)
-        //    });
+        //TODO: сделать проверку в процедуре, что пользователи существуют?
+        [HttpGet]
+        [Route("max_rating")]
+        public async Task<IActionResult> GetMaxUserRating()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetMaxUserRating", connection) { CommandType = CommandType.StoredProcedure };
 
-        //    connection.Open();
-        //    using var reader = await command.ExecuteReaderAsync();
+            command.Parameters.Add(
+                new MySqlParameter("max_rating", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.ReturnValue
+                }
+            );
 
-        //    var profiles = new List<ProfileInfoModel>();
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
 
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "maxRating", command.Parameters["max_rating"].Value }
+                })
+                .ToResult();
+        }
 
+        [HttpGet]
+        [Route("max_age")]
+        public async Task<IActionResult> GetMaxUserAge()
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetMaxUserAge", connection) { CommandType = CommandType.StoredProcedure };
 
-        //    //IEnumerable<ProfileInfoModel> usersList = null;
+            command.Parameters.Add(
+                new MySqlParameter("max_age", MySqlDbType.Int32)
+                {
+                    Direction = ParameterDirection.ReturnValue
+                }
+            );
 
-        //    //switch (sortParameters.OrderBy)
-        //    //{
-        //    //    case OrderMethodsEnum.Id:
-        //    //        {
-        //    //            usersList = UsersCache.UsersCache.GetAllUsers() UsersCache.GetProfiles()
-        //    //                    .Where(arg => arg.Key != UserId)
-        //    //                    .Select(arg => arg.Value);
-        //    //            break;
-        //    //        }
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
 
-        //    //    case OrderMethodsEnum.Age:
-        //    //        {
-        //    //            usersList = UsersCache.GetProfiles()
-        //    //                    .Where(arg => arg.Key != UserId)
-        //    //                    .Select(arg => arg.Value)
-        //    //                    .OrderByDescending(arg => arg.Age.HasValue)
-        //    //                    .ThenBy(arg => arg.Age)
-        //    //                    .Where(arg => !sortParameters.MinAge.HasValue || arg.Age >= sortParameters.MinAge.Value)
-        //    //                    .Where(arg => !sortParameters.MaxAge.HasValue || arg.Age <= sortParameters.MaxAge.Value);
-        //    //            break;
-        //    //        }
-
-        //    //    case OrderMethodsEnum.Rating:
-        //    //        {
-        //    //            usersList = UsersCache.GetProfiles()
-        //    //                    .Where(arg => arg.Key != UserId)
-        //    //                    .Select(arg => arg.Value)
-        //    //                    .OrderByDescending(arg => arg.Rating)
-        //    //                    .Where(arg => !sortParameters.MinRating.HasValue || arg.Rating >= sortParameters.MinRating.Value);
-        //    //            break;
-        //    //        }
-
-        //    //    case OrderMethodsEnum.Distance:
-        //    //        {
-        //    //            //var me = UsersCache.GetUserCacheModel(UserId);
-        //    //            //var myCurrentSession = me.Sessions[SessionId];
-
-        //    //            //if (myCurrentSession.CurrentGeoposition is null && myCurrentSession.InitialGeoposition is null)
-        //    //            //    return null; // return orderbiyd
-
-        //    //            //var myGeoposition = myCurrentSession.CurrentGeoposition ?? myCurrentSession.InitialGeoposition;
-
-
-        //    //            //var data = UsersCache.GetUsersCache().Where(arg => arg.Key != UserId);
-
-        //    //            //var profilesWithNearestSession = new Dictionary<ProfileInfoModel, double>();
-        //    //            //foreach ((var user_id, var user_data) in data)
-        //    //            //{
-        //    //            //    var sessionsList = user_data.Sessions.Values;
-
-        //    //            //    var sessionsWithDistance = sessionsList
-        //    //            //        .Where(arg => arg.CurrentGeoposition is not null || arg.InitialGeoposition is not null)
-        //    //            //        .Select(arg => (arg, arg.CurrentGeoposition is not null ? ))
-        //    //            //.Select(arg => (arg, arg.)
-
-        //    //            //sessionsList.Select()
-        //    //            //}
-        //    //            //.GroupBy(arg => arg.)
-        //    //            //var sessions = UsersCache.GetSessions();
-        //    //            //usersList = UsersCache.GetProfiles()
-
-
-        //    //            break;
-        //    //        }
-
-        //    //    case OrderMethodsEnum.CommonInterests:
-        //    //        {
-        //    //            var myInterests = UsersCache.GetUserInterests(UserId);
-
-        //    //            usersList = UsersCache.GetProfilesWithInterests()
-        //    //                .Where(arg => arg.Key != UserId)
-        //    //                .Where(arg => arg.Value.Item2.Intersect(myInterests).Count() >= sortParameters.MinCommonInterests)
-        //    //                .OrderByDescending(arg => arg.Value.Item2.Intersect(myInterests).Count())
-        //    //                .Select(arg => arg.Value.Item1);
-
-        //    //            break;
-        //    //        }
-
-
-        //    //    default:
-        //    //        throw new Exception();
-        //    //}
-
-        //    //usersList = usersList.Skip(skip).Take(take);
-
-        //    //return new ResponseModel(HttpStatusCode.OK, null, new()
-        //    //{
-        //    //    { "users", usersList }
-        //    //})
-        //    //.ToResult();
-
-        //    return default;
-        //}
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "maxAge", command.Parameters["max_age"].Value }
+                })
+                .ToResult();
+        }
 
         [HttpGet]
         [Route("likes")]
