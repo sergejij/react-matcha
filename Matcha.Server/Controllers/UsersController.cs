@@ -147,7 +147,8 @@ namespace Matcha.Server.Controllers
                     {
                         matches = profiles
                             .OrderByDescending(arg => arg.Value.Rating)
-                            .Where(arg => !sortParameters.Min.HasValue || arg.Value.Rating >= sortParameters.Min.Value);
+                            .Where(arg => arg.Value.Rating >= sortParameters.Min.Value)
+                            .Where(arg => arg.Value.Rating <= sortParameters.Max.Value);
                         break;
                     }
 
@@ -156,8 +157,8 @@ namespace Matcha.Server.Controllers
                         matches = profiles
                             .OrderByDescending(arg => arg.Value.Age.HasValue)
                             .ThenBy(arg => arg.Value.Age)
-                            .Where(arg => !sortParameters.Min.HasValue || arg.Value.Age >= sortParameters.Min.Value)
-                            .Where(arg => !sortParameters.Max.HasValue || arg.Value.Age <= sortParameters.Max.Value);
+                            .Where(arg => arg.Value.Age >= sortParameters.Min.Value)
+                            .Where(arg => arg.Value.Age <= sortParameters.Max.Value);
                         break;
                     }
 
@@ -166,7 +167,8 @@ namespace Matcha.Server.Controllers
                         var me = profiles[UserId];
 
                         matches = profiles
-                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= (sortParameters.Min ?? 1))
+                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= sortParameters.Min.Value)
+                            .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() <= sortParameters.Max.Value)
                             .OrderByDescending(arg => me.Interests.Intersect(arg.Value.Interests).Count());
                         break;
                     }
