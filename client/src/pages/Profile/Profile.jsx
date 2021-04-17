@@ -12,7 +12,6 @@ import {userInfoApi, userPhotosApi, usersApi} from '../../api/api';
 export default ({ userId }) => {
   const id = userId || useParams().id;
 
-  console.log("IDD:", id);
   const [isRequiredEmpty, setIsRequiredEmpty] = React.useState(false);
   const [isProfilePhotoEmpty, setIsProfilePhotoEmpty] = React.useState(false);
   const [userData, setUserData] = React.useState({});

@@ -31,7 +31,6 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
           .getVisits(1, 200)
           .then(
               ({ data }) => {
-                  console.log('Visitors:', data);
                   setVisitors(data.Content.profiles);
               },
               (err) => console.log("ERROR getVisitors:", err)
@@ -56,9 +55,7 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
       usersApi
           .getLikes(1, 200)
           .then(
-              ({ data }) => {
-                  console.log('Likes:', data);
-              },
+              ({ data }) => {},
               (err) => console.log("ERROR getLikes:", err)
           )
           .catch((err) => console.log("ERROR getLikes:", err));
@@ -81,7 +78,7 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
           >
               Информация
           </ProfileTabsLink>
-          { id === localStorage.getItem('id') &&
+          { isMyProfile &&
               <>
                   <ProfileTabsLink
                       key="photo2"
@@ -109,13 +106,15 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
         <ProfileInfo isMyProfile={isMyProfile} userData={userData} id={id} />
       </TabPanel>
 
-      <TabPanel>
-        <ProfileVisitors visitors={visitors} />
-      </TabPanel>
+      {isMyProfile && <>
+          <TabPanel>
+              <ProfileVisitors visitors={visitors} />
+          </TabPanel>
 
-      <TabPanel>
-        <ProfileLikes likes={likes} />
-      </TabPanel>
+          <TabPanel>
+              <ProfileLikes likes={likes} />
+          </TabPanel>
+      </>}
     </Tabs>
   );
 };

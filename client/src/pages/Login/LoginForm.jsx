@@ -6,6 +6,7 @@ import COLORS from '../../constants';
 import Button from '../../components/Button';
 import { userInfoApi, usersAPI } from '../../api/api';
 import { Redirect } from 'react-router-dom';
+import socket from "../../api/socket";
 
 export default ({ onClose, onRegister }) => {
   const [emailOrLogin, setEmailOrLogin] = React.useState('');
@@ -15,35 +16,11 @@ export default ({ onClose, onRegister }) => {
 
   const [redirectTo, setRedirectTo] = React.useState('');
 
-  let intervalId;
-
   const openRegister = (e) => {
     e.preventDefault();
     onClose();
     onRegister();
   };
-
-  // function sendGeoPosition(position) {
-  //   const {latitude, longitude} = position.coords;
-  //
-  //   userInfoApi
-  //     .sendLocation(latitude, longitude)
-  //     .then(
-  //       () => {
-  //         console.log("Good");
-  //       },
-  //       (err) => {
-  //         if (err.response.status === 401) {
-  //           clearInterval(intervalId);
-  //         }
-  //       }
-  //     )
-  //     .catch((err) => console.error("ERROR sendLocation:", err));
-  // }
-  //
-  // function sendErrGeoPosition() {
-  //   clearInterval(intervalId);
-  // }
 
   const onLogin = () => {
     if (!emailOrLogin || !password) {
@@ -56,14 +33,12 @@ export default ({ onClose, onRegister }) => {
           ({ data }) => {
             const id = data.Content.userId;
             localStorage.setItem('id', id);
-            // intervalId = setInterval(() => {
-            //   navigator.geolocation.getCurrentPosition(
-            //     sendGeoPosition,
-            //     sendErrGeoPosition, {
-            //       enableHighAccuracy: true,
-            //     })
-            // }, 500000);
             setRedirectTo(`/profile/${id}`);
+            // socket.emit('CHAT', {
+            //   text: "привет из мира интерфейсов",
+            // });
+            socket.send('hello backend');
+
           },
           (err) => {
             console.error("ERROR login:", err.response.status);

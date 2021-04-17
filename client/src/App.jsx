@@ -16,7 +16,6 @@ import { userInfoApi } from './api/api';
 
 function App() {
   const match = useRouteMatch('/login');
-  const [users, setUsers] = React.useState([]);
   let intervalId;
 
   // добавить состояние или локалстораж в котором isAuth
@@ -56,23 +55,16 @@ function App() {
     }
   }, 200000);
 
-  React.useEffect(() => {
-    axios.get('http://localhost:3000/db.json')
-      .then(({ data }) => {
-        setUsers(data.users);
-      });
-  }, []);
-
   return (
     <div className="App">
       {!match && <Menu />}
       <Switch>
         <Route path="/confirm-email" render={() => <ConfirmEmail />} />
         <Route path="/profile/:id" render={() => <Profile />} />
-        <Route path="/chats" render={() => <Chats users={users} />} />
+        <Route path="/chats" render={() => <Chats />} />
         <Route path="/search" component={Search} />
-        <Route path="/pairs" render={() => <Pairs users={users} />} />
-        <Route path="/settings" render={() => <Settings user={users[0]} />} />
+        <Route path="/pairs" render={() => <Pairs />} />
+        <Route path="/settings" render={() => <Settings />} />
         <Route path="/login" component={Login} />
       </Switch>
     </div>

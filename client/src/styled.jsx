@@ -22,6 +22,7 @@ export const Content = styled.div`
   @media (max-width: 700px) and (min-width: 100px) {
     width: 100%;
   }
+
 `;
 
 export const IconPencil = styled.div`

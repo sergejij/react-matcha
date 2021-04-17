@@ -12,7 +12,7 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setId, isChat, isMobile, id
+  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setId, isChat, isMobile
 }) => {
     return (
         <ChatsAsideStyled>

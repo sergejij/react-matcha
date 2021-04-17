@@ -13,8 +13,8 @@ export const usersApi = {
     return instance.post(`/dev/test_users?amount=${amount}`);
   },
 
-  getUsers(page, size) {
-    return instance.get(`/users/list?page=${page}&size=${size}`);
+  getUsers(page, size, orderBy = "id", min = 0, max = 1) {
+    return instance.get(`/users/list?page=${page}&size=${size}&orderBy=${orderBy}&min=${min}&max=${max}`);
   },
 
   getLikes(page, size) {
@@ -36,6 +36,14 @@ export const usersApi = {
   putVisit(userId) {
     return instance.post(`/profile/visit?userId=${userId}`);
   },
+
+  getMaxRating() {
+    return instance.get('/users/max_rating');
+  },
+
+  getMaxAge() {
+    return instance.get('/users/max_age');
+  }
 }
 
 export const userInfoApi = {

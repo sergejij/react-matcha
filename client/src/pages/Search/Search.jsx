@@ -1,38 +1,79 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route } from 'react-router-dom';
 import { Content } from '../../styled';
 import Aside from '../../components/Aside/Aside';
 import Profile from '../Profile/Profile';
 import { FilterFormStyled } from './styled';
-import { usersApi } from '../../api/api';
+import {userInterestsApi, usersAPI, usersApi} from '../../api/api';
+import CloseIcon from '@material-ui/icons/Close';
+
 import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 
-const FilterForm = () => {
-    const [selectedOption, setSelectedOption] = React.useState('');
+import Nouislider from 'react-nouislider';
+
+const FilterForm = ({
+    selectedOption,
+    setSelectedOption,
+    min,
+    setMin,
+    max,
+    setMax,
+    currentMin,
+    setCurrentMin,
+    currentMax,
+    setCurrentMax,
+    toggleFilterForm
+}) => {
+    React.useEffect(() => {
+        setCurrentMin(min);
+        setCurrentMax(max);
+    }, [min, max]);
+    const myId = localStorage.getItem('id');
+
+    const changeValues = (values) => {
+        setCurrentMin(Number(values[0]));
+        setCurrentMax(Number(values[1]));
+    }
 
     const radioChange = (e) => {
         setSelectedOption(e.currentTarget.value);
     }
 
-    React.useEffect(() => {
-        const Slider = document.getElementById('slider');
-        console.log("SLIDER:", Slider);
-        noUiSlider.create(Slider, {
-            start: [20, 80],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 100
-            }
-        });
+    if (selectedOption === "remoteLocation") {
 
-    }, []);
-
-
+    } else if (selectedOption === "rating") {
+        usersApi
+            .getMaxRating()
+            .then(
+                ({data}) => setMax(data.Content.maxRating),
+                (err) => console.error("ERROR getMaxRating:", err)
+            )
+            .catch((err) => console.error("ERROR getMaxRating:", err));
+    } else if (selectedOption === "commonInterests") {
+        userInterestsApi
+            .getInterests(myId)
+            .then(
+                ({ data }) => setMax(data.Content.interests.length),
+                (err) => console.error("ERROR getInterests:", err)
+            )
+            .catch((err) => console.error("ERROR getInterests:", err));
+    } else if (selectedOption === "age") {
+        usersApi
+            .getMaxAge()
+            .then(
+                ({data}) => {
+                    setMax(data.Content.maxAge)
+                    setMin(0);
+                },
+                (err) => console.error("ERROR getMaxAge:", err)
+            )
+            .catch((err) => console.error("ERROR getMaxAge:", err));
+    }
 
   return (
     <FilterFormStyled>
+      <CloseIcon onClick={toggleFilterForm} color="error" />
       <h3>Сортировать по:</h3>
 
       <div>
@@ -58,18 +99,40 @@ const FilterForm = () => {
       </div>
 
       <div>
-          <label htmlFor="commonTags">общим тегам</label>
+          <label htmlFor="commonInterests">общим интересам</label>
           <input
-              id="commonTags"
+              id="commonInterests"
               type="radio"
-              value="commonTags"
-              checked={selectedOption === "commonTags"}
+              value="commonInterests"
+              checked={selectedOption === "commonInterests"}
               onChange={radioChange}
           />
       </div>
 
-      <div id="slider"/>
-      <input type="submit" value="Выбрать"/>
+      <div>
+          <label htmlFor="age">возрасту</label>
+          <input
+              id="age"
+              type="radio"
+              value="age"
+              checked={selectedOption === "age"}
+              onChange={radioChange}
+          />
+      </div>
+
+        <Nouislider
+            range={{min, max}}
+            start={[currentMin, currentMax]}
+            step={1}
+            connect
+            tooltips
+            onUpdate={changeValues}
+        />
+
+        <div>
+            <span>min: {min}</span>
+            <span>max: {max}</span>
+        </div>
     </FilterFormStyled>
   )
 }
@@ -78,18 +141,21 @@ const Search = () => {
   const [id, setId] = React.useState(null);
   const [isShownFilterForm, setIsShownFilterForm] = React.useState(false);
 
+  const [selectedOption, setSelectedOption] = React.useState('id');
+  const [min, setMin] = React.useState(0);
+  const [max, setMax] = React.useState(1);
+  const [currentMin, setCurrentMin] = React.useState(0);
+  const [currentMax, setCurrentMax] = React.useState(1);
+
   React.useEffect(() => {
-    usersApi.getUsers(0, 200)
-      .then(({ data }) => {
-          console.log("GET USERS:", data);
-          setUsers(data.Content.users);
-      },
-      (err) => {
-          console.log("error USERS Search:", err);
-      })
+    usersApi.getUsers(0, 200, selectedOption, currentMin, currentMax)
+      .then(
+          ({ data }) => setUsers(data.Content.users),
+            (err) => console.log("error USERS Search:", err)
+      )
         .catch(err => console.log("ERROR USERS Search:", err))
 
-  }, []);
+  }, [selectedOption, currentMin, currentMax]);
 
   const toggleFilterForm = () => {
     setIsShownFilterForm(prevState => !prevState)
@@ -110,7 +176,19 @@ const Search = () => {
       </Route>
       {
         isShownFilterForm &&
-            <FilterForm />
+            <FilterForm
+                selectedOption={selectedOption}
+                setSelectedOption={setSelectedOption}
+                min={min}
+                setMin={setMin}
+                max={max}
+                setMax={setMax}
+                currentMin={currentMin}
+                setCurrentMin={setCurrentMin}
+                currentMax={currentMax}
+                setCurrentMax={setCurrentMax}
+                toggleFilterForm={toggleFilterForm}
+            />
       }
     </Content>
   );

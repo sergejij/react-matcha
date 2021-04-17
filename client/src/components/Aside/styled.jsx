@@ -4,10 +4,11 @@ import COLORS from '../../constants';
 export const ChatsAsideStyled = styled.div`
   width: 300px;
   position: sticky;
-  height: 100%;
   box-shadow: 0 0 4px 0 rgba(93, 83, 94, 0.32);
   background-color: ${COLORS.LIGHT_GRAY};
   top: 0;
+  height: 100vh;
+  overflow-y: auto;
 
   @media (max-width: 900px) {
     position: fixed;
@@ -38,4 +39,8 @@ export const FilterBox = styled.div`
   display: flex;
   justify-content: flex-end;
   padding: 15px 20px 10px 0;
+
+  @media (max-width: 900px) and (min-width: 10px) {
+    padding: 25px 5px 10px 0;
+  }
 `;

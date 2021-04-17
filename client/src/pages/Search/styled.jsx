@@ -4,8 +4,8 @@ import COLORS from '../../constants';
 
 export const FilterFormStyled = styled.div`
   position: absolute;
-  width: 200px;
-  height: 300px;
+  width: 250px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,16 +16,42 @@ export const FilterFormStyled = styled.div`
   border-radius: 13px;
   border: 1px solid ${COLORS.LIGHT_GRAY};
   padding: 20px;
+  overflow: hidden;
+
+  @media (max-width: 500px) and (min-width: 10px) {
+    width: 200px;
+  }
+  @media (max-width: 400px) and (min-width: 10px) {
+    width: 150px;
+  }
+  
+  & .close {
+    position: relative;
+    right: 10%;
+    top: 10%;
+  }
   
   & div {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    
+    &:nth-child(6) {
+      margin-bottom: 80px;
+    }
   }
   
-  & #slider {
-    margin: 20px 0;
+  & div:last-child {
+    & .noUi-connect {
+      z-index: 0;
+      background: ${COLORS.YELLOW};
+    }
+    
+    & .noUi-origin {
+      padding: 0;
+      width: 0;
+    }
   }
   
   & svg {
@@ -52,15 +78,4 @@ export const FilterFormStyled = styled.div`
   & button {
       margin-top: 3%;    
     }
-`;
-
-export const Modal = styled.div`
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.6);
 `;
