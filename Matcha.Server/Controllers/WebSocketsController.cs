@@ -32,6 +32,7 @@ namespace Matcha.Server.Controllers
             while (!result.CloseStatus.HasValue)
             {
                 var serverMsg = Encoding.UTF8.GetBytes($"Полученное сообщение: {Encoding.UTF8.GetString(buffer)}");
+                Console.WriteLine($"MESSAGE:\t\t\t{Encoding.UTF8.GetString(serverMsg)}");
                 await webSocket.SendAsync(new ArraySegment<byte>(serverMsg, 0, serverMsg.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
             }
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
