@@ -39,6 +39,8 @@ namespace Matcha.Server
 
             app.UseRouting();
 
+            app.UseWebSockets();
+
             app.UseCors(builder => builder
                 .WithOrigins(new[] { "http://ip-api.com/json", "http://localhost:3000" })
                 .AllowCredentials()
