@@ -89,7 +89,6 @@ export default ({ userId }) => {
       ) : (
         <ProfilePage>
           <ProfileHeader userData={userData} id={id} />
-            <button onClick={sendToken}>asd</button>
           <ProfileTabs isMyProfile={isMyProfile} defaultTab={0} userData={userData} id={id} />
         </ProfilePage>
       )
