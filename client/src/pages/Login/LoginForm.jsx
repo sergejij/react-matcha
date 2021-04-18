@@ -37,8 +37,6 @@ export default ({ onClose, onRegister }) => {
             // socket.emit('CHAT', {
             //   text: "привет из мира интерфейсов",
             // });
-            socket.send('hello backend');
-
           },
           (err) => {
             console.error("ERROR login:", err.response.status);

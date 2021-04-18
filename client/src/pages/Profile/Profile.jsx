@@ -8,6 +8,7 @@ import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 import ModalAddData from '../../components/ModalAddData/ModalAddData';
 import {userInfoApi, userPhotosApi, usersApi} from '../../api/api';
+import socket from "../../api/socket";
 
 export default ({ userId }) => {
   const id = userId || useParams().id;
@@ -19,7 +20,31 @@ export default ({ userId }) => {
   const myId = localStorage.getItem('id');
   const isMyProfile = myId === id;
 
+    socket.onmessage = function(event) {
+        console.log("Получены данные " + event.data);
+    };
+
+
+
+    socket.onopen = () => {
+          console.log("IN ONOPEN");
+          socket.send("hello backend");
+          socket.send("hello backend");
+          socket.send("hello backend");
+          socket.send("hello backend");
+          socket.send("hello backend");
+          socket.send("hello backend");
+      }
+
+      socket.onclose = () => {
+          console.log("IN ONCLOSE");
+      }
+        socket.onerror = function(error) {
+            alert("Ошибка " + error.message);
+        };
+
   React.useEffect(() => {
+
     userInfoApi.getUserInfo(id)
       .then(
         ({data}) => {
