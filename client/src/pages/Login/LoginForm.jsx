@@ -31,6 +31,16 @@ export default ({ onClose, onRegister }) => {
         .login(emailOrLogin, password)
         .then(
           ({ data }) => {
+            socket.onclose = () => {
+              console.log("IN ONCLOSE");
+            }
+            socket.onerror = (err) => {
+              console.error("ERROR in WEBSOCKES:", err);
+            };
+
+            socket.onopen = () => {
+              console.log("IN ONOPEN");
+            }
             const id = data.Content.userId;
             localStorage.setItem('id', id);
             setRedirectTo(`/profile/${id}`);

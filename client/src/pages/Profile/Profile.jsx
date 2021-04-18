@@ -20,31 +20,11 @@ export default ({ userId }) => {
   const myId = localStorage.getItem('id');
   const isMyProfile = myId === id;
 
-    socket.onmessage = function(event) {
-        console.log("Получены данные " + event.data);
-    };
 
-
-
-    socket.onopen = () => {
-          console.log("IN ONOPEN");
-          socket.send("hello backend");
-          socket.send("hello backend");
-          socket.send("hello backend");
-          socket.send("hello backend");
-          socket.send("hello backend");
-          socket.send("hello backend");
-      }
-
-      socket.onclose = () => {
-          console.log("IN ONCLOSE");
-      }
-        socket.onerror = function(error) {
-            alert("Ошибка " + error.message);
-        };
-
+    const sendToken = () => {
+        socket.send("From profile");
+    }
   React.useEffect(() => {
-
     userInfoApi.getUserInfo(id)
       .then(
         ({data}) => {
@@ -109,6 +89,7 @@ export default ({ userId }) => {
       ) : (
         <ProfilePage>
           <ProfileHeader userData={userData} id={id} />
+            <button onClick={sendToken}>asd</button>
           <ProfileTabs isMyProfile={isMyProfile} defaultTab={0} userData={userData} id={id} />
         </ProfilePage>
       )

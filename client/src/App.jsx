@@ -53,7 +53,7 @@ function App() {
           enableHighAccuracy: true,
         })
     }
-  }, 200000);
+  }, 100000);
 
   return (
     <div className="App">

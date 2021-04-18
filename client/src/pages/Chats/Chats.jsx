@@ -4,6 +4,7 @@ import Chat from './Chat/Chat';
 import Aside from '../../components/Aside/Aside';
 import { Content } from '../../styled';
 import {usersApi} from "../../api/api";
+import socket from "../../api/socket";
 
 export default () => {
   const [users, setUsers] = React.useState([]);
@@ -12,7 +13,6 @@ export default () => {
     React.useEffect(() => {
         usersApi.getUsers(0, 200)
             .then(({ data }) => {
-                    console.log("GET USERS chats:", data);
                     setUsers(data.Content.users);
                 },
                 (err) => {
@@ -21,6 +21,25 @@ export default () => {
             .catch(err => console.log("ERROR USERS chats:", err))
 
     }, []);
+
+    // const wsSend = (data) => {
+    //     if(!socket.readyState){
+    //         console.log("socketl:", socket);
+    //         setTimeout(() => {
+    //             wsSend(data);
+    //         },100);
+    //     } else {
+    //         console.log("SENDING");
+    //         socket.send(data);
+    //     }
+    // };
+    //
+    // socket.onmessage = function(event) {
+    //     console.log("Получены данные " + event.data);
+    // };
+    // console.log("xyz")
+    // wsSend(Math.random());
+    // console.log("abc")
 
   return (
     <Content>
