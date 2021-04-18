@@ -38,12 +38,10 @@ namespace Matcha.Server.Controllers
                 Console.WriteLine($"MESSAGE:\t\t\t{Encoding.UTF8.GetString(serverMsg)}");
 
                 await webSocket.SendAsync(new ArraySegment<byte>(serverMsg, 0, serverMsg.Length), result.MessageType, result.EndOfMessage, CancellationToken.None);
-
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "ДАТВИДАНИЯ", CancellationToken.None);
             }
             while (result.CloseStatus.HasValue is false && webSocket.CloseStatus is null);
 
-            //await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+            await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
 
             return ResponseModel.OK.ToResult();
         }
