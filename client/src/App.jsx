@@ -13,6 +13,7 @@ import Menu from './components/Menu/Menu';
 import './App.css';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 import { userInfoApi } from './api/api';
+import socket from "./api/socket";
 
 function App() {
   const match = useRouteMatch('/login');
@@ -54,6 +55,27 @@ function App() {
         })
     }
   }, 100000);
+    if (sessionStorage.getItem("is_reloaded")) {
+        alert("обновлен");
+        socket.close();
+    }
+
+    React.useEffect(() => {
+        if (localStorage.getItem('id')) {
+            socket.onopen = () => {
+                console.log("IN ONOPEN");
+            }
+            socket.onclose = () => {
+                console.log("IN ONCLOSE");
+            }
+            socket.onerror = (err) => {
+                console.error("ERROR in WEBSOCKES:", err);
+            };
+            return () => {
+                socket.close();
+            }
+        }
+    }, []);
 
   return (
     <div className="App">

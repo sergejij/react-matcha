@@ -3,11 +3,19 @@ import SendIcon from '@material-ui/icons/Send';
 import { ChatInputStyled, TA, SendIconStyled } from './styled';
 import socket from "../../../../api/socket";
 
-const ChatInput = () => {
+const ChatInput = ({userId}) => {
   const [message, setMessage] = React.useState('');
 
   const sendMessage = () => {
-    socket.send(message);
+      const response = {
+          Type: "Message",
+          Message: {
+              "Receiver": userId,
+              "Content":  message
+          }
+      };
+
+    socket.send(JSON.stringify(response));
     setMessage('');
   }
 

@@ -9,7 +9,11 @@ export const ChatsAsideStyled = styled.div`
   top: 0;
   height: 100vh;
   overflow-y: auto;
-
+  
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+  
   @media (max-width: 900px) {
     position: fixed;
     width: 50px;
