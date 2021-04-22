@@ -589,7 +589,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("visit")]
-        public IActionResult VisitProfile([FromQuery][Required] long userId)
+        public async Task<IActionResult> VisitProfile([FromQuery][Required] long userId)
         {
             if (userId == UserId)
                 return ResponseModel.OK.ToResult();
@@ -600,18 +600,35 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("who", UserId),
-                new MySqlParameter("whom", userId)
+                new MySqlParameter("whom", userId),
+
+                new MySqlParameter("visited_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
             });
 
             connection.Open();
-            using var reader = command.ExecuteReader();
+            await command.ExecuteNonQueryAsync();
+
+            var visited = Convert.ToBoolean(command.Parameters["visited_yet"]);
+            if (visited is false)
+                await WebSocketsManager.WebSocketsManager.Send(
+                    userId,
+                    new WebSocketRequestModel
+                    {
+                        Type = WebSocketRequestType.Notification,
+                        Notification = new WebSocketNotification
+                        {
+                            Type = WebSocketNotificationType.Visit,
+                            WhoseAction = UserId
+                        }
+                    }
+                );
 
             return ResponseModel.OK.ToResult();
         }
 
         [HttpPost]
         [Route("like")]
-        public IActionResult LikeProfile([FromQuery][Required] long userId)
+        public async Task<IActionResult> LikeProfile([FromQuery][Required] long userId)
         {
             if (userId == UserId)
                 throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить лайк самому себе");
@@ -624,10 +641,29 @@ namespace Matcha.Server.Controllers
                 command.Parameters.AddRange(new[]
                 {
                     new MySqlParameter("who", UserId),
-                    new MySqlParameter("whom", userId)
+                    new MySqlParameter("whom", userId),
+
+                    new MySqlParameter("liked_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
                 });
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
+
+                var liked = Convert.ToBoolean(command.Parameters["liked_yet"]);
+                if (liked is false)
+                {
+                    await WebSocketsManager.WebSocketsManager.Send(
+                        userId,
+                        new WebSocketRequestModel
+                        {
+                            Type = WebSocketRequestType.Notification,
+                            Notification = new WebSocketNotification
+                            {
+                                Type = WebSocketNotificationType.Like,
+                                WhoseAction = UserId
+                            }
+                        }
+                    );
+                }
             }
 
             using (var command = new MySqlCommand("IsLikesMutuals", connection) { CommandType = CommandType.StoredProcedure })
@@ -640,7 +676,7 @@ namespace Matcha.Server.Controllers
                     new MySqlParameter("mutual", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
                 });
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
 
                 return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                                   {
@@ -652,7 +688,7 @@ namespace Matcha.Server.Controllers
 
         [HttpPost]
         [Route("dislike")]
-        public IActionResult DislikeProfile([FromQuery][Required] long userId)
+        public async Task<IActionResult> DislikeProfile([FromQuery][Required] long userId)
         {
             if (userId == UserId)
                 throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить дизлайк самому себе");
@@ -663,11 +699,30 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("who", UserId),
-                new MySqlParameter("whom", userId)
+                new MySqlParameter("whom", userId),
+
+                new MySqlParameter("disliked_yet", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
             });
 
             connection.Open();
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
+
+            var disliked = Convert.ToBoolean(command.Parameters["disliked_yet"]);
+            if (disliked is false)
+            {
+                await WebSocketsManager.WebSocketsManager.Send(
+                    userId,
+                    new WebSocketRequestModel
+                    {
+                        Type = WebSocketRequestType.Notification,
+                        Notification = new WebSocketNotification
+                        {
+                            Type = WebSocketNotificationType.Dislike,
+                            WhoseAction = UserId
+                        }
+                    }
+                );
+            }
 
             return ResponseModel.OK.ToResult();
         }
@@ -675,6 +730,3 @@ namespace Matcha.Server.Controllers
         #endregion
     }
 }
-
-//TODO: делать везде проверку на существование информации и соответствие безопасности
-//TODO: может быть сделать авторизацию по токену

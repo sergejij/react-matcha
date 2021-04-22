@@ -1,0 +1,21 @@
+﻿CREATE PROCEDURE GetChatsPreview (
+	user_id BIGINT
+)
+
+BEGIN
+
+	SELECT
+        (messages.to_id = user_id, messages.from_id, messages.to_id) AS interlocutor_id
+
+        WHERE messages.from_id = user_id OR messages.to_id = user_id;
+
+        /*
+        interlocutor_id
+		interlocutor_name
+        interlocutor_surname
+        last_message_content
+        is_last_message_read
+        last_message_send_time
+        */
+
+END

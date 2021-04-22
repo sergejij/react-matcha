@@ -31,7 +31,7 @@ namespace Matcha.Server.Filters
             }
             else
             {
-                SetResult(context, $"Необработанная ошибка сервера: {mySqlException.Message}", HttpStatusCode.InternalServerError);
+                SetResult(context, $"Необработанная ошибка сервера: {context.Exception.Message}", HttpStatusCode.InternalServerError);
             }
         }
 
