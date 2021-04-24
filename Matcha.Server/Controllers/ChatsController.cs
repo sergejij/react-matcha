@@ -11,45 +11,11 @@ namespace Matcha.Server.Controllers
 {
     [ApiController]
     [AuthorizeFilter]
+    [WebSocketRequestFilter]
     [ExceptionHandlerFilter]
     [Route("chat")]
     public class ChatsController : BaseMatchaController
     {
-        [HttpPost]
-        [Route("send_message")]
-        [WebSocketRequestFilter]
-        public async Task<IActionResult> SendMessage(SendMessageModel messageModel)
-        {
-            await WebSocketsManager.WebSocketsManager.Send(
-                messageModel.Whom,
-                new WebSocketRequestModel
-                {
-                    Type = WebSocketRequestType.Message,
-                    Message = new WebSocketMessageModel
-                    {
-                        Receiver = UserId,
-                        Content = messageModel.Content
-                    }
-                }
-            );
-
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("SaveMessage", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("from_id", UserId),
-                new MySqlParameter("to_id", messageModel.Whom),
-                new MySqlParameter("content", messageModel.Content),
-                new MySqlParameter("readed", false)
-            });
-
-            connection.Open();
-            await command.ExecuteNonQueryAsync();
-
-            return ResponseModel.OK.ToResult();
-        }
-
         /*
         [HttpGet]
         [Route("chats_preview")]
