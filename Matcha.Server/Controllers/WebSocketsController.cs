@@ -1,15 +1,14 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using server.Response;
 using System;
 using System.Data;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace Matcha.Server.Controllers
 {
@@ -20,8 +19,7 @@ namespace Matcha.Server.Controllers
     [Route("web_socket")]
     public class WebSocketsController : BaseMatchaController
     {
-        
-        public async Task A()
+        public async Task ListenWebSocket()
         {
             var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
@@ -72,9 +70,6 @@ namespace Matcha.Server.Controllers
 
                 case WebSocketRequestType.Notification:
                     await SendNotification(request.Notification);
-                    break;
-
-                default:
                     break;
             }
         }
@@ -135,84 +130,6 @@ namespace Matcha.Server.Controllers
                 );
             }
         }
-        /*
-        private const int ChunkSize = 1024;
-
-        private const int MaxFrameSize = ChunkSize * 4;
-
-        
-        [WebSocketRequestFilter]
-        [HttpGet]
-        [Route("ws")]
-        public async Task<IActionResult> TestAsync()
-        {            
-            var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-
-            while (webSocket.State == WebSocketState.Open)
-            {
-                var request = await ReadMessage(webSocket);
-                if (request.Type == WebSocketRequestType.Close)
-                    break;
-
-                ProcessRequest(request);
-            }
-
-            return ResponseModel.OK.ToResult();
-        }
-
-        private void ProcessRequest(WebSocketRequestModel request)
-        {
-            switch (request.Type)
-            {
-                case WebSocketRequestType.Message:
-                    {
-
-
-                        break;
-                    }
-            }
-        }
-
-        private async Task<WebSocketRequestModel> ReadMessage(WebSocket webSocket)
-        {
-            var buffer = new byte[ChunkSize];
-
-            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            if (result.MessageType == WebSocketMessageType.Close)
-            {
-                return new WebSocketRequestModel
-                {
-                    Type = WebSocketRequestType.Close
-                };
-            }
-
-            return JsonConvert.DeserializeObject<WebSocketRequestModel>(Encoding.UTF8.GetString(buffer));
-
-
-            //var buffer = new byte[ChunkSize];
-            //var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            //if (result.EndOfMessage is false)
-            //{
-            //    var currentSize = buffer.Length;
-
-            //    while (result.EndOfMessage is false)
-            //    {
-            //        var newSize = currentSize * 2;
-            //        if (newSize > MaxFrameSize)
-            //        {
-            //            messageTooBig = true;
-            //            return null;
-            //        }
-
-            //        var biggestBuffer = new byte[ChunkSize];
-            //        Buffer.BlockCopy(buffer, 0, biggestBuffer, 0, currentSize);
-            //    }
-            //}
-
-            //messageTooBig = false;
-            //return buffer;
-        }
-        */
     }
 }
+//TODO: сделать почанковую загрузку сообщений сокета

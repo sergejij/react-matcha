@@ -1,0 +1,8 @@
+﻿CREATE TABLE chats (
+	first BIGINT NOT NULL,
+	second BIGINT NOT NULL,
+	last_message BIGINT,
+
+	PRIMARY KEY(first, second),
+	FOREIGN KEY(last_message) REFERENCES messages(id)
+);

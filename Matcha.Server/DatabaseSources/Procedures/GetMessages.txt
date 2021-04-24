@@ -1,0 +1,26 @@
+﻿CREATE PROCEDURE GetMessages(
+	my_id BIGINT,
+	receiver BIGINT,
+	skip INT,
+	take INT
+)
+
+BEGIN
+
+	/* отправленные */
+	SELECT
+		(CASE WHEN messages.from_id = my_id THEN messages.to_id ELSE messages.from_id END) AS user_id,
+		messages.content,
+		messages.time,
+		messages.readed,
+		IF(messages.from_id = my_id, 1, 0) AS my_message
+	FROM
+		messages
+	WHERE
+		(messages.from_id = my_id AND messages.to_id = receiver)
+		OR
+		(messages.to_id = my_id AND messages.from_id = receiver)
+	ORDER BY messages.time DESC
+	LIMIT skip, take;
+
+END

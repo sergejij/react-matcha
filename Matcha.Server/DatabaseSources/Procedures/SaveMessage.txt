@@ -19,4 +19,11 @@ BEGIN
 		readed
 	);
 
+	UPDATE
+		chats
+	SET
+		last_message = LAST_INSERT_ID()
+	WHERE
+		chats.first = LEAST(from_id, to_id) AND chats.second = GREATEST(from_id, to_id);
+
 END

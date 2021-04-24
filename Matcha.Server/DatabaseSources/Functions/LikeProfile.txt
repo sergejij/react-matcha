@@ -12,6 +12,9 @@ BEGIN
 	IF NOT EXISTS(SELECT * FROM likes AS l WHERE l.who = who AND l.whom = whom)
 	THEN
 		INSERT INTO likes (who, whom) VALUES (who, whom);
+
+		INSERT INTO chats (first, second) VALUES (LEAST(who, whom), GREATEST(who, whom));
+
 		RETURN 1;
 	ELSE
 		RETURN 0;

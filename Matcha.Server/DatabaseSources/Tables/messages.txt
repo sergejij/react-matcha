@@ -1,14 +1,17 @@
 ﻿CREATE TABLE messages (
+    id BIGINT NOT NULL AUTO_INCREMENT,
 	from_id BIGINT NOT NULL,
 	to_id BIGINT NOT NULL,
 	content TEXT NOT NULL,
 	time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	readed BIT NOT NULL DEFAULT 0,
 
+    PRIMARY KEY(id),
 	FOREIGN KEY(from_id) REFERENCES user_data(id) ON DELETE CASCADE,
 	FOREIGN KEY(to_id) REFERENCES user_data(id) ON DELETE CASCADE
 );
 
+/*
 delimiter //
 
 DROP PROCEDURE IF EXISTS CreateMessagesTables;
@@ -39,3 +42,4 @@ END
 //
 
 delimiter ;
+*/

@@ -1,21 +1,25 @@
 ﻿CREATE PROCEDURE GetChatsPreview (
-	user_id BIGINT
+	my_id BIGINT,
+    skip INT,
+    take INT
 )
 
 BEGIN
 
-	SELECT
-        (messages.to_id = user_id, messages.from_id, messages.to_id) AS interlocutor_id
-
-        WHERE messages.from_id = user_id OR messages.to_id = user_id;
-
-        /*
-        interlocutor_id
-		interlocutor_name
-        interlocutor_surname
-        last_message_content
-        is_last_message_read
-        last_message_send_time
-        */
+	SELECT 
+        (CASE WHEN chats.first = my_id THEN chats.second ELSE chats.first END) AS user_id,
+        user_full_data.name,
+        user_full_data.surname,
+        messages.content AS last_message_content,
+        messages.readed AS is_last_message_read,
+        messages.time AS last_message_send_time
+    FROM
+        chats
+    LEFT JOIN
+        user_full_data ON user_full_data.id = (CASE WHEN chats.first = my_id THEN chats.second ELSE chats.first END)
+    LEFT JOIN
+        messages ON messages.id = chats.last_message
+    WHERE chats.first = my_id OR chats.second = my_id
+    LIMIT skip, take;
 
 END
