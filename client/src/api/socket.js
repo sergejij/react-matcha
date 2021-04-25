@@ -14,13 +14,13 @@ const createSocket = () => {
     };
 
     const sendMessage = (content, receiverId) => {
-        socket.send({
+        socket.send(JSON.stringify({
             type: "message",
             message: {
                 "receiver": receiverId,
                 "content": content
             },
-        });
+        }));
     }
 
     const onClose = () => {

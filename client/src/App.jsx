@@ -41,6 +41,16 @@ function App() {
     clearInterval(intervalId);
   }
 
+  window.onload = () => {
+      if (localStorage.getItem('id')) {
+          setSocket(createSocket());
+      }
+  }
+
+  window.onbeforeunload = () => {
+      socket.onClose();
+  }
+
   intervalId = setInterval(() => {
     if (localStorage.getItem('id')) {
       navigator.geolocation.getCurrentPosition(
