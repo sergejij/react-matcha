@@ -4,16 +4,16 @@ import Chat from './Chat/Chat';
 import Aside from '../../components/Aside/Aside';
 import { Content } from '../../styled';
 import {usersApi} from "../../api/api";
-import socket from "../../api/socket";
 
-export default () => {
+export default ({ socket }) => {
   const [users, setUsers] = React.useState([]);
   const [id, setId] = React.useState(null);
 
     React.useEffect(() => {
-        usersApi.getUsers(0, 200)
+        usersApi.getChats(1, 200)
             .then(({ data }) => {
-                    setUsers(data.Content.users);
+                console.log(data.Content.chats);
+                    setUsers(data.Content.chats);
                 },
                 (err) => {
                     console.log("error USERS chats:", err);
@@ -51,7 +51,7 @@ export default () => {
         isChat
       />
       <Route path={`/chats/${id}`}>
-        <Chat userId={id} />
+        <Chat socket={socket} userId={id} />
       </Route>
     </Content>
   );

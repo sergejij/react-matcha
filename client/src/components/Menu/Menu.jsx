@@ -21,6 +21,7 @@ import {
 } from './styled';
 import { userAuthApi } from '../../api/api';
 import ReactDOM from "react-dom";
+import createSocket from "../../api/socket";
 
 const MobileMenu = ({ onClose, onLogout, id }) => {
     return (
@@ -73,7 +74,7 @@ const Burger = ({  onLogout, id }) => {
     )
 }
 
-const Menu = () => {
+const Menu = ({setSocket, socket}) => {
   const id = localStorage.getItem('id');
 
   const logout = () => {
@@ -81,6 +82,8 @@ const Menu = () => {
       .logout()
       .catch((err) => console.error("ERROR logout:", err))
       .finally(() => {
+          setSocket(null);
+          socket.onClose();
           localStorage.clear();
       });
   }

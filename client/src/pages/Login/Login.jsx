@@ -11,7 +11,7 @@ import RegistrationForm from './RegistrationForm';
 import LoginForm from './LoginForm';
 import { useQuery } from '../../hooks';
 
-export default () => {
+export default ({setSocket}) => {
   const portalRoot = document.getElementById('portal');
   const [isShownLoginForm, setIsShownLoginForm] = React.useState(false);
   const [isShownRegistrationForm, setIsShownRegistrationForm] = React.useState(false);
@@ -37,7 +37,7 @@ export default () => {
       {
         isShownLoginForm && ReactDOM.createPortal(
           <Modal>
-            <LoginForm onRegister={toggleRegistrationForm} onClose={toggleLoginForm} />
+            <LoginForm setSocket={setSocket} onRegister={toggleRegistrationForm} onClose={toggleLoginForm} />
           </Modal>,
           portalRoot,
         )

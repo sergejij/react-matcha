@@ -49,10 +49,10 @@ const Aside = ({
                             <User
                                 key={`${user}_${index}`}
                                 isActive={index === user.Id}
-                                name={user.Name}
-                                img={ProfileImg}
-                                id={user.Id}
-                                chooseConversation={() => setId(user.Id)}
+                                name={user.Profile.Name}
+                                img={'data:image/bmp;base64,' + user.Profile.Avatar}
+                                id={user.Profile.Id}
+                                chooseConversation={() => setId(user.Profile.Id)}
                                 isChat={isChat}
                                 isMobile={isMobile}
                             />

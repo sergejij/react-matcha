@@ -25,6 +25,14 @@ export const usersApi = {
     return instance.get(`/users/visits?page=${page}&size=${size}`);
   },
 
+  getChats(page, size) {
+    return instance.get(`/chats/preview?page=${page}&size=${size}`);
+  },
+
+  getMessages(page, size, userId) {
+    return instance.get(`/chats/messages?page=${page}&size=${size}&userId=${userId}`);
+  },
+
   putLike(userId) {
     return instance.post(`/profile/like?userId=${userId}`);
   },

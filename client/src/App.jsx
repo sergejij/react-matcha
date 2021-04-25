@@ -12,16 +12,12 @@ import Menu from './components/Menu/Menu';
 import './App.css';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 import { userInfoApi } from './api/api';
-import socket from "./api/socket";
+import createSocket from "./api/socket";
 
 function App() {
+  const [socket, setSocket] = React.useState(null);
   const match = useRouteMatch('/login');
   let intervalId;
-
-  // добавить состояние или локалстораж в котором isAuth
-  // тут запускаю интервал и в колбеке смотрю авторизован ли
-  // но надо в каждом 401 менять состояние и при логауте
-  // и придумать как останавливать когда не авторизован
 
   function sendGeoPosition(position) {
     const {latitude, longitude} = position.coords;
@@ -61,15 +57,15 @@ function App() {
 
   return (
     <div className="App">
-      {!match && <Menu />}
+      {!match && <Menu setSocket={setSocket} socket={socket || {onClose: () => console.error("SOCKET NOT CREATED YET")}} />}
       <Switch>
         <Route path="/confirm-email" render={() => <ConfirmEmail />} />
         <Route path="/profile/:id" render={() => <Profile />} />
-        <Route path="/chats" render={() => <Chats />} />
+        <Route path="/chats" render={() => <Chats socket={socket} />} />
         <Route path="/search" component={Search} />
         <Route path="/pairs" render={() => <Pairs />} />
         <Route path="/settings" render={() => <Settings />} />
-        <Route path="/login" component={Login} />
+        <Route path="/login" render={() => <Login setSocket={setSocket} />} />
       </Switch>
     </div>
   );

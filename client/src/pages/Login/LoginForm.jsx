@@ -6,9 +6,9 @@ import COLORS from '../../constants';
 import Button from '../../components/Button';
 import { userInfoApi, usersAPI } from '../../api/api';
 import { Redirect } from 'react-router-dom';
-import socket, {socketInitConnection} from "../../api/socket";
+import createSocket from "../../api/socket";
 
-export default ({ onClose, onRegister }) => {
+export default ({ onClose, onRegister, setSocket }) => {
   const [emailOrLogin, setEmailOrLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -33,16 +33,7 @@ export default ({ onClose, onRegister }) => {
           ({ data }) => {
             const id = data.Content.userId;
             localStorage.setItem('id', id);
-            //
-            // socket.onopen = () => {
-            //   console.log("IN ONOPEN");
-            // }
-            // socket.onclose = () => {
-            //   console.log("IN ONCLOSE");
-            // }
-            // socket.onerror = (err) => {
-            //   console.error("ERROR in WEBSOCKES:", err);
-            // };
+            setSocket(createSocket());
             setRedirectTo(`/profile/${id}`);
           },
           (err) => {

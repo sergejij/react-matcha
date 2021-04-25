@@ -1,6 +1,68 @@
-import io from 'socket.io-client';
+const createSocket = () => {
+    const socket = new WebSocket('wss://81.177.141.123:637/web_socket');
 
-// const socket = io('https://81.177.141.123:637/test/ws');
-const socket = new WebSocket('wss://81.177.141.123:637/web_socket');
+    socket.onopen = () => {
+        console.log("IN ONOPEN");
+    }
 
-export default socket;
+    socket.onclose = () => {
+        console.log("IN ONCLOSE");
+    }
+
+    socket.onerror = (err) => {
+        console.error("ERROR in WEBSOCKES:", err);
+    };
+
+    const sendMessage = (content, receiverId) => {
+        socket.send({
+            type: "message",
+            message: {
+                "receiver": receiverId,
+                "content": content
+            },
+        });
+    }
+
+    const onClose = () => {
+        socket.close();
+    }
+    // function registerHandler(onMessageReceived) {
+    //     socket.on('chat message', onMessageReceived)
+    // }
+    //
+    // function unregisterHandler() {
+    //     socket.off('chat message')
+    // }
+    //
+    // function registerNotification(onNotifReceived) {
+    //     socket.on('notif', onNotifReceived)
+    // }
+    //
+    // function unregisterNotification() {
+    //     socket.off('notif')
+    // }
+    //
+    // function message(mess) {
+    //     socket.emit('chat message', mess)
+    // }
+    //
+    // function notif(data) {
+    //     socket.emit('notif', data)
+    // }
+
+    // return {
+    //     notif,
+    //     message,
+    //     registerHandler,
+    //     unregisterHandler,
+    //     registerNotification,
+    //     unregisterNotification
+    // }
+
+    return {
+        onClose,
+        sendMessage,
+    }
+}
+
+export default createSocket;

@@ -148,7 +148,7 @@ const Search = () => {
   const [currentMax, setCurrentMax] = React.useState(1);
 
   React.useEffect(() => {
-    usersApi.getUsers(0, 200, selectedOption, currentMin, currentMax)
+    usersApi.getUsers(1, 200, selectedOption, currentMin, currentMax)
       .then(
           ({ data }) => setUsers(data.Content.users),
             (err) => console.log("error USERS Search:", err)

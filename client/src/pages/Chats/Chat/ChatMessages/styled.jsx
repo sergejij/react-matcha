@@ -4,7 +4,7 @@ import COLORS from '../../../../constants';
 export const ChatMessagesStyled = styled.div`
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   padding: 50px 100px;
   overflow-y: auto;
   height: 83vh;

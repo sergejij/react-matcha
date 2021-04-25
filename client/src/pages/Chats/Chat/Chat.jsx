@@ -5,11 +5,11 @@ import { ChatStyled } from './styled';
 import ChatMessages from './ChatMessages/ChatMessages';
 import ChatInput from './ChatInput/ChatInput';
 
-const Chat = ({ userId }) => (
+const Chat = ({ userId, socket }) => (
   <ChatStyled>
     <ChatHeader userId={userId} />
     <ChatMessages userId={userId} />
-    <ChatInput userId={userId} />
+    <ChatInput socket={socket} userId={userId} />
   </ChatStyled>
 );
 

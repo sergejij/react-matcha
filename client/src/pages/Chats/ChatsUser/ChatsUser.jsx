@@ -11,7 +11,6 @@ const ChatsUser = ({
     userInfoApi.getUserInfo(userId)
         .then(
             ({ data }) => {
-              console.log("user:", data, userId);
               setUser(data.Content);
             },
             (err) => {
