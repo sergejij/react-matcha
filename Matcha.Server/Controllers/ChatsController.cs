@@ -31,8 +31,8 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("my_id", UserId),
-                new MySqlParameter("skip", pagination.Skip),
-                new MySqlParameter("take", pagination.Take)
+                new MySqlParameter("skip", (pagination.Page - 1) * pagination.Size),
+                new MySqlParameter("take", pagination.Size)
             });
 
             connection.Open();
@@ -137,10 +137,10 @@ namespace Matcha.Server.Controllers
         public sealed record ChatsPrewievPaginationModel
         {
             [Required]
-            public int Skip { get; set; }
+            public int Page { get; set; }
 
             [Required]
-            public int Take { get; set; }
+            public int Size { get; set; }
         }
 
         public sealed record GetChatMessagesPaginationModel

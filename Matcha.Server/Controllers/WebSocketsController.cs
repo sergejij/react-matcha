@@ -109,7 +109,7 @@ namespace Matcha.Server.Controllers
 
         private async Task SendNotification(WebSocketNotification notification)
         {
-            Console.WriteLine($"\n\n\tSending websocket notification from {UserId} : {SessionId} to {notification.WhoseAction}, type: {notification.Type}\n\n");
+            Console.WriteLine($"\n\n\tSending websocket notification from {UserId} : {SessionId} to {notification.UserId}, type: {notification.Type}\n\n");
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("SaveProfileAction", connection)
@@ -118,7 +118,7 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("who", UserId),
-                new MySqlParameter("whom", notification.WhoseAction),
+                new MySqlParameter("whom", notification.UserId),
                 new MySqlParameter("action", notification.Type.ToString()),
 
                 new MySqlParameter("first_time", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue}
@@ -131,7 +131,7 @@ namespace Matcha.Server.Controllers
             if (firstTime)
             {
                 await WebSocketsManager.WebSocketsManager.Send(
-                    notification.WhoseAction,
+                    notification.UserId,
                     new WebSocketRequestModel
                     {
                         Type = WebSocketRequestType.Notification,
