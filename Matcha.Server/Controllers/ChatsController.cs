@@ -23,7 +23,7 @@ namespace Matcha.Server.Controllers
     {
         [HttpGet]
         [Route("preview")]
-        public async Task<IActionResult> GetChatsPreview(ChatsPrewievPaginationModel pagination)
+        public async Task<IActionResult> GetChatsPreview([Required][FromQuery] int page, [Required][FromQuery] int size)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetChatsPreview", connection) { CommandType = CommandType.StoredProcedure };
@@ -31,8 +31,8 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("my_id", UserId),
-                new MySqlParameter("skip", (pagination.Page - 1) * pagination.Size),
-                new MySqlParameter("take", pagination.Size)
+                new MySqlParameter("skip", (page - 1) * size),
+                new MySqlParameter("take", size)
             });
 
             connection.Open();
@@ -75,7 +75,9 @@ namespace Matcha.Server.Controllers
 
         [HttpGet]
         [Route("messages")]
-        public async Task<IActionResult> GetChatMessages(GetChatMessagesPaginationModel chatMessagesPagination)
+        public async Task<IActionResult> GetChatMessages([Required][FromQuery] long userId,
+                                                         [Required][FromQuery] int page,
+                                                         [Required][FromQuery] int size)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetMessages", connection) {CommandType = CommandType.StoredProcedure};
@@ -83,9 +85,9 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("my_id", UserId),
-                new MySqlParameter("receiver", chatMessagesPagination.UserId),
-                new MySqlParameter("skip", chatMessagesPagination.Skip),
-                new MySqlParameter("take", chatMessagesPagination.Take)
+                new MySqlParameter("receiver", userId),
+                new MySqlParameter("skip", (page - 1) * size),
+                new MySqlParameter("take", size)
             });
 
             connection.Open();
@@ -132,24 +134,6 @@ namespace Matcha.Server.Controllers
             public string Content { get; set; }
 
             public bool MyMessage { get; set; }
-        }
-
-        public sealed record ChatsPrewievPaginationModel
-        {
-            [Required]
-            public int Page { get; set; }
-
-            [Required]
-            public int Size { get; set; }
-        }
-
-        public sealed record GetChatMessagesPaginationModel
-        {
-            public long UserId { get; set; }
-
-            public int Skip { get; set; }
-
-            public int Take { get; set; }
         }
 
         #endregion
