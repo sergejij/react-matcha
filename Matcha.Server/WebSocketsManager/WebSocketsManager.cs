@@ -42,7 +42,7 @@ namespace Matcha.Server.WebSocketsManager
             }
         }
 
-        public static async Task Send(long userId, WebSocketRequestModel request)
+        public static async Task Send(long userId, WebSocketResponseModel request)
         {
             if (_storage.TryGetValue(userId, out var sessions))
             {
