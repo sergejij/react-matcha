@@ -1,0 +1,21 @@
+﻿CREATE FUNCTION SaveProfileAction(
+	who BIGINT,
+	whom BIGINT,
+	action VARCHAR(32)
+) RETURNS BIT
+
+BEGIN
+
+	CASE action
+		WHEN 'like'
+		THEN RETURN (SELECT(LikeProfile(who, whom)));
+
+		WHEN 'dislike'
+		THEN RETURN (SELECT(DislikeProfile(who, whom)));
+
+		WHEN 'visit'
+		THEN RETURN (SELECT(VisitProfile(who, whom)));
+
+	END CASE;
+
+END

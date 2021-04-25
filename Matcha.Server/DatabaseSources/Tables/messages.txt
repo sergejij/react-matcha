@@ -1,0 +1,45 @@
+﻿CREATE TABLE messages (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+	from_id BIGINT NOT NULL,
+	to_id BIGINT NOT NULL,
+	content TEXT NOT NULL,
+	time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	readed BIT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY(id),
+	FOREIGN KEY(from_id) REFERENCES user_data(id) ON DELETE CASCADE,
+	FOREIGN KEY(to_id) REFERENCES user_data(id) ON DELETE CASCADE
+);
+
+/*
+delimiter //
+
+DROP PROCEDURE IF EXISTS CreateMessagesTables;
+
+CREATE PROCEDURE CreateMessagesTables(
+    amount INT
+)
+
+BEGIN
+
+    DECLARE count INT DEFAULT 0;
+
+    iterator: LOOP
+  
+        SET @a := count + 1;
+        SET @statement = CONCAT('Create table Table',@a,' ( name VARCHAR(70), age int );');
+        PREPARE stmt FROM @statement;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+            SET count = count + 1;
+         IF count=100 THEN
+            LEAVE simple_loop;
+         END IF;
+
+    END LOOP;
+
+END
+//
+
+delimiter ;
+*/

@@ -1,7 +1,7 @@
-﻿CREATE PROCEDURE VisitProfile (
+﻿CREATE FUNCTION VisitProfile (
     who BIGINT,
     whom BIGINT
-)
+) RETURNS BIT
 
 BEGIN
 
@@ -19,6 +19,10 @@ BEGIN
             data.rating = data.rating + 1
         WHERE
             data.id = whom;
+
+        RETURN 1;
+    ELSE
+        RETURN 0;
     END IF;
 
 END

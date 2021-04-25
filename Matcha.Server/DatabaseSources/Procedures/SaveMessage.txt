@@ -1,0 +1,29 @@
+﻿CREATE PROCEDURE SaveMessage(
+	from_id BIGINT,
+	to_id BIGINT,
+	content TEXT,
+	readed BIT
+)
+
+BEGIN
+
+	INSERT INTO messages (
+		from_id,
+		to_id,
+		content,
+		readed
+	) VALUES (
+		from_id,
+		to_id,
+		content,
+		readed
+	);
+
+	UPDATE
+		chats
+	SET
+		last_message = LAST_INSERT_ID()
+	WHERE
+		chats.first = LEAST(from_id, to_id) AND chats.second = GREATEST(from_id, to_id);
+
+END

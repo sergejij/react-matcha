@@ -1,0 +1,23 @@
+﻿CREATE FUNCTION LikeProfile (
+	who BIGINT,
+	whom BIGINT
+) RETURNS BIT
+
+BEGIN
+
+	IF NOT EXISTS(SELECT * FROM user_data WHERE user_data.id = whom)
+	THEN
+		SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 404, MESSAGE_TEXT = 'Пользователь с таким ID не существует';
+	END IF;
+	IF NOT EXISTS(SELECT * FROM likes AS l WHERE l.who = who AND l.whom = whom)
+	THEN
+		INSERT INTO likes (who, whom) VALUES (who, whom);
+
+		INSERT INTO chats (first, second) VALUES (LEAST(who, whom), GREATEST(who, whom));
+
+		RETURN 1;
+	ELSE
+		RETURN 0;
+	END IF;
+
+END
