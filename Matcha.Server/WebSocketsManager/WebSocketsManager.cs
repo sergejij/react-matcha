@@ -32,12 +32,13 @@ namespace Matcha.Server.WebSocketsManager
         {
             if (_storage.TryGetValue(userId, out var sessions))
             {
-                sessions.TryRemove(sessionId, out var socket);
+                if (sessions.TryRemove(sessionId, out var socket))
+                {
+                    socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
 
-                socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
-
-                if (sessions.Count == 0)
-                    _storage.TryRemove(sessionId, out _);
+                    if (sessions.Count == 0)
+                        _storage.TryRemove(userId, out _);
+                }
             }
         }
 

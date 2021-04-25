@@ -36,6 +36,7 @@ namespace Matcha.Server.Controllers
             while (socket.State == WebSocketState.Open)
             {
                 var request = await ReadMessage(socket);
+                
                 await ProcessRequest(request);
 
                 if (request.Type == WebSocketRequestType.Close)
@@ -48,6 +49,7 @@ namespace Matcha.Server.Controllers
             var buffer = new byte[4096];
 
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
             if (result.MessageType == WebSocketMessageType.Close)
             {
                 return new WebSocketRequestModel
