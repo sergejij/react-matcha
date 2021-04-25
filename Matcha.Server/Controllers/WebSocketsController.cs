@@ -87,9 +87,9 @@ namespace Matcha.Server.Controllers
 
             await WebSocketsManager.WebSocketsManager.Send(
                 message.Receiver,
-                new WebSocketRequestModel
+                new WebSocketResponseModel
                 {
-                    Type = WebSocketRequestType.Message,
+                    Type = WebSocketRequestType.Message.ToString(),
                     Message = message
                 }
             );
@@ -109,7 +109,7 @@ namespace Matcha.Server.Controllers
             await command.ExecuteNonQueryAsync();
         }
 
-        private async Task SendNotification(WebSocketNotification notification)
+        private async Task SendNotification(WebSocketRequestNotification notification)
         {
             Console.WriteLine($"\n\n\tSending websocket notification from {UserId} : {SessionId} to {notification.UserId}, type: {notification.Type}\n\n");
 
@@ -134,10 +134,14 @@ namespace Matcha.Server.Controllers
             {
                 await WebSocketsManager.WebSocketsManager.Send(
                     notification.UserId,
-                    new WebSocketRequestModel
+                    new WebSocketResponseModel
                     {
-                        Type = WebSocketRequestType.Notification,
-                        Notification = notification
+                        Type = WebSocketRequestType.Notification.ToString(),
+                        Notification = new WebSocketResponseNotification
+                        {
+                            UserId = UserId,
+                            Type = notification.Type.ToString()
+                        }
                     }
                 );
             }

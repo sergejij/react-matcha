@@ -612,12 +612,12 @@ namespace Matcha.Server.Controllers
             if (visited is false)
                 await WebSocketsManager.WebSocketsManager.Send(
                     userId,
-                    new WebSocketRequestModel
+                    new WebSocketResponseModel
                     {
-                        Type = WebSocketRequestType.Notification,
-                        Notification = new WebSocketNotification
+                        Type = WebSocketRequestType.Notification.ToString(),
+                        Notification = new WebSocketResponseNotification
                         {
-                            Type = WebSocketNotificationType.Visit,
+                            Type = WebSocketNotificationType.Visit.ToString(),
                             UserId = UserId
                         }
                     }
@@ -653,12 +653,12 @@ namespace Matcha.Server.Controllers
                 {
                     await WebSocketsManager.WebSocketsManager.Send(
                         userId,
-                        new WebSocketRequestModel
+                        new WebSocketResponseModel
                         {
-                            Type = WebSocketRequestType.Notification,
-                            Notification = new WebSocketNotification
+                            Type = WebSocketRequestType.Notification.ToString(),
+                            Notification = new WebSocketResponseNotification
                             {
-                                Type = WebSocketNotificationType.Like,
+                                Type = WebSocketNotificationType.Like.ToString(),
                                 UserId = UserId
                             }
                         }
@@ -712,12 +712,12 @@ namespace Matcha.Server.Controllers
             {
                 await WebSocketsManager.WebSocketsManager.Send(
                     userId,
-                    new WebSocketRequestModel
+                    new WebSocketResponseModel
                     {
-                        Type = WebSocketRequestType.Notification,
-                        Notification = new WebSocketNotification
+                        Type = WebSocketRequestType.Notification.ToString(),
+                        Notification = new WebSocketResponseNotification
                         {
-                            Type = WebSocketNotificationType.Dislike,
+                            Type = WebSocketNotificationType.Dislike.ToString(),
                             UserId = UserId
                         }
                     }
