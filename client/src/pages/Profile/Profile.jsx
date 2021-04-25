@@ -21,9 +21,10 @@ export default ({ userId }) => {
   const isMyProfile = myId === id;
 
 
-    const sendToken = () => {
-        socket.send("From profile");
-    }
+  const sendToken = () => {
+      socket.send("From profile");
+  }
+
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(

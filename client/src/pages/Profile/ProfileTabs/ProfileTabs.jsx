@@ -10,13 +10,6 @@ import ProfileVisitors from "../ProfileVisitors/ProfileVisitors";
 import ProfileLikes from "../ProfileLikes/ProfileLikes";
 import {usersApi} from "../../../api/api";
 
-const tabs = [
-  'Фото',
-  'Информация',
-  'Посетители',
-  'Лайки',
-];
-
 const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
   const [activeTabs, setActiveTabs] = React.useState(0);
   const [visitors, setVisitors] = React.useState([]);
@@ -43,12 +36,11 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
           .getLikes(1, 200)
           .then(
               ({ data }) => {
-                  console.log('Likes:', data);
                   setLikes(data.Content.profiles);
               },
-              (err) => console.log("ERROR getLikes:", err)
+              (err) => console.error("ERROR getLikes:", err)
           )
-          .catch((err) => console.log("ERROR getLikes:", err));
+          .catch((err) => console.error("ERROR getLikes:", err));
   }, []);
 
   React.useEffect(() => {
@@ -56,9 +48,9 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
           .getLikes(1, 200)
           .then(
               ({ data }) => {},
-              (err) => console.log("ERROR getLikes:", err)
+              (err) => console.error("ERROR getLikes:", err)
           )
-          .catch((err) => console.log("ERROR getLikes:", err));
+          .catch((err) => console.error("ERROR getLikes:", err));
   }, []);
 
   return (

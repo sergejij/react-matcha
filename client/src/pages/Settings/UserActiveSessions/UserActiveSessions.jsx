@@ -14,7 +14,9 @@ const SessionBlock = ({ Id, IP, OS, Country, City, Browser }) => {
         userSessionApi
             .closeSession(Id)
             .then(
-                () => {},
+                () => {
+                    window.location.reload(true)
+                },
                 (err) => {
                     if (err.response.status === 401) {
                         console.log("401 here");

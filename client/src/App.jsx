@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import { Route, useRouteMatch, Switch } from 'react-router-dom';
 
 import Profile from './pages/Profile/Profile';
@@ -59,23 +58,6 @@ function App() {
         alert("обновлен");
         socket.close();
     }
-
-    React.useEffect(() => {
-        if (localStorage.getItem('id')) {
-            socket.onopen = () => {
-                console.log("IN ONOPEN");
-            }
-            socket.onclose = () => {
-                console.log("IN ONCLOSE");
-            }
-            socket.onerror = (err) => {
-                console.error("ERROR in WEBSOCKES:", err);
-            };
-            return () => {
-                socket.close();
-            }
-        }
-    }, []);
 
   return (
     <div className="App">
