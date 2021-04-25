@@ -46,6 +46,20 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK.ToResult();
         }
 
+        [HttpGet]
+        [Route("test")]
+        public IActionResult Test()
+        {
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                    {
+                        { "sockets", WebSocketsManager.WebSocketsManager.All }
+                    })
+                .ToResult();
+        }
+
         #region Тестовые пользователи
 
         [HttpPost]

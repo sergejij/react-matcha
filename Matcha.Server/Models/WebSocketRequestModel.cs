@@ -25,7 +25,7 @@
 
     public sealed record WebSocketNotification
     {
-        public long WhoseAction { get; set; }
+        public long UserId { get; set; }
 
         public WebSocketNotificationType Type { get; set; }
     }

@@ -618,7 +618,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketNotification
                         {
                             Type = WebSocketNotificationType.Visit,
-                            WhoseAction = UserId
+                            UserId = UserId
                         }
                     }
                 );
@@ -659,7 +659,7 @@ namespace Matcha.Server.Controllers
                             Notification = new WebSocketNotification
                             {
                                 Type = WebSocketNotificationType.Like,
-                                WhoseAction = UserId
+                                UserId = UserId
                             }
                         }
                     );
@@ -718,7 +718,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketNotification
                         {
                             Type = WebSocketNotificationType.Dislike,
-                            WhoseAction = UserId
+                            UserId = UserId
                         }
                     }
                 );

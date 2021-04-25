@@ -18,6 +18,9 @@ namespace Matcha.Server.WebSocketsManager
             _storage = new();
         }
 
+        //TODO: удалить
+        public static ConcurrentDictionary<long, ConcurrentDictionary<long, WebSocket>> All => _storage;
+
         public static void AddSession(long userId, long sessionId, WebSocket socket)
         {
             var sessions = _storage.GetOrAdd(userId, new ConcurrentDictionary<long, WebSocket>());
