@@ -5,10 +5,12 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Data;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Matcha.Server.Controllers
 {
@@ -19,8 +21,17 @@ namespace Matcha.Server.Controllers
     [Route("web_socket")]
     public class WebSocketsController : BaseMatchaController
     {
+        private readonly ILogger _logger;
+
+        public WebSocketsController(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task ListenWebSocket()
         {
+            _logger.LogDebug(null, $"\n\n\tWeb socket request from {UserId} : {SessionId}\n\n");
+
             var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
             WebSocketsManager.WebSocketsManager.AddSession(UserId, SessionId, socket);
@@ -30,6 +41,8 @@ namespace Matcha.Server.Controllers
 
         private async Task Listen(WebSocket socket)
         {
+            _logger.LogDebug(null, $"\n\n\tListening socket {UserId} : {SessionId}\n\n");
+
             while (socket.State == WebSocketState.Open)
             {
                 var request = await ReadMessage(socket);
@@ -58,6 +71,8 @@ namespace Matcha.Server.Controllers
 
         private async Task ProcessRequest(WebSocketRequestModel request)
         {
+            _logger.LogDebug(null, $"\n\n\tProcessing websocket request from {UserId} : {SessionId}: {request.Type}\n\n");
+
             switch (request.Type)
             {
                 case WebSocketRequestType.Close:
@@ -76,6 +91,8 @@ namespace Matcha.Server.Controllers
 
         private async Task SendMessage(WebSocketMessageModel message)
         {
+            _logger.LogDebug(null, $"\n\n\tSending websocket message from {UserId} : {SessionId} to {message.Receiver}, content: {message.Content}\n\n");
+
             await WebSocketsManager.WebSocketsManager.Send(
                 message.Receiver,
                 new WebSocketRequestModel
@@ -102,6 +119,8 @@ namespace Matcha.Server.Controllers
 
         private async Task SendNotification(WebSocketNotification notification)
         {
+            _logger.LogDebug(null, $"\n\n\tSending websocket notification from {UserId} : {SessionId} to {notification.WhoseAction}, type: {notification.Type}\n\n");
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("SaveProfileAction", connection) { CommandType = CommandType.StoredProcedure };
 
