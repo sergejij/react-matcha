@@ -83,14 +83,17 @@ namespace Matcha.Server.Controllers
 
         private async Task SendMessage(WebSocketMessageModel message)
         {
-            Console.WriteLine($"\n\n\tSending websocket message from {UserId} : {SessionId} to {message.Receiver}, content: {message.Content}\n\n");
-
             await WebSocketsManager.WebSocketsManager.Send(
                 message.Receiver,
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Message = message
+                    Message = message with
+                    {
+                        Sender = UserId,
+                        SendTime = DateTime.Now,
+                        Read = false
+                    }
                 }
             );
 
@@ -148,5 +151,3 @@ namespace Matcha.Server.Controllers
         }
     }
 }
-
-//TODO: сделать почанковую загрузку сообщений сокета
