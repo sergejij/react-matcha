@@ -246,7 +246,7 @@ namespace Matcha.Server.Controllers
                 null,
                 new Dictionary<string, object>
                 {
-                    { "profiles", profiles }
+                    { "profiles", profiles.Select(arg => new ProfileWrapper(arg)) }
                 })
                 .ToResult();
         }
@@ -288,7 +288,7 @@ namespace Matcha.Server.Controllers
                 null,
                 new Dictionary<string, object>
                 {
-                    { "profiles", profiles }
+                    { "profiles", profiles.Select(arg => new ProfileWrapper(arg)) }
                 })
                 .ToResult();
         }
@@ -301,6 +301,13 @@ namespace Matcha.Server.Controllers
         private sealed record ProfileWrapper
         {
             public ProfilePreviewModel Profile { get; set; }
+
+            public ProfileWrapper() { }
+
+            public ProfileWrapper(ProfilePreviewModel profile)
+            {
+                Profile = profile;
+            }
         }
 
         private sealed record ProfileFullDataModel
