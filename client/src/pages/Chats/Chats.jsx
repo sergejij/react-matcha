@@ -5,7 +5,7 @@ import Aside from '../../components/Aside/Aside';
 import { Content } from '../../styled';
 import {usersApi} from "../../api/api";
 
-export default ({ socket }) => {
+export default ({ socket, newMessage }) => {
   const [users, setUsers] = React.useState([]);
   const [id, setId] = React.useState(null);
 
@@ -22,25 +22,6 @@ export default ({ socket }) => {
 
     }, []);
 
-    // const wsSend = (data) => {
-    //     if(!socket.readyState){
-    //         console.log("socketl:", socket);
-    //         setTimeout(() => {
-    //             wsSend(data);
-    //         },100);
-    //     } else {
-    //         console.log("SENDING");
-    //         socket.send(data);
-    //     }
-    // };
-    //
-    // socket.onmessage = function(event) {
-    //     console.log("Получены данные " + event.data);
-    // };
-    // console.log("xyz")
-    // wsSend(Math.random());
-    // console.log("abc")
-
   return (
     <Content>
       <Aside
@@ -51,7 +32,7 @@ export default ({ socket }) => {
         isChat
       />
       <Route path={`/chats/${id}`}>
-        <Chat socket={socket} userId={id} />
+        <Chat newMessage={newMessage} socket={socket} userId={id} />
       </Route>
     </Content>
   );

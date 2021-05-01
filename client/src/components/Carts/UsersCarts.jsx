@@ -18,21 +18,24 @@ const UsersCarts = ({ users, buttonText }) => {
   return (
     <CartsStyled>
       {
-        users.map((user, index) => (
-          <Cart
-              to={`/profile/${user.Id}`}
-              img={'data:image/bmp;base64,' + user.Avatar}
-              key={`${user.Name}_${index}`}
-              onClick={refresh}
-          >
-            <div>
-              <Text color="white" size="18px">
-                {user.Name}
-              </Text>
-              <Button onClick={communicate} size="S" view="main">{buttonText}</Button>
-            </div>
-          </Cart>
-        ))
+        users.map((user, index) => {
+          console.log(user, index);
+          return (
+              <Cart
+                  to={`/profile/${user.Profile.Id}`}
+                  img={'data:image/bmp;base64,' + user.Profile.Avatar}
+                  key={`${user.Profile.Name}_${index}`}
+                  onClick={refresh}
+              >
+                <div>
+                  <Text color="white" size="18px">
+                    {user.Profile.Name}
+                  </Text>
+                  <Button onClick={communicate} size="S" view="main">{buttonText}</Button>
+                </div>
+              </Cart>
+          )
+        })
       }
     </CartsStyled>
   );

@@ -4,36 +4,20 @@ import { ChatMessagesStyled } from './styled';
 import Message from './Message';
 import {usersApi} from "../../../../api/api";
 
-// const messages = [
-//   {
-//     isMyMessage: true,
-//     text: 'Бла бла бла',
-//   },
-//   {
-//     isMyMessage: true,
-//     text: 'Привет))',
-//   },
-//   {
-//     isMyMessage: true,
-//     text: 'Бла бла бла',
-//   },
-//   {
-//     isMyMessage: true,
-//     text: 'Привет))',
-//   },
-//   {
-//     isMyMessage: false,
-//     text: 'Привет)',
-//   },
-// ];
-
-const ChatMessages = ({userId}) => {
+const ChatMessages = ({userId, newMessage}) => {
   const [messages, setMessages] = React.useState([]);
 
   const messagesRef = React.useRef(null);
   React.useEffect(() => {
     messagesRef.current.scrollTo(0, 99999);
   }, [messages])
+
+  React.useEffect(() => {
+      if (newMessage && userId === newMessage.senderId) {
+          console.log("newMessage.Content}", newMessage);
+          setMessages(messages => messages.concat({MyMessage: false, Content: newMessage.message}));
+      }
+  }, [newMessage])
 
   React.useEffect(() => {
     usersApi
@@ -48,6 +32,7 @@ const ChatMessages = ({userId}) => {
         .catch((err) => console.error("ERROR getMessages:", err))
   }, [userId])
 
+    console.log("MESSAGES:", messages);
   return (
       <ChatMessagesStyled ref={messagesRef}>
         {

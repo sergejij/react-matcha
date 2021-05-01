@@ -4,11 +4,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Text } from '../../styled';
 import COLORS from '../../constants';
 import Button from '../../components/Button';
-import { userInfoApi, usersAPI } from '../../api/api';
+import { usersAPI } from '../../api/api';
 import { Redirect } from 'react-router-dom';
 import createSocket from "../../api/socket";
 
-export default ({ onClose, onRegister, setSocket }) => {
+export default ({ onClose, onRegister, setSocket, setMessageToMe, setNotificationToMe }) => {
   const [emailOrLogin, setEmailOrLogin] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -33,7 +33,7 @@ export default ({ onClose, onRegister, setSocket }) => {
           ({ data }) => {
             const id = data.Content.userId;
             localStorage.setItem('id', id);
-            setSocket(createSocket());
+            setSocket(createSocket(setMessageToMe, setNotificationToMe));
             setRedirectTo(`/profile/${id}`);
           },
           (err) => {
