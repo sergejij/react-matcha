@@ -43,7 +43,6 @@ namespace Matcha.Server.Controllers
             while (reader.Read())
             {
                 var userId = Convert.ToInt64(reader["user_id"]);
-                object value;
 
                 chats.Add(new ChatPreviewModel
                 {
@@ -57,8 +56,8 @@ namespace Matcha.Server.Controllers
                     LastMessage = new MessageModel
                     {
                         Content = reader.StringOrEmpty("last_message_content"),
-                        Read = (value = reader["is_last_message_read"]) is DBNull ? null : Convert.ToBoolean(value),
-                        SendTime = (value = reader["last_message_send_time"]) is DBNull ? null : Convert.ToDateTime(value)
+                        Read = Convert.ToBoolean(reader["is_last_message_read"]),
+                        SendTime = Convert.ToDateTime(reader["last_message_send_time"])
                     }
                 });
             }
@@ -123,17 +122,6 @@ namespace Matcha.Server.Controllers
             public MessageModel LastMessage { get; set; }
 
             public ProfilePreviewModel Profile { get; set; }
-        }
-
-        public sealed record MessageModel
-        {
-            public DateTime? SendTime { get; set; }
-
-            public bool? Read { get; set; }
-
-            public string Content { get; set; }
-
-            public bool MyMessage { get; set; }
         }
 
         #endregion

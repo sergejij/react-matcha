@@ -9,7 +9,6 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Matcha.Server.Controllers
 {
@@ -89,7 +88,12 @@ namespace Matcha.Server.Controllers
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Message = message with { Sender = UserId }
+                    Message = message with
+                    {
+                        Sender = UserId,
+                        SendTime = DateTime.Now,
+                        Read = false
+                    }
                 }
             );
 
@@ -147,5 +151,3 @@ namespace Matcha.Server.Controllers
         }
     }
 }
-
-//TODO: сделать почанковую загрузку сообщений сокета

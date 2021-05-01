@@ -1,4 +1,6 @@
-﻿namespace Matcha.Server.Models
+﻿using Matcha.Server.Models.Chats;
+
+namespace Matcha.Server.Models
 {
     #region Request
 
@@ -47,13 +49,11 @@
 
     #endregion
 
-    public sealed record WebSocketMessageModel
+    public sealed record WebSocketMessageModel : MessageModel
     {
         public long Receiver { get; set; }
 
         public long Sender { get; set; }
-
-        public string Content { get; set; }
     }
     
     public enum WebSocketNotificationType
