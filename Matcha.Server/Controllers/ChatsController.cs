@@ -42,6 +42,8 @@ namespace Matcha.Server.Controllers
 
             while (reader.Read())
             {
+                object value;
+
                 var userId = Convert.ToInt64(reader["user_id"]);
 
                 chats.Add(new ChatPreviewModel
@@ -56,8 +58,8 @@ namespace Matcha.Server.Controllers
                     LastMessage = new MessageModel
                     {
                         Content = reader.StringOrEmpty("last_message_content"),
-                        Read = Convert.ToBoolean(reader["is_last_message_read"]),
-                        SendTime = Convert.ToDateTime(reader["last_message_send_time"])
+                        Read = (value = reader["is_last_message_read"]) is DBNull ? null : Convert.ToBoolean(value),
+                        SendTime = (value = reader["last_message_send_time"]) is DBNull ? null : Convert.ToDateTime(value)
                     }
                 });
             }
