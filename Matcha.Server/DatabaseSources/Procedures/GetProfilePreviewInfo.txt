@@ -7,7 +7,18 @@
 
 BEGIN
 
-	SELECT user_full_data.name INTO name FROM user_full_data WHERE user_full_data.id = user_id;
-	SELECT user_full_data.surname INTO surname FROM user_full_data WHERE user_full_data.id = user_id;
+	IF NOT EXISTS(SELECT * FROM user_data WHERE id = user_id)
+	THEN
+		SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 404, MESSAGE_TEXT = 'Пользователь с таким ID не найден';
+	END IF;
+
+	SELECT
+		user_full_data.name, user_full_data.surname 
+	INTO
+		name, surname 
+	FROM
+		user_full_data 
+	WHERE
+		user_full_data.id = user_id;
 
 END
