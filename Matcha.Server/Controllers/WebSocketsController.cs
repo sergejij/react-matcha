@@ -9,6 +9,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Matcha.Server.Controllers
 {
@@ -83,14 +84,12 @@ namespace Matcha.Server.Controllers
 
         private async Task SendMessage(WebSocketMessageModel message)
         {
-            Console.WriteLine($"\n\n\tSending websocket message from {UserId} : {SessionId} to {message.Receiver}, content: {message.Content}\n\n");
-
             await WebSocketsManager.WebSocketsManager.Send(
                 message.Receiver,
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Message = message
+                    Message = message with { Sender = UserId }
                 }
             );
 
