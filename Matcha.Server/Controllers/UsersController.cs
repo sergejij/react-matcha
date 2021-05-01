@@ -23,56 +23,6 @@ namespace Matcha.Server.Controllers
     [ExceptionHandlerFilter]
     public class UsersController : BaseMatchaController
     {
-        private sealed record ProfileFullDataModel
-        {
-            public string Name { get; set; }
-
-            public string Surname { get; set; }
-
-            public string Location { get; set; }
-
-            public int? Age { get; set; }
-
-            public string Post { get; set; }
-
-            public string Biography { get; set; }
-
-            public string Sex { get; set; }
-
-            public string SexPreference { get; set; }
-
-            public string RelationshipStatus { get; set; }
-
-            public string AttitudeToSmoking { get; set; }
-
-            public string AttitudeToAlcohol { get; set; }
-
-            public HashSet<string> Interests { get; set; }
-
-            public int Rating { get; set; }
-
-            public List<SessionDataModel> Sessions { get; set; }
-        }
-
-        private sealed record SessionDataModel
-        {
-            public long Id { get; set; }
-
-            public string OS { get; set; }
-
-            public string IP { get; set; }
-
-            public string Country { get; set; }
-
-            public string City { get; set; }
-
-            public string Browser { get; set; }
-
-            public GeoCoordinate InitialCoordinates { get; set; }
-
-            public GeoCoordinate CurrentCoordinates { get; set; }
-        }
-
         [HttpGet]
         [Route("list")]
         public async Task<IActionResult> GetUsersList([Required][FromQuery] SortParametersModel sortParameters)
@@ -175,6 +125,7 @@ namespace Matcha.Server.Controllers
 
                 case OrderMethodsEnum.Distance:
                     {
+
                         break;
                     }
             }
@@ -183,12 +134,15 @@ namespace Matcha.Server.Controllers
                 .Where(arg => arg.Key != UserId)
                 .Skip((sortParameters.Page - 1) * sortParameters.Size)
                 .Take(sortParameters.Size)
-                .Select(arg => new ProfilePreviewModel
+                .Select(arg => new ProfileWrapper
                 {
-                    Id = arg.Key,
-                    Name = arg.Value.Name,
-                    Surname = arg.Value.Surname,
-                    Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(arg.Key)
+                    Profile = new ProfilePreviewModel
+                    {
+                        Id = arg.Key,
+                        Name = arg.Value.Name,
+                        Surname = arg.Value.Surname,
+                        Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(arg.Key)
+                    }
                 });
 
             return new ResponseModel(
@@ -200,8 +154,7 @@ namespace Matcha.Server.Controllers
                 })
                 .ToResult();
         }
-
-        //TODO: сделать проверку в процедуре, что пользователи существуют?
+        
         [HttpGet]
         [Route("max_rating")]
         public async Task<IActionResult> GetMaxUserRating()
@@ -339,5 +292,67 @@ namespace Matcha.Server.Controllers
                 })
                 .ToResult();
         }
+
+        #region Структуры
+
+        /// <summary>
+        /// Костыль для фронта
+        /// </summary>
+        private sealed record ProfileWrapper
+        {
+            public ProfilePreviewModel Profile { get; set; }
+        }
+
+        private sealed record ProfileFullDataModel
+        {
+            public string Name { get; set; }
+
+            public string Surname { get; set; }
+
+            public string Location { get; set; }
+
+            public int? Age { get; set; }
+
+            public string Post { get; set; }
+
+            public string Biography { get; set; }
+
+            public string Sex { get; set; }
+
+            public string SexPreference { get; set; }
+
+            public string RelationshipStatus { get; set; }
+
+            public string AttitudeToSmoking { get; set; }
+
+            public string AttitudeToAlcohol { get; set; }
+
+            public HashSet<string> Interests { get; set; }
+
+            public int Rating { get; set; }
+
+            public List<SessionDataModel> Sessions { get; set; }
+        }
+
+        private sealed record SessionDataModel
+        {
+            public long Id { get; set; }
+
+            public string OS { get; set; }
+
+            public string IP { get; set; }
+
+            public string Country { get; set; }
+
+            public string City { get; set; }
+
+            public string Browser { get; set; }
+
+            public GeoCoordinate InitialCoordinates { get; set; }
+
+            public GeoCoordinate CurrentCoordinates { get; set; }
+        }
+
+        #endregion
     }
 }
