@@ -59,7 +59,7 @@ function App() {
           enableHighAccuracy: true,
         })
     }
-  }, 100000);
+  }, 180000);
     if (sessionStorage.getItem("is_reloaded")) {
         alert("обновлен");
         socket.close();
