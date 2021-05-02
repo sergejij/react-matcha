@@ -73,7 +73,7 @@ namespace Matcha.Server.Controllers
         }
 
         //TODO: перенести в менеджер 
-        private ProfileShortInfoModel GetProfileShortInfo(long userId)
+        public static ProfileShortInfoModel GetProfileShortInfo(long userId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetProfileShortInfo", connection) { CommandType = CommandType.StoredProcedure };

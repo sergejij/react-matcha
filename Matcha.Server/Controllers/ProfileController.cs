@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Dynamic;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace Matcha.Server.Controllers
@@ -609,28 +610,25 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("who", MyId),
-                new MySqlParameter("whom", userId),
-
-                new MySqlParameter("visited_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
+                new MySqlParameter("whom", userId)
             });
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
-
-            var visited = Convert.ToBoolean(command.Parameters["visited_yet"]);
-            if (visited is false)
-                await WebSocketsManager.WebSocketsManager.Send(
-                    userId,
-                    new WebSocketResponseModel
+            
+            await WebSocketsManager.WebSocketsManager.Send(
+                userId,
+                new WebSocketResponseModel
+                {
+                    Type = WebSocketRequestType.Notification.ToString(),
+                    Sender = WebSocketsController.GetProfileShortInfo(MyId),
+                    Notification = new WebSocketResponseNotification
                     {
-                        Type = WebSocketRequestType.Notification.ToString(),
-                        Notification = new WebSocketResponseNotification
-                        {
-                            Type = WebSocketNotificationType.Visit.ToString(),
-                            Actioner = MyId
-                        }
+                        Type = WebSocketNotificationType.Visit.ToString(),
+                        Actioner = MyId
                     }
-                );
+                }
+            );
 
             return ResponseModel.OK.ToResult();
         }
@@ -656,7 +654,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            var liked = Convert.ToBoolean(command.Parameters["liked_yet"]);
+            var liked = Convert.ToBoolean(command.Parameters["liked_yet"].Value);
             if (liked is false)
             {
                 await WebSocketsManager.WebSocketsManager.Send(
@@ -664,6 +662,7 @@ namespace Matcha.Server.Controllers
                     new WebSocketResponseModel
                     {
                         Type = WebSocketRequestType.Notification.ToString(),
+                        Sender = WebSocketsController.GetProfileShortInfo(MyId),
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Like.ToString(),
@@ -697,7 +696,7 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            var disliked = Convert.ToBoolean(command.Parameters["disliked_yet"]);
+            var disliked = Convert.ToBoolean(command.Parameters["disliked_yet"].Value);
             if (disliked is false)
             {
                 await WebSocketsManager.WebSocketsManager.Send(
@@ -705,6 +704,7 @@ namespace Matcha.Server.Controllers
                     new WebSocketResponseModel
                     {
                         Type = WebSocketRequestType.Notification.ToString(),
+                        Sender = WebSocketsController.GetProfileShortInfo(MyId),
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Dislike.ToString(),
