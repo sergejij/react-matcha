@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Matcha.Server.Extensions;
 using Matcha.Server.Filters;
-using Matcha.Server.Models;
 using Matcha.Server.Models.Chats;
+using Matcha.Server.Models.Profile;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using server.Response;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Net;
 using System.Threading.Tasks;
-using Matcha.Server.Extensions;
-using Matcha.Server.Models.Profile;
 
 namespace Matcha.Server.Controllers
 {

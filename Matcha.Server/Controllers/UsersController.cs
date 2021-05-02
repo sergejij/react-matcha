@@ -124,8 +124,22 @@ namespace Matcha.Server.Controllers
                     }
 
                 case OrderMethodsEnum.Distance:
-                    {
+                {
+                    var defaultCoordinate = new GeoCoordinate(0, 0);
+                    var mySession = profiles[UserId].Sessions.Find(arg => arg.Id == SessionId);
 
+                    matches = profiles
+                        .OrderBy(arg =>
+                        {
+                            var nearest = arg.Value.Sessions.Count == 0 ? null : arg.Value.Sessions
+                                .OrderBy(session => Distance(
+                                    mySession?.CurrentCoordinates ?? defaultCoordinate,
+                                    session.CurrentCoordinates ?? defaultCoordinate))
+                                .First();
+
+                            return Distance(mySession?.CurrentCoordinates ?? defaultCoordinate,
+                                            nearest?.CurrentCoordinates ?? defaultCoordinate);
+                        });
                         break;
                     }
             }
@@ -154,7 +168,23 @@ namespace Matcha.Server.Controllers
                 })
                 .ToResult();
         }
-        
+
+        #region Вспомогательные методы
+
+        private double Distance(GeoCoordinate a, GeoCoordinate b)
+        {
+            const double EarthRadius = 6371;
+
+            var havLat = Math.Pow(Math.Sin((b.Latitude - a.Latitude)) / 2, 2);
+            var havLon = Math.Pow(Math.Sin((b.Longitude - a.Longitude)) / 2, 2);
+
+            var underRoot = havLat + Math.Cos(a.Latitude) * Math.Cos(b.Latitude) * havLon;
+
+            var result = 2 * EarthRadius * Math.Asin(Math.Sqrt(underRoot));
+
+            return result;
+        }
+
         [HttpGet]
         [Route("max_rating")]
         public async Task<IActionResult> GetMaxUserRating()
@@ -292,6 +322,8 @@ namespace Matcha.Server.Controllers
                 })
                 .ToResult();
         }
+
+        #endregion
 
         #region Структуры
 

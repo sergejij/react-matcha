@@ -11,4 +11,10 @@
     <PackageReference Include="UAParser" Version="3.1.46" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="MailClient\Media\mail_arrow.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

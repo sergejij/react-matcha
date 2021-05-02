@@ -342,40 +342,6 @@ namespace Matcha.Server.Controllers
             return ResponseModel.OK.ToResult();
         }
 
-        [HttpGet]
-        [Route("short_info")]
-        public async Task<IActionResult> GetShortInfoInfo([FromQuery] long? userId)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("GetShortUserInfo", connection) { CommandType = CommandType.StoredProcedure };
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("user_id", userId ?? UserId),
-
-                new MySqlParameter("name", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
-                new MySqlParameter("surname", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
-            });
-
-            connection.Open();
-            await command.ExecuteNonQueryAsync();
-
-            var profile = new ProfilePreviewModel
-            {
-                Name = command.Parameters["name"].Value.ToString(),
-                Surname = command.Parameters["surname"].Value.ToString()
-            };
-
-            return new ResponseModel(
-                HttpStatusCode.OK,
-                null,
-                new Dictionary<string, object>
-                {
-                    { "profile", profile }
-                })
-                .ToResult();
-        }
-
         [HttpPut]
         [Route("info")]
         public async Task<IActionResult> UpdateInfoAsync(ProfileInfoModel profileInfo)
@@ -587,6 +553,8 @@ namespace Matcha.Server.Controllers
         [Route("close_other_sessions")]
         public async Task<IActionResult> CloseSessionsButCurrentAsync()
         {
+            WebSocketsManager.WebSocketsManager.CloseAllButOne(UserId, SessionId);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
 
@@ -595,7 +563,14 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            return ResponseModel.OK.ToResult();
+            return new ResponseModel(
+                    HttpStatusCode.OK,
+                    null,
+                    new Dictionary<string, object>
+                    {
+                        { "mySessionID", SessionId }
+                    })
+                .ToResult();
         }
 
         [HttpPost]
@@ -652,7 +627,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Visit.ToString(),
-                            UserId = UserId
+                            Actioner = UserId
                         }
                     }
                 );
@@ -693,7 +668,7 @@ namespace Matcha.Server.Controllers
                             Notification = new WebSocketResponseNotification
                             {
                                 Type = WebSocketNotificationType.Like.ToString(),
-                                UserId = UserId
+                                Actioner = UserId
                             }
                         }
                     );
@@ -752,7 +727,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Dislike.ToString(),
-                            UserId = UserId
+                            Actioner = UserId
                         }
                     }
                 );

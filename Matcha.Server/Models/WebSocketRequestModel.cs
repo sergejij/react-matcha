@@ -1,4 +1,5 @@
 ﻿using Matcha.Server.Models.Chats;
+using Matcha.Server.Models.Profile;
 
 namespace Matcha.Server.Models
 {
@@ -6,18 +7,13 @@ namespace Matcha.Server.Models
 
     public sealed record WebSocketRequestModel
     {
+        public long Receiver { get; set; }
+
         public WebSocketRequestType Type { get; set; }
 
-        public WebSocketMessageModel Message { get; set; }
-
-        public WebSocketRequestNotification Notification { get; set; }
-    }
-
-    public sealed record WebSocketRequestNotification
-    {
-        public long UserId { get; set; }
-
-        public WebSocketNotificationType Type { get; set; }
+        public MessageModel Message { get; set; }
+        
+        public WebSocketNotificationType Notification { get; set; }
     }
 
     public enum WebSocketRequestType
@@ -25,6 +21,13 @@ namespace Matcha.Server.Models
         Close,
         Message,
         Notification
+    }
+
+    public enum WebSocketNotificationType
+    {
+        Like,
+        Dislike,
+        Visit
     }
 
     #endregion
@@ -35,31 +38,19 @@ namespace Matcha.Server.Models
     {
         public string Type { get; set; }
 
-        public WebSocketMessageModel Message { get; set; }
+        public ProfileShortInfoModel Sender { get; set; }
+
+        public MessageModel Message { get; set; }
 
         public WebSocketResponseNotification Notification { get; set; }
     }
 
     public sealed record WebSocketResponseNotification
     {
-        public long UserId { get; set; }
+        public long Actioner { get; set; }
 
         public string Type { get; set; }
     }
 
     #endregion
-
-    public sealed record WebSocketMessageModel : MessageModel
-    {
-        public long Receiver { get; set; }
-
-        public long Sender { get; set; }
-    }
-    
-    public enum WebSocketNotificationType
-    {
-        Like,
-        Dislike,
-        Visit
-    }
 }
