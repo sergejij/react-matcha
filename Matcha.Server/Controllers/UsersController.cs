@@ -169,6 +169,50 @@ namespace Matcha.Server.Controllers
                 .ToResult();
         }
 
+        //TODO: pagination class
+        [HttpGet]
+        [Route("matches")]
+        public async Task<IActionResult> GetMatches([FromQuery] [Required] int page, [FromQuery] [Required] int size)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetMatches", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", MyId),
+
+                new MySqlParameter("take", size),
+                new MySqlParameter("skip", (page - 1) * size)
+            });
+
+            connection.Open();
+            using var reader = await command.ExecuteReaderAsync();
+
+            var profiles = new List<ProfilePreviewModel>();
+
+            while (reader.Read())
+            {
+                var userId = Convert.ToInt64(reader["user_id"]);
+
+                profiles.Add(new ProfilePreviewModel
+                {
+                    Id = userId,
+                    Name = reader.StringOrEmpty("name"),
+                    Surname = reader.StringOrEmpty("surname"),
+                    Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(userId)
+                });
+            }
+            
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "profiles", profiles }
+                })
+                .ToResult();
+        }
+
         #region Вспомогательные методы
 
         private double Distance(GeoCoordinate a, GeoCoordinate b)

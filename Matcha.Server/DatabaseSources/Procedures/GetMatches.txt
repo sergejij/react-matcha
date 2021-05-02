@@ -1,0 +1,21 @@
+﻿CREATE PROCEDURE GetMatches (
+	user_id BIGINT,
+	take INT,
+	skip INT
+)
+
+BEGIN
+
+	SELECT
+		id AS user_id, name, surname
+	FROM
+		user_full_data
+	WHERE
+		EXISTS(SELECT * FROM chats WHERE
+			(chats.first = user_id AND chats.second = user_full_data.id)
+			OR
+			(chats.first = user_full_data.id AND chats.second = user_id))
+	LIMIT
+		skip, take;
+
+END
