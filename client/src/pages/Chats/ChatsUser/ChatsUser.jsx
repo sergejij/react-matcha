@@ -3,7 +3,7 @@ import { ChatsAsideItem, ChatsAsidePhoto } from './styled';
 import {userInfoApi} from "../../../api/api";
 
 const ChatsUser = ({
-  img, isActive,  clickUserChat, userId,
+  profileProfile, isActive,  clickUserChat, userId,
 }) => {
   const [user, setUser] = React.useState({});
 
@@ -28,7 +28,7 @@ const ChatsUser = ({
       className={isActive && 'active'}
       to={`/profile/${userId}`}
     >
-      <ChatsAsidePhoto src={img} alt="Фото профиля" />
+      <ChatsAsidePhoto src={profileProfile} alt="Фото профиля" />
       <p>{user.name}</p>
     </ChatsAsideItem>
   );

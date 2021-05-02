@@ -71,17 +71,20 @@ export default ({ userId }) => {
     return <Redirect to="/login" />;
   }
 
-  if (!isMyProfile) {
-      usersApi
-          .putVisit(id)
-          .then(
-              () => {
+  React.useEffect(() => {
+      if (!isMyProfile) {
+          usersApi
+              .putVisit(id)
+              .then(
+                  () => {
 
                   },
-              (err) => console.error("ERROR putVisit:", err)
-          )
-          .catch((err) => console.error("ERROR putVisit:", err))
-  }
+                  (err) => console.error("ERROR putVisit:", err)
+              )
+              .catch((err) => console.error("ERROR putVisit:", err))
+      }
+  }, []);
+
 
   return (
       (isRequiredEmpty || isProfilePhotoEmpty) && isMyProfile ? (

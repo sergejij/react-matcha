@@ -23,7 +23,7 @@ const SettingsDataHeaderBox = ({ userData }) => (
 
 const ShareLocation = ({ isSharedLocation, setIsSharedLocation }) => (
   <ShareLocationStyled>
-    <input id="share-location" type="checkbox" checked={isSharedLocation} onChange={() => setIsSharedLocation((prev) => !prev)} />
+    <input id="share-location" type="checkbox" defaultChecked={isSharedLocation} onChange={() => setIsSharedLocation((prev) => !prev)} />
     <label htmlFor="share-location">Делиться своим местоположением</label>
   </ShareLocationStyled>
 );

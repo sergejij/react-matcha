@@ -33,7 +33,6 @@ export const UserPhotoBlock = styled.div`
   width: 250px;
   height: 400px;
   border-radius: 13px;
-  border-bottom: 1px solid ${COLORS.YELLOW};
 
   @media (max-width: 500px) {
     width: 200px;

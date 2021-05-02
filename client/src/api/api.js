@@ -9,6 +9,10 @@ const instance = axios.create({
 });
 
 export const usersApi = {
+  getMatches(page, size) {
+    return instance.get(`/users/matches?page=${page}&size=${size}`);
+  },
+
   createUsers(amount) {
     return instance.post(`/dev/test_users?amount=${amount}`);
   },

@@ -10,11 +10,9 @@ export default () => {
     const [amIAuthorized, setAmIAuthorized] = React.useState(true);
     React.useEffect(() => {
         usersApi
-            .getUsers(0, 200)
+            .getMatches(1, 200)
             .then(
-                ({ data }) => {
-                    setUsers(data.Content.users);
-                },
+                ({ data }) => setUsers(data.Content.profiles),
                 (err) => {
                     if (err.response.status === 401) {
                         setAmIAuthorized(() => false);

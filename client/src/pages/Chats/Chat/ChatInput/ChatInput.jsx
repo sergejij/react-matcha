@@ -5,7 +5,6 @@ const ChatInput = ({userId, socket, setMessages}) => {
   const [message, setMessage] = React.useState('');
 
   const sendMessage = () => {
-      console.log("socket", socket);
     if (socket) {
         socket.sendMessage(message, userId);
         setMessages(messages => [{MyMessage: true, Content: message}].concat(messages));

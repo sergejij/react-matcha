@@ -13,11 +13,17 @@ const createSocket = (setMessageToMe, setNotificationToMe) => {
         const eventObj = JSON.parse(event.data);
         switch(eventObj.Type) {
             case 'Message': {
-                setMessageToMe(eventObj.Message);
+                setMessageToMe({
+                    ...eventObj.Message,
+                    ...eventObj.Sender
+                });
                 break;
             }
             case 'Notification': {
-                setNotificationToMe(eventObj.Notification);
+                setNotificationToMe({
+                    ...eventObj.Notification,
+                    ...eventObj.Sender,
+                });
                 break;
             }
             default: {

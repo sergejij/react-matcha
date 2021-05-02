@@ -46,5 +46,6 @@ export const FilterBox = styled.div`
 
   @media (max-width: 900px) and (min-width: 10px) {
     padding: 25px 5px 10px 0;
+    margin-top: 30px;
   }
 `;

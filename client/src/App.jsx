@@ -19,46 +19,34 @@ function App() {
   const [socket, setSocket] = React.useState(null);
   const [messageToMe, setMessageToMe] = React.useState(null);
   const [newMessage, setNewMessage] = React.useState(null);
-  const [notificationToMe, setNotificationToMe] = React.useState(null); ///////////////////////////////////////////////////////////////////////
-  const [senderName, setSenderName] = React.useState('');
+  const [notificationToMe, setNotificationToMe] = React.useState(null);
+
   const match = useRouteMatch('/login');
   let intervalId;
 
     React.useEffect(() => {
         if (messageToMe) {
-            if (document.location.pathname === `/chats/${messageToMe.Sender}`) {
-                setNewMessage({ message: messageToMe.Content, senderId: messageToMe.Sender})
+            if (document.location.pathname === `/chats/${messageToMe.Id}`) {
+                setNewMessage({ message: messageToMe.Content, senderId: messageToMe.Id})
             } else {
                 notification.open({
-                    message: `Тебе пришло новое сообщение от ${<a href="http://localhost:3000/profile/${messageToMe.Id}">
-                        ${messageToMe.Name} ${messageToMe.Surname}
-                    </a>}`, // делай тут запрос на получение имени и фамилии
+                    message: `Тебе пришло новое сообщение от ${messageToMe.Name} ${messageToMe.Surname}`,
                     description: messageToMe.Content,
-                    onClick: () => {
-                        console.log('Notification Clicked!');
-                    },
                 });
             }
         }
     }, [messageToMe]);
 
-    // React.useEffect(() => {
-    //     if (notificationToMe) {
-    //         if (document.location.pathname === `/chats/${messageToMe.Sender}`) {
-    //             setNewMessage({ message: messageToMe.Content, senderId: messageToMe.Sender})
-    //         } else {
-    //             notification.open({
-    //                 message: `Тебе пришло новое сообщение от ${<a href="http://localhost:3000/profile/${messageToMe.Id}">
-    //                     ${messageToMe.name} ${messageToMe.surname}
-    //                 </a>}`, // делай тут запрос на получение имени и фамилии
-    //                 description: messageToMe.Content,
-    //                 onClick: () => {
-    //                     console.log('Notification Clicked!');
-    //                 },
-    //             });
-    //         }
-    //     }
-    // }, [messageToMe]);
+    React.useEffect(() => {
+        if (notificationToMe) {
+            const action = notificationToMe.Type === 'Visit'
+                ? 'посетил' : notificationToMe.Type === 'Like' ? 'лайкнул' : 'дизлайкнул';
+
+            notification.open({
+                message: `${notificationToMe.Name} ${notificationToMe.Surname} ${action} твой профиль`,
+            });
+            }
+    }, [notificationToMe]);
 
   function sendGeoPosition(position) {
     const {latitude, longitude} = position.coords;
