@@ -24,8 +24,8 @@ const UsersCarts = ({ users, buttonText }) => {
         users.map((user, index) => {
           return (
               <Cart
-                  to={`/profile/${user.Id}`}
-                  img={'data:image/bmp;base64,' + user.Avatar}
+                  to={`/profile/${user.Profile.Id}`}
+                  img={'data:image/bmp;base64,' + user.Profile.Avatar}
                   key={`${user.Name}_${index}`}
                   onClick={refresh}
               >
@@ -33,9 +33,7 @@ const UsersCarts = ({ users, buttonText }) => {
                   <Text color="white" size="18px">
                     {user.Name}
                   </Text>
-                  {/*<NavLink to={`${buttonText === "Общаться" ? "chats" : "profile"}/${user.Profile.Id}`}>*/}
-                  <Button onClick={(e) => communicate(e, user.Id)} size="S" view="main">{buttonText}</Button>
-                  {/*</NavLink>*/}
+                  <Button onClick={(e) => communicate(e, user.Profile.Id)} size="S" view="main">{buttonText}</Button>
                 </div>
               </Cart>
           )
