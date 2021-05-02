@@ -114,7 +114,7 @@ namespace Matcha.Server.Controllers
 
                 case OrderMethodsEnum.CommonInterests:
                     {
-                        var me = profiles[UserId];
+                        var me = profiles[MyId];
 
                         matches = profiles
                             .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= sortParameters.Min.Value)
@@ -126,7 +126,7 @@ namespace Matcha.Server.Controllers
                 case OrderMethodsEnum.Distance:
                 {
                     var defaultCoordinate = new GeoCoordinate(0, 0);
-                    var mySession = profiles[UserId].Sessions.Find(arg => arg.Id == SessionId);
+                    var mySession = profiles[MyId].Sessions.Find(arg => arg.Id == SessionId);
 
                     matches = profiles
                         .OrderBy(arg =>
@@ -145,7 +145,7 @@ namespace Matcha.Server.Controllers
             }
 
             var previewModels = matches
-                .Where(arg => arg.Key != UserId)
+                .Where(arg => arg.Key != MyId)
                 .Skip((sortParameters.Page - 1) * sortParameters.Size)
                 .Take(sortParameters.Size)
                 .Select(arg => new ProfileWrapper
@@ -165,6 +165,50 @@ namespace Matcha.Server.Controllers
                 new Dictionary<string, object>
                 {
                     { "users", previewModels }
+                })
+                .ToResult();
+        }
+
+        //TODO: pagination class
+        [HttpGet]
+        [Route("matches")]
+        public async Task<IActionResult> GetMatches([FromQuery] [Required] int page, [FromQuery] [Required] int size)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetMatches", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", MyId),
+
+                new MySqlParameter("take", size),
+                new MySqlParameter("skip", (page - 1) * size)
+            });
+
+            connection.Open();
+            using var reader = await command.ExecuteReaderAsync();
+
+            var profiles = new List<ProfilePreviewModel>();
+
+            while (reader.Read())
+            {
+                var userId = Convert.ToInt64(reader["user_id"]);
+
+                profiles.Add(new ProfilePreviewModel
+                {
+                    Id = userId,
+                    Name = reader.StringOrEmpty("name"),
+                    Surname = reader.StringOrEmpty("surname"),
+                    Avatar = MediaClient.MediaClient.Image.GetAvatarBytes(userId)
+                });
+            }
+            
+            return new ResponseModel(
+                HttpStatusCode.OK,
+                null,
+                new Dictionary<string, object>
+                {
+                    { "profiles", profiles }
                 })
                 .ToResult();
         }
@@ -248,7 +292,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)
             });
@@ -290,7 +334,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)
             });

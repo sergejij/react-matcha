@@ -12,9 +12,9 @@ BEGIN
 	IF NOT EXISTS(SELECT * FROM dislikes AS d WHERE d.who = who AND d.whom = whom)
 	THEN
 		INSERT INTO dislikes (who, whom) VALUES (who, whom);
-		RETURN 1;
-	ELSE
 		RETURN 0;
+	ELSE
+		RETURN 1;
 	END IF;
 
 END

@@ -69,7 +69,7 @@ namespace Matcha.Server.MailClient
                 "    </th></tr></tbody></table>" +
                 "" +
                 "</th></tr>",
-                $"https://localhost:3000/confirm_email?code={code}");
+                $"http://localhost:3000/confirm-email?code={code}");
 
             return body;
         }

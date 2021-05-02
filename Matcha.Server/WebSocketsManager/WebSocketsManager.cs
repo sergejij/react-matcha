@@ -11,7 +11,7 @@ namespace Matcha.Server.WebSocketsManager
 {
     internal static class WebSocketsManager
     {
-        private static ConcurrentDictionary<long, ConcurrentDictionary<long, WebSocket>> _storage;
+        private static readonly ConcurrentDictionary<long, ConcurrentDictionary<long, WebSocket>> _storage;
 
         static WebSocketsManager()
         {
@@ -36,7 +36,7 @@ namespace Matcha.Server.WebSocketsManager
                 {
                     socket.CloseOutputAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
 
-                    if (sessions.Count == 0)
+                    if (sessions.IsEmpty)
                         _storage.TryRemove(userId, out _);
                 }
             }

@@ -29,7 +29,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("my_id", UserId),
+                new MySqlParameter("my_id", MyId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)
             });
@@ -84,7 +84,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("my_id", UserId),
+                new MySqlParameter("my_id", MyId),
                 new MySqlParameter("receiver", userId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)

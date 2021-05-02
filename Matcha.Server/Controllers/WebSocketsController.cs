@@ -1,5 +1,6 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models;
+using Matcha.Server.Models.Profile;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -9,8 +10,6 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Matcha.Server.Models.Chats;
-using Matcha.Server.Models.Profile;
 
 namespace Matcha.Server.Controllers
 {
@@ -24,7 +23,7 @@ namespace Matcha.Server.Controllers
         {
             var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
-            WebSocketsManager.WebSocketsManager.AddSession(UserId, SessionId, socket);
+            WebSocketsManager.WebSocketsManager.AddSession(MyId, SessionId, socket);
 
             await Listen(socket);
         }
@@ -64,21 +63,17 @@ namespace Matcha.Server.Controllers
             switch (request.Type)
             {
                 case WebSocketRequestType.Close:
-                    WebSocketsManager.WebSocketsManager.CloseSession(UserId, SessionId);
+                    WebSocketsManager.WebSocketsManager.CloseSession(MyId, SessionId);
                     break;
 
                 case WebSocketRequestType.Message:
                     await SendMessage(request);
                     break;
-
-                case WebSocketRequestType.Notification:
-                    await SendNotification(request);
-                    break;
             }
         }
 
         //TODO: перенести в менеджер 
-        private async Task<ProfileShortInfoModel> GetProfileShortInfo(long userId)
+        public static ProfileShortInfoModel GetProfileShortInfo(long userId)
         {
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetProfileShortInfo", connection) { CommandType = CommandType.StoredProcedure };
@@ -92,7 +87,7 @@ namespace Matcha.Server.Controllers
             });
 
             connection.Open();
-            await command.ExecuteNonQueryAsync();
+            command.ExecuteNonQuery();
 
             return new ProfileShortInfoModel
             {
@@ -109,7 +104,7 @@ namespace Matcha.Server.Controllers
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Sender = await GetProfileShortInfo(UserId),
+                    Sender = GetProfileShortInfo(MyId),
                     Message = request.Message with
                     {
                         SendTime = DateTime.Now,
@@ -123,7 +118,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("from_id", UserId),
+                new MySqlParameter("from_id", MyId),
                 new MySqlParameter("to_id", request.Receiver),
                 new MySqlParameter("content", request.Message.Content),
                 new MySqlParameter("readed", false)
@@ -131,42 +126,6 @@ namespace Matcha.Server.Controllers
 
             connection.Open();
             await command.ExecuteNonQueryAsync();
-        }
-
-        private async Task SendNotification(WebSocketRequestModel request)
-        {
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("SaveProfileAction", connection)
-                {CommandType = CommandType.StoredProcedure};
-
-            command.Parameters.AddRange(new[]
-            {
-                new MySqlParameter("who", UserId),
-                new MySqlParameter("whom", request.Receiver),
-                new MySqlParameter("action", request.Notification.ToString()),
-
-                new MySqlParameter("first_time", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue}
-            });
-
-            connection.Open();
-            await command.ExecuteNonQueryAsync();
-
-            var firstTime = Convert.ToBoolean(command.Parameters["first_time"]);
-            if (firstTime)
-            {
-                await WebSocketsManager.WebSocketsManager.Send(
-                    request.Receiver,
-                    new WebSocketResponseModel
-                    {
-                        Type = WebSocketRequestType.Notification.ToString(),
-                        Notification = new WebSocketResponseNotification
-                        {
-                            Actioner = UserId,
-                            Type = request.Notification.ToString()
-                        }
-                    }
-                );
-            }
         }
     }
 }
