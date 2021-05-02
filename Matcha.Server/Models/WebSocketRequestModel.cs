@@ -12,8 +12,6 @@ namespace Matcha.Server.Models
         public WebSocketRequestType Type { get; set; }
 
         public MessageModel Message { get; set; }
-        
-        public WebSocketNotificationType Notification { get; set; }
     }
 
     public enum WebSocketRequestType
