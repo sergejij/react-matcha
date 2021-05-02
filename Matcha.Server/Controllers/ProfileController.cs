@@ -587,6 +587,8 @@ namespace Matcha.Server.Controllers
         [Route("close_other_sessions")]
         public async Task<IActionResult> CloseSessionsButCurrentAsync()
         {
+            WebSocketsManager.WebSocketsManager.CloseAllButOne(UserId, SessionId);
+
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
 

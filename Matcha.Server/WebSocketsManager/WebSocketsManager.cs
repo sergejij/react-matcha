@@ -42,6 +42,21 @@ namespace Matcha.Server.WebSocketsManager
             }
         }
 
+        public static void CloseAllButOne(long userId, long sessionId)
+        {
+            if (_storage.TryGetValue(userId, out var sessions))
+            {
+                foreach (var session in sessions)
+                {
+                    if (session.Key != sessionId)
+                    {
+                        sessions.TryRemove(session.Key, out var socket);
+                        socket?.CloseOutputAsync(WebSocketCloseStatus.Empty, null, CancellationToken.None);
+                    }
+                }
+            }
+        }
+
         public static async Task Send(long userId, WebSocketResponseModel request)
         {
             if (_storage.TryGetValue(userId, out var sessions))
