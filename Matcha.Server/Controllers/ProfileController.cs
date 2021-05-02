@@ -595,7 +595,14 @@ namespace Matcha.Server.Controllers
             connection.Open();
             await command.ExecuteNonQueryAsync();
 
-            return ResponseModel.OK.ToResult();
+            return new ResponseModel(
+                    HttpStatusCode.OK,
+                    null,
+                    new Dictionary<string, object>
+                    {
+                        { "mySessionID", SessionId }
+                    })
+                .ToResult();
         }
 
         [HttpPost]
