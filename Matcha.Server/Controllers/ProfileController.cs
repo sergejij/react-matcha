@@ -643,56 +643,37 @@ namespace Matcha.Server.Controllers
                 throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить лайк самому себе");
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("LikeProfile", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("who", UserId),
+                new MySqlParameter("whom", userId),
+
+                new MySqlParameter("liked_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
+            });
+            
             connection.Open();
+            await command.ExecuteNonQueryAsync();
 
-            using (var command = new MySqlCommand("LikeProfile", connection) { CommandType = CommandType.StoredProcedure })
+            var liked = Convert.ToBoolean(command.Parameters["liked_yet"]);
+            if (liked is false)
             {
-                command.Parameters.AddRange(new[]
-                {
-                    new MySqlParameter("who", UserId),
-                    new MySqlParameter("whom", userId),
-
-                    new MySqlParameter("liked_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
-                });
-
-                await command.ExecuteNonQueryAsync();
-
-                var liked = Convert.ToBoolean(command.Parameters["liked_yet"]);
-                if (liked is false)
-                {
-                    await WebSocketsManager.WebSocketsManager.Send(
-                        userId,
-                        new WebSocketResponseModel
+                await WebSocketsManager.WebSocketsManager.Send(
+                    userId,
+                    new WebSocketResponseModel
+                    {
+                        Type = WebSocketRequestType.Notification.ToString(),
+                        Notification = new WebSocketResponseNotification
                         {
-                            Type = WebSocketRequestType.Notification.ToString(),
-                            Notification = new WebSocketResponseNotification
-                            {
-                                Type = WebSocketNotificationType.Like.ToString(),
-                                Actioner = UserId
-                            }
+                            Type = WebSocketNotificationType.Like.ToString(),
+                            Actioner = UserId
                         }
-                    );
-                }
+                    }
+                );
             }
 
-            using (var command = new MySqlCommand("IsLikesMutuals", connection) { CommandType = CommandType.StoredProcedure })
-            {
-                command.Parameters.AddRange(new[]
-                {
-                    new MySqlParameter("first_id", UserId),
-                    new MySqlParameter("second_id", userId),
-
-                    new MySqlParameter("mutual", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
-                });
-
-                await command.ExecuteNonQueryAsync();
-
-                return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
-                                                                  {
-                                                                      { "mutual", Convert.ToBoolean(command.Parameters["mutual"].Value) }
-                                                                  })
-                    .ToResult();
-            }
+            return ResponseModel.OK.ToResult();
         }
 
         [HttpPost]
