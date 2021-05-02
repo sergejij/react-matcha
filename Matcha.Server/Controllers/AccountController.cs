@@ -166,7 +166,7 @@ namespace Matcha.Server.Controllers
         {
             var codeToStr = code.ToString();
 
-            var body = $"Тык: http://localhost:3000/confirm-email?code={codeToStr}\nhttps://81.177.141.123:637/confirm_email?code={codeToStr}";
+            var body = MailClient.MailClient.BuildConfirmEmailMessageBody(code);
             await MailClient.MailClient.SendMailAsync(email, "Подтверждение почты для Matcha", body);
         }
 

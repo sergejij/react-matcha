@@ -9,6 +9,8 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Matcha.Server.Models.Chats;
+using Matcha.Server.Models.Profile;
 
 namespace Matcha.Server.Controllers
 {
@@ -20,8 +22,6 @@ namespace Matcha.Server.Controllers
     {
         public async Task ListenWebSocket()
         {
-            Console.WriteLine($"\n\n\tWeb socket request from {UserId} : {SessionId}\n\n");
-
             var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
             WebSocketsManager.WebSocketsManager.AddSession(UserId, SessionId, socket);
@@ -31,8 +31,6 @@ namespace Matcha.Server.Controllers
 
         private async Task Listen(WebSocket socket)
         {
-            Console.WriteLine($"\n\n\tListening socket {UserId} : {SessionId}\n\n");
-
             while (socket.State == WebSocketState.Open)
             {
                 var request = await ReadMessage(socket);
@@ -63,8 +61,6 @@ namespace Matcha.Server.Controllers
 
         private async Task ProcessRequest(WebSocketRequestModel request)
         {
-            Console.WriteLine($"\n\n\tProcessing websocket request from {UserId} : {SessionId}: {request.Type}\n\n");
-
             switch (request.Type)
             {
                 case WebSocketRequestType.Close:
@@ -72,25 +68,50 @@ namespace Matcha.Server.Controllers
                     break;
 
                 case WebSocketRequestType.Message:
-                    await SendMessage(request.Message);
+                    await SendMessage(request);
                     break;
 
                 case WebSocketRequestType.Notification:
-                    await SendNotification(request.Notification);
+                    await SendNotification(request);
                     break;
             }
         }
 
-        private async Task SendMessage(WebSocketMessageModel message)
+        //TODO: перенести в менеджер 
+        private async Task<ProfileShortInfoModel> GetProfileShortInfo(long userId)
+        {
+            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
+            using var command = new MySqlCommand("GetProfileShortInfo", connection) { CommandType = CommandType.StoredProcedure };
+
+            command.Parameters.AddRange(new[]
+            {
+                new MySqlParameter("user_id", userId),
+
+                new MySqlParameter("name", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
+                new MySqlParameter("surname", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
+            });
+
+            connection.Open();
+            await command.ExecuteNonQueryAsync();
+
+            return new ProfileShortInfoModel
+            {
+                Id = userId,
+                Name = command.Parameters["name"].Value.ToString(),
+                Surname = command.Parameters["surname"].Value.ToString()
+            };
+        }
+
+        private async Task SendMessage(WebSocketRequestModel request)
         {
             await WebSocketsManager.WebSocketsManager.Send(
-                message.Receiver,
+                request.Receiver,
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Message = message with
+                    Sender = await GetProfileShortInfo(UserId),
+                    Message = request.Message with
                     {
-                        Sender = UserId,
                         SendTime = DateTime.Now,
                         Read = false
                     }
@@ -103,8 +124,8 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("from_id", UserId),
-                new MySqlParameter("to_id", message.Receiver),
-                new MySqlParameter("content", message.Content),
+                new MySqlParameter("to_id", request.Receiver),
+                new MySqlParameter("content", request.Message.Content),
                 new MySqlParameter("readed", false)
             });
 
@@ -112,10 +133,8 @@ namespace Matcha.Server.Controllers
             await command.ExecuteNonQueryAsync();
         }
 
-        private async Task SendNotification(WebSocketRequestNotification notification)
+        private async Task SendNotification(WebSocketRequestModel request)
         {
-            Console.WriteLine($"\n\n\tSending websocket notification from {UserId} : {SessionId} to {notification.UserId}, type: {notification.Type}\n\n");
-
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("SaveProfileAction", connection)
                 {CommandType = CommandType.StoredProcedure};
@@ -123,8 +142,8 @@ namespace Matcha.Server.Controllers
             command.Parameters.AddRange(new[]
             {
                 new MySqlParameter("who", UserId),
-                new MySqlParameter("whom", notification.UserId),
-                new MySqlParameter("action", notification.Type.ToString()),
+                new MySqlParameter("whom", request.Receiver),
+                new MySqlParameter("action", request.Notification.ToString()),
 
                 new MySqlParameter("first_time", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue}
             });
@@ -136,14 +155,14 @@ namespace Matcha.Server.Controllers
             if (firstTime)
             {
                 await WebSocketsManager.WebSocketsManager.Send(
-                    notification.UserId,
+                    request.Receiver,
                     new WebSocketResponseModel
                     {
                         Type = WebSocketRequestType.Notification.ToString(),
                         Notification = new WebSocketResponseNotification
                         {
-                            UserId = UserId,
-                            Type = notification.Type.ToString()
+                            Actioner = UserId,
+                            Type = request.Notification.ToString()
                         }
                     }
                 );
