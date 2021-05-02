@@ -4,8 +4,7 @@ import { ChatMessagesStyled } from './styled';
 import Message from './Message';
 import {usersApi} from "../../../../api/api";
 
-const ChatMessages = ({userId, newMessage}) => {
-  const [messages, setMessages] = React.useState([]);
+const ChatMessages = ({userId, newMessage, messages, setMessages}) => {
 
   const messagesRef = React.useRef(null);
   React.useEffect(() => {
@@ -14,8 +13,7 @@ const ChatMessages = ({userId, newMessage}) => {
 
   React.useEffect(() => {
       if (newMessage && userId === newMessage.senderId) {
-          console.log("newMessage.Content}", newMessage);
-          setMessages(messages => messages.concat({MyMessage: false, Content: newMessage.message}));
+          setMessages(messages => [{MyMessage: false, Content: newMessage.message}].concat(messages));
       }
   }, [newMessage])
 
