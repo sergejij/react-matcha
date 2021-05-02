@@ -7,7 +7,7 @@ namespace Matcha.Server.Controllers
 {
     public class BaseMatchaController : ControllerBase
     {
-        protected long UserId
+        protected long MyId
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Matcha.Server.Controllers
         {
             get
             {
-                return UserId != default && SessionId != default;
+                return MyId != default && SessionId != default;
             }
         }
 

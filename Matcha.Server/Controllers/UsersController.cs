@@ -114,7 +114,7 @@ namespace Matcha.Server.Controllers
 
                 case OrderMethodsEnum.CommonInterests:
                     {
-                        var me = profiles[UserId];
+                        var me = profiles[MyId];
 
                         matches = profiles
                             .Where(arg => me.Interests.Intersect(arg.Value.Interests).Count() >= sortParameters.Min.Value)
@@ -126,7 +126,7 @@ namespace Matcha.Server.Controllers
                 case OrderMethodsEnum.Distance:
                 {
                     var defaultCoordinate = new GeoCoordinate(0, 0);
-                    var mySession = profiles[UserId].Sessions.Find(arg => arg.Id == SessionId);
+                    var mySession = profiles[MyId].Sessions.Find(arg => arg.Id == SessionId);
 
                     matches = profiles
                         .OrderBy(arg =>
@@ -145,7 +145,7 @@ namespace Matcha.Server.Controllers
             }
 
             var previewModels = matches
-                .Where(arg => arg.Key != UserId)
+                .Where(arg => arg.Key != MyId)
                 .Skip((sortParameters.Page - 1) * sortParameters.Size)
                 .Take(sortParameters.Size)
                 .Select(arg => new ProfileWrapper
@@ -248,7 +248,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)
             });
@@ -290,7 +290,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("skip", (page - 1) * size),
                 new MySqlParameter("take", size)
             });

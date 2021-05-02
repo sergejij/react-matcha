@@ -23,7 +23,7 @@ namespace Matcha.Server.Controllers
         {
             var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
-            WebSocketsManager.WebSocketsManager.AddSession(UserId, SessionId, socket);
+            WebSocketsManager.WebSocketsManager.AddSession(MyId, SessionId, socket);
 
             await Listen(socket);
         }
@@ -63,7 +63,7 @@ namespace Matcha.Server.Controllers
             switch (request.Type)
             {
                 case WebSocketRequestType.Close:
-                    WebSocketsManager.WebSocketsManager.CloseSession(UserId, SessionId);
+                    WebSocketsManager.WebSocketsManager.CloseSession(MyId, SessionId);
                     break;
 
                 case WebSocketRequestType.Message:
@@ -104,7 +104,7 @@ namespace Matcha.Server.Controllers
                 new WebSocketResponseModel
                 {
                     Type = WebSocketRequestType.Message.ToString(),
-                    Sender = GetProfileShortInfo(UserId),
+                    Sender = GetProfileShortInfo(MyId),
                     Message = request.Message with
                     {
                         SendTime = DateTime.Now,
@@ -118,7 +118,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("from_id", UserId),
+                new MySqlParameter("from_id", MyId),
                 new MySqlParameter("to_id", request.Receiver),
                 new MySqlParameter("content", request.Message.Content),
                 new MySqlParameter("readed", false)

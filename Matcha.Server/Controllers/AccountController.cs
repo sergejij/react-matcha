@@ -107,7 +107,7 @@ namespace Matcha.Server.Controllers
 
                 command.Parameters.AddRange(new[]
                 {
-                    new MySqlParameter("user_id", UserId),
+                    new MySqlParameter("user_id", MyId),
                     new MySqlParameter("session_id", SessionId)
                 });
 

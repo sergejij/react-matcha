@@ -119,7 +119,7 @@ namespace Matcha.Server.Controllers
                 return new ResponseModel(HttpStatusCode.Conflict, "Email уже используется").ToResult();
 
             var confirmationCode = Guid.NewGuid();
-            await AccountController.AddConfirmationCodeAsync(UserId, emailChangeModel.NewEmail, confirmationCode);
+            await AccountController.AddConfirmationCodeAsync(MyId, emailChangeModel.NewEmail, confirmationCode);
             await AccountController.SendConfirmationCodeAsync(emailChangeModel.NewEmail, confirmationCode);
 
             return ResponseModel.OK.ToResult();
@@ -134,7 +134,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("current_password", passwordModel.CurrentPassword),
                 new MySqlParameter("new_password", passwordModel.NewPassword)
             });
@@ -154,7 +154,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("new_login", loginModel.NewLogin),
                 new MySqlParameter("password", loginModel.Password)
             });
@@ -173,7 +173,7 @@ namespace Matcha.Server.Controllers
         [Route("avatar")]
         public IActionResult UploadAvatar([FromForm][Required] IFormFile avatar)
         {
-            MediaClient.MediaClient.Image.SaveAvatar(UserId, avatar);
+            MediaClient.MediaClient.Image.SaveAvatar(MyId, avatar);
 
             return ResponseModel.OK.ToResult();
         }
@@ -182,7 +182,7 @@ namespace Matcha.Server.Controllers
         [Route("avatar")]
         public IActionResult GetAvatar([FromQuery] long? userId)
         {
-            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId ?? UserId);
+            var avatarBytes = MediaClient.MediaClient.Image.GetAvatarBytes(userId ?? MyId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -195,7 +195,7 @@ namespace Matcha.Server.Controllers
         [Route("photo")]
         public IActionResult UploadPhoto([FromForm][Required] PhotoUploadModel photo)
         {
-            MediaClient.MediaClient.Image.SavePhoto(UserId, photo);
+            MediaClient.MediaClient.Image.SavePhoto(MyId, photo);
 
             return ResponseModel.OK.ToResult();
         }
@@ -204,7 +204,7 @@ namespace Matcha.Server.Controllers
         [Route("photo")]
         public IActionResult DeletePhoto([FromQuery][Required] int id)
         {
-            MediaClient.MediaClient.Image.DeletePhoto(UserId, id);
+            MediaClient.MediaClient.Image.DeletePhoto(MyId, id);
 
             return ResponseModel.OK.ToResult();
         }
@@ -213,7 +213,7 @@ namespace Matcha.Server.Controllers
         [Route("photos")]
         public IActionResult GetPhotos([FromQuery] long? userId)
         {
-            var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId ?? UserId);
+            var photos = MediaClient.MediaClient.Image.GetAllPhotos(userId ?? MyId);
 
             return new ResponseModel(HttpStatusCode.OK, null, new Dictionary<string, object>
                                                               {
@@ -235,7 +235,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
 
                 new MySqlParameter("login", MySqlDbType.VarChar) { Direction = ParameterDirection.Output },
                 new MySqlParameter("email", MySqlDbType.VarChar) { Direction = ParameterDirection.Output }
@@ -263,7 +263,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("biography", biography.Biography)
             });
 
@@ -282,7 +282,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", userId ?? UserId)
+                new MySqlParameter("user_id", userId ?? MyId)
             });
 
             connection.Open();
@@ -317,7 +317,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("post", profileInfo.Post),
                 new MySqlParameter("location", profileInfo.Location),
                 new MySqlParameter("age", profileInfo.Age),
@@ -351,7 +351,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("name", profileInfo.Name),
                 new MySqlParameter("surname", profileInfo.Surname),
                 new MySqlParameter("age", profileInfo.Age),
@@ -447,7 +447,7 @@ namespace Matcha.Server.Controllers
             return
                 $"UPDATE user_full_data\n" +
                 $"SET {user_data_column} = (SELECT id FROM {table} WHERE {table}.{table_column} = '{value}')\n" +
-                $"WHERE id = {UserId};";
+                $"WHERE id = {MyId};";
         }
 
         #endregion
@@ -466,7 +466,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("interests", string.Join(',', interests.Interests))
             });
 
@@ -481,7 +481,7 @@ namespace Matcha.Server.Controllers
         public async Task<IActionResult> GetInterestsListAsync([FromQuery] long? userId)
         {
             if (userId.HasValue is false)
-                userId = UserId;
+                userId = MyId;
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetUserInterests", connection) { CommandType = CommandType.StoredProcedure };
@@ -519,7 +519,7 @@ namespace Matcha.Server.Controllers
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("GetUserSessions", connection) { CommandType = CommandType.StoredProcedure };
 
-            command.Parameters.Add(new MySqlParameter("user_id", UserId));
+            command.Parameters.Add(new MySqlParameter("user_id", MyId));
 
             connection.Open();
             using var reader = await command.ExecuteReaderAsync();
@@ -553,7 +553,7 @@ namespace Matcha.Server.Controllers
         [Route("close_other_sessions")]
         public async Task<IActionResult> CloseSessionsButCurrentAsync()
         {
-            WebSocketsManager.WebSocketsManager.CloseAllButOne(UserId, SessionId);
+            WebSocketsManager.WebSocketsManager.CloseAllButOne(MyId, SessionId);
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             using var command = new MySqlCommand("CloseAllSessionsButOne", connection) { CommandType = CommandType.StoredProcedure };
@@ -582,7 +582,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("user_id", UserId),
+                new MySqlParameter("user_id", MyId),
                 new MySqlParameter("session_id", session.SessionId)
             });
 
@@ -600,7 +600,7 @@ namespace Matcha.Server.Controllers
         [Route("visit")]
         public async Task<IActionResult> VisitProfile([FromQuery][Required] long userId)
         {
-            if (userId == UserId)
+            if (userId == MyId)
                 return ResponseModel.OK.ToResult();
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -608,7 +608,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("who", UserId),
+                new MySqlParameter("who", MyId),
                 new MySqlParameter("whom", userId),
 
                 new MySqlParameter("visited_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
@@ -627,7 +627,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Visit.ToString(),
-                            Actioner = UserId
+                            Actioner = MyId
                         }
                     }
                 );
@@ -639,7 +639,7 @@ namespace Matcha.Server.Controllers
         [Route("like")]
         public async Task<IActionResult> LikeProfile([FromQuery][Required] long userId)
         {
-            if (userId == UserId)
+            if (userId == MyId)
                 throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить лайк самому себе");
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -647,7 +647,7 @@ namespace Matcha.Server.Controllers
 
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("who", UserId),
+                new MySqlParameter("who", MyId),
                 new MySqlParameter("whom", userId),
 
                 new MySqlParameter("liked_yet", MySqlDbType.Bit) {Direction = ParameterDirection.ReturnValue }
@@ -667,7 +667,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Like.ToString(),
-                            Actioner = UserId
+                            Actioner = MyId
                         }
                     }
                 );
@@ -680,7 +680,7 @@ namespace Matcha.Server.Controllers
         [Route("dislike")]
         public async Task<IActionResult> DislikeProfile([FromQuery][Required] long userId)
         {
-            if (userId == UserId)
+            if (userId == MyId)
                 throw new MatchaException(HttpStatusCode.Forbidden, "Нельзя поставить дизлайк самому себе");
 
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
@@ -688,7 +688,7 @@ namespace Matcha.Server.Controllers
             
             command.Parameters.AddRange(new[]
             {
-                new MySqlParameter("who", UserId),
+                new MySqlParameter("who", MyId),
                 new MySqlParameter("whom", userId),
 
                 new MySqlParameter("disliked_yet", MySqlDbType.Bit) { Direction = ParameterDirection.ReturnValue }
@@ -708,7 +708,7 @@ namespace Matcha.Server.Controllers
                         Notification = new WebSocketResponseNotification
                         {
                             Type = WebSocketNotificationType.Dislike.ToString(),
-                            Actioner = UserId
+                            Actioner = MyId
                         }
                     }
                 );
