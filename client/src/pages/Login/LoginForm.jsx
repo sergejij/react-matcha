@@ -40,7 +40,6 @@ export default ({ onClose, onRegister, setSocket, setMessageToMe, setNotificatio
             console.error("ERROR login:", err.response.status);
             setErrorNotification(err.response.status === 401 ? "Неверный логин или пароль." :
               "Произошла ошибка. Пожалуйста попробуйте снова.");
-            console.log('err:', err.response);
           })
         .catch(err => console.error("Error login:", err));
     }

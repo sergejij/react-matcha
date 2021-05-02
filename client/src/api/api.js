@@ -51,6 +51,10 @@ export const usersApi = {
 
   getMaxAge() {
     return instance.get('/users/max_age');
+  },
+
+  getShortInfo(id) {
+    return instance.get(`/profile/short_info?userId=${id}`);
   }
 }
 
@@ -248,7 +252,6 @@ export const usersAPI = {
     return instance.get(`/profile/get_info?userId=${id}`);
   },
   putUser(body) {
-    console.log(body);
     return instance.put(`/profile/put_info`, {
       ...body,
     });

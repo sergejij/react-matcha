@@ -26,7 +26,7 @@ const ProfileHeader = ({ userData, id }) => {
             setUserAvatar('data:image/bmp;base64,' + data.Content.avatar);
         },
         (err) => {
-          console.log("ERR getAvatar:", err);
+          console.error("ERR getAvatar:", err);
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
             localStorage.clear();
@@ -44,14 +44,14 @@ const ProfileHeader = ({ userData, id }) => {
         .then(
             () => {},
             (err) => {
-              console.log("ERR putLike:", err);
+              console.error("ERR putLike:", err);
               if (err.response.status === 401) {
                 setAmIAuthorized(() => false);
                 localStorage.clear();
               }
             }
         )
-        .catch((err) => console.log("ERR putLike:", err));
+        .catch((err) => console.error("ERR putLike:", err));
   }
 
   const dislike = () => {
@@ -60,14 +60,14 @@ const ProfileHeader = ({ userData, id }) => {
         .then(
             () => {},
             (err) => {
-              console.log("ERR putDislike:", err);
+              console.error("ERR putDislike:", err);
               if (err.response.status === 401) {
                 setAmIAuthorized(() => false);
                 localStorage.clear();
               }
             }
         )
-        .catch((err) => console.log("ERR putDislike:", err));
+        .catch((err) => console.error("ERR putDislike:", err));
   }
 
   return (

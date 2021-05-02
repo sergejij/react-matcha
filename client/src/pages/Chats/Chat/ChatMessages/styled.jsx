@@ -8,6 +8,11 @@ export const ChatMessagesStyled = styled.div`
   padding: 50px 100px;
   overflow-y: auto;
   height: 83vh;
+  width: 100%;
+  
+  @media (max-width: 600px) and (min-width: 100px){
+    padding: 50px 40px;
+  }
   
   &::-webkit-scrollbar { 
     width: 0;
@@ -21,4 +26,10 @@ export const MessageStyled = styled.div`
   border-radius: ${({ isMyMessage }) => (isMyMessage ? '50px 50px 0 50px' : '50px 50px 50px 0')};
   color: white;
   margin: 5px 0;
+  max-width: 90%;
+  word-wrap: break-word;
+
+  @media (max-width: 500px) and (min-width: 100px){
+    font-size: 14px;
+  }
 `;

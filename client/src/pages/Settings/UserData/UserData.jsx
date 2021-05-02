@@ -7,7 +7,7 @@ import {
   SettingsDataStyled, SettingsDataHeaderPhotoContainer, SettingsDataHeaderPhotoEdit,
 } from './styled';
 import Button from '../../../components/Button';
-import { userInfoApi, userPhotosApi, usersAPI } from '../../../api/api';
+import { userInfoApi, userPhotosApi } from '../../../api/api';
 import { Redirect } from 'react-router-dom';
 
 const SettingsDataHeaderBox = ({ userData }) => (
@@ -44,7 +44,6 @@ const SettingsData = () => {
       .getUserInfo(localStorage.getItem('id'))
       .then(
         ({ data }) => {
-          console.log("us", data);
           setName(data.Content.name);
           setSurname(data.Content.surname);
           setAge(data.Content.age);
@@ -202,7 +201,7 @@ const UserData = () => {
           }
         }
       )
-      .catch((err) => console.log("ERROR settings getAvatar:", err))
+      .catch((err) => console.error("ERROR settings getAvatar:", err))
   }, []);
 
   const changePhoto = (e) => {
@@ -225,7 +224,7 @@ const UserData = () => {
                 localStorage.clear();
               }
             })
-          .catch((err) => console.log("ERROR settings getAvatar:", err))
+          .catch((err) => console.error("ERROR settings getAvatar:", err))
       })
       .catch((err) => console.error("ERROR settings uploadProfileAvatar:", err))
   }

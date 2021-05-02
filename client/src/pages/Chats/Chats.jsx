@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import {Redirect, Route} from 'react-router-dom';
 import Chat from './Chat/Chat';
 import Aside from '../../components/Aside/Aside';
 import { Content } from '../../styled';
@@ -8,19 +8,27 @@ import {usersApi} from "../../api/api";
 export default ({ socket, newMessage }) => {
   const [users, setUsers] = React.useState([]);
   const [id, setId] = React.useState(null);
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
     React.useEffect(() => {
         usersApi.getChats(1, 200)
             .then(({ data }) => {
-                console.log(data.Content.chats);
                     setUsers(data.Content.chats);
                 },
                 (err) => {
-                    console.log("error USERS chats:", err);
+                    if (err.response.status === 401) {
+                        setAmIAuthorized(false);
+                        localStorage.clear();
+                    }
+                    console.error("error USERS chats:", err);
                 })
-            .catch(err => console.log("ERROR USERS chats:", err))
+            .catch(err => console.error("ERROR USERS chats:", err))
 
     }, []);
+
+    if (!amIAuthorized) {
+        return <Redirect to="/login" />;
+    }
 
   return (
     <Content>

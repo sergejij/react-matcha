@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { Route } from 'react-router-dom';
+import {Redirect, Route} from 'react-router-dom';
 import { Content } from '../../styled';
 import Aside from '../../components/Aside/Aside';
 import Profile from '../Profile/Profile';
@@ -140,6 +140,7 @@ const Search = () => {
   const [users, setUsers] = React.useState([]);
   const [id, setId] = React.useState(null);
   const [isShownFilterForm, setIsShownFilterForm] = React.useState(false);
+  const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
   const [selectedOption, setSelectedOption] = React.useState('id');
   const [min, setMin] = React.useState(0);
@@ -151,15 +152,26 @@ const Search = () => {
     usersApi.getUsers(1, 200, selectedOption, currentMin, currentMax)
       .then(
           ({ data }) => setUsers(data.Content.users),
-            (err) => console.log("error USERS Search:", err)
+            (err) => {
+                if (err.response.status === 401) {
+                    setAmIAuthorized(false);
+                    localStorage.clear();
+                }
+              console.error("error USERS Search:", err)
+            }
       )
-        .catch(err => console.log("ERROR USERS Search:", err))
+        .catch(err => console.error("ERROR USERS Search:", err))
 
   }, [selectedOption, currentMin, currentMax]);
 
   const toggleFilterForm = () => {
     setIsShownFilterForm(prevState => !prevState)
   }
+
+    if (!amIAuthorized) {
+        return <Redirect to="/login" />;
+    }
+
 
   return (
     <Content>

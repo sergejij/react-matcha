@@ -10,7 +10,6 @@ const SessionBlock = ({ Id, IP, OS, Country, City, Browser }) => {
     const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
     const closeSession = () => {
-        console.log("ID:", Id);
         userSessionApi
             .closeSession(Id)
             .then(
@@ -19,7 +18,6 @@ const SessionBlock = ({ Id, IP, OS, Country, City, Browser }) => {
                 },
                 (err) => {
                     if (err.response.status === 401) {
-                        console.log("401 here");
                         setAmIAuthorized(false);
                         localStorage.clear();
                     }
@@ -55,12 +53,10 @@ const UserActiveSessions = () => {
             .getSessions()
             .then(
                 ({data}) => {
-                    console.log(data.Content);
                     setSessions(data.Content.sessions)
                 },
                 (err) => {
                     if (err.response.status === 401) {
-                        console.log("401 here");
                         setAmIAuthorized(false);
                         localStorage.clear();
                     }
@@ -74,10 +70,12 @@ const UserActiveSessions = () => {
         userSessionApi
             .closeAllSessions()
             .then(
-                () => {},
+                ({ data }) => {
+                    const newSessions = sessions.filter(({ Id }) => Id === data.Content.mySessionID);
+                    setSessions(newSessions);
+                },
                 (err) => {
                     if (err.response.status === 401) {
-                        console.log("401 here");
                         setAmIAuthorized(false);
                         localStorage.clear();
                     }
@@ -91,11 +89,10 @@ const UserActiveSessions = () => {
         return <Redirect to="/login" />;
     }
 
-    console.log('sessions:', sessions);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         {
-            sessions.map((session) => <SessionBlock key={session.id} {...session} />)
+            sessions.map((session, index) => <SessionBlock key={`${session.id}_${index}`} {...session} />)
         }
       <div style={{ marginBottom: "60px" }} />
       <Button

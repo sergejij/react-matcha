@@ -38,12 +38,12 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
             setAmIAuthorized(() => false);
           }
         })
-      .catch(err => console.log("ERROR getSexesList:", err))
+      .catch(err => console.error("ERROR getSexesList:", err))
 
     userInfoApi
       .getAttitudesList()
       .then(({ data }) => setAttitudesList(data.Content.attitudes))
-      .catch(err => console.log("ERROR getSexesList:", err))
+      .catch(err => console.error("ERROR getSexesList:", err))
 
     userInfoApi
       .getRelationshipsList()
@@ -54,7 +54,7 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
             setAmIAuthorized(() => false);
           }
         })
-      .catch(err => console.log("ERROR getRelationshipsList:", err))
+      .catch(err => console.error("ERROR getRelationshipsList:", err))
   }, []);
 
   const sendInfo = () => {
@@ -63,16 +63,14 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
       return;
     }
 
-    console.log(age, sex, relationshipStatus, sexPreference, biography);
     userInfoApi
       .postUserInfo({post, location, age, sex, relationshipStatus, sexPreference, attitudeToAlcohol, attitudeToSmoking, biography})
       .then((resp) => {
-        console.log("Response PUT:", resp);
         setStepNumber(2);
         setIsRequiredEmpty(() => false);
       })
       .catch((err) => console.error("Response PUT ERROR:", err))
-    setStepNumber(2); // надо удалить
+    setStepNumber(2);
   }
 
   if (!amIAuthorized) {

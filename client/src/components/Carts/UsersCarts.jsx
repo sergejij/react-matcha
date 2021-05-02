@@ -19,7 +19,6 @@ const UsersCarts = ({ users, buttonText }) => {
     <CartsStyled>
       {
         users.map((user, index) => {
-          console.log(user, index);
           return (
               <Cart
                   to={`/profile/${user.Profile.Id}`}

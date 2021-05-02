@@ -26,7 +26,7 @@ const AddPhoto = ({ srcImg, photoId, setIsUpdated }) => {
           window.location.reload(true);
         },
         (err) => {
-          console.log("ERR upload photo:", err);
+          console.error("ERR upload photo:", err);
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
             localStorage.clear();
@@ -61,9 +61,9 @@ const UserPhoto = ({srcImg, uploadPhoto, photoId}) => {
                 () => {
                     window.location.reload(true);
                 },
-                (err) => console.log('ERROR UserPhoto deleteImg:', err)
+                (err) => console.error('ERROR UserPhoto deleteImg:', err)
             )
-            .catch((err) => console.log('ERROR UserPhoto deleteImg:', err))
+            .catch((err) => console.error('ERROR UserPhoto deleteImg:', err))
     }
   return (
       <UserPhotoBlock>
@@ -94,7 +94,6 @@ const UserPhotos = () => {
       .getPhotos()
       .then(
         ({ data }) => {
-            console.log("PHOTOS:", data);
           setPhotos(data.Content.photos);
         },
         (err) => {
@@ -102,10 +101,10 @@ const UserPhotos = () => {
             setAmIAuthorized(() => false);
             localStorage.clear();
           }
-          console.log("ERROR Settings GetPhoto:", err);
+          console.error("ERROR Settings GetPhoto:", err);
         },
       )
-      .catch((err) => console.log("ERROR:", err));
+      .catch((err) => console.error("ERROR:", err));
   }, [isUpdated]);
 
   if (!amIAuthorized) {

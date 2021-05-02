@@ -31,7 +31,6 @@ export default ({ onClose, onLogin }) => {
         .register(email, login, name, surname, password)
         .then(
           (resp) => {
-            console.log(resp);
             if (resp.ErrorMessage) {
               setErrorNotification(resp.ErrorMessage);
             } else {
@@ -40,7 +39,7 @@ export default ({ onClose, onLogin }) => {
           },
           (err) => {
             setErrorNotification("Произошла ошибка. Пожалуйста попробуйте снова.");
-            console.log(err);
+            console.error(err);
           })
     }
   }

@@ -42,9 +42,7 @@ const UserSecurity = () => {
       .updateEmail(email)
       .then()
       .then(
-        ({ data }) => {
-          console.log(data);
-        },
+        () => {},
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
@@ -61,9 +59,7 @@ const UserSecurity = () => {
       .updateLogin(login, password)
       .then()
       .then(
-        ({ data }) => {
-          console.log(data);
-        },
+        () => {},
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
@@ -80,9 +76,7 @@ const UserSecurity = () => {
       .updatePassword(oldPassword, newPassword)
       .then()
       .then(
-        ({ data }) => {
-          console.log(data);
-        },
+        () => {},
         (err) => {
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);

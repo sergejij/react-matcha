@@ -39,14 +39,14 @@ const ProfileInfoField = ({list, fieldName, fieldKey, fieldValue, isMyProfile}) 
       .then(
         () => {},
         (err) => {
-          console.log("ERROR patchUserInfo:", err);
+          console.error("ERROR patchUserInfo:", err);
           if (err.response.status === 401) {
             setAmIAuthorized(() => false);
             localStorage.clear();
           }
         }
         )
-      .catch((err) => console.log("ERROR patchUserInfo:", err))
+      .catch((err) => console.error("ERROR patchUserInfo:", err))
   }
 
   if (!amIAuthorized) {
@@ -96,7 +96,6 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
 
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
 
-  console.log("UUUUUSERDATA:", userData);
   React.useEffect(() => {
       setBio(userData.biography);
   }, [userData]);
@@ -136,12 +135,12 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
             localStorage.clear();
           }
         })
-      .catch(err => console.log("ERROR getSexesList:", err))
+      .catch(err => console.error("ERROR getSexesList:", err))
 
     userInfoApi
       .getAttitudesList()
       .then(({ data }) => setAttitudesList(data.Content.attitudes))
-      .catch(err => console.log("ERROR getSexesList:", err))
+      .catch(err => console.error("ERROR getSexesList:", err))
 
     userInfoApi
       .getRelationshipsList()
@@ -153,7 +152,7 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
             localStorage.clear();
           }
         })
-      .catch(err => console.log("ERROR getRelationshipsList:", err))
+      .catch(err => console.error("ERROR getRelationshipsList:", err))
   }, [userData]);
 
     const changeBio = () => {
@@ -169,7 +168,7 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
                     }
                 }
             )
-            .catch((err) => console.log("ERROR patchUserInfo bio:", err))
+            .catch((err) => console.error("ERROR patchUserInfo bio:", err))
     }
 
   const saveInterests = () => {
@@ -246,7 +245,7 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
         <ProfileInfoBio>
           {!bioEditing &&
           <>
-            <p>
+            <p style={{whiteSpace: 'pre-line'}}>
               {bio}
             </p>
             {isMyProfile && <IconPencil onClick={() => setBioEditing(true)} size="18px">
@@ -256,9 +255,7 @@ const ProfileInfo = ({ userData, id, isMyProfile }) => {
 
           {bioEditing &&
           <UpdateBio>
-            <textarea onChange={(e) => setBio(e.target.value)}>
-              {bio}
-            </textarea>
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
             <CheckCircleIcon onClick={changeBio} />
           </UpdateBio>}
         </ProfileInfoBio>

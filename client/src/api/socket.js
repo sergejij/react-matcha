@@ -1,13 +1,9 @@
 const createSocket = (setMessageToMe, setNotificationToMe) => {
     const socket = new WebSocket('wss://81.177.141.123:637/web_socket');
 
-    socket.onopen = () => {
-        console.log("IN ONOPEN");
-    }
+    socket.onopen = () => {}
 
-    socket.onclose = () => {
-        console.log("IN ONCLOSE");
-    }
+    socket.onclose = () => {}
 
     socket.onerror = (err) => {
         console.error("ERROR in WEBSOCKES:", err);
@@ -33,8 +29,8 @@ const createSocket = (setMessageToMe, setNotificationToMe) => {
     const sendMessage = (content, receiverId) => {
         socket.send(JSON.stringify({
             type: "message",
+            receiver: receiverId,
             message: {
-                "receiver": receiverId,
                 "content": content
             },
         }));

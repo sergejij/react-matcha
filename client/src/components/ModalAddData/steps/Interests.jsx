@@ -23,9 +23,7 @@ const Interests = ({ setStepNumber }) => {
     userInterestsApi
         .postInterests(interests)
         .then(
-          (data) => {
-            console.log(data);
-          },
+          () => {},
           (err) => console.error("ERROR createInterests:", err)
         )
         .catch((err) => console.error("ERROR createInterests:", err))

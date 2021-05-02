@@ -26,9 +26,9 @@ const ProfileTabs = ({ defaultTab = 0, userData, id, isMyProfile }) => {
               ({ data }) => {
                   setVisitors(data.Content.profiles);
               },
-              (err) => console.log("ERROR getVisitors:", err)
+              (err) => console.error("ERROR getVisitors:", err)
           )
-          .catch((err) => console.log("ERROR getVisitors:", err));
+          .catch((err) => console.error("ERROR getVisitors:", err));
   }, []);
 
   React.useEffect(() => {

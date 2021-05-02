@@ -18,7 +18,7 @@ export const TA = styled.textarea`
   border: none;
   font-size: 16px;
   color: ${COLORS.DARK};
-   line-height: 20px;
+  line-height: 20px;
 
   &::-webkit-scrollbar { 
     width: 0;
@@ -27,6 +27,13 @@ export const TA = styled.textarea`
   &::placeholder {
    font-size: 16px;
    color: ${COLORS.GRAY};
+  }
+
+  @media (max-width: 600px) and (min-width: 10px){
+    font-size: 14px;
+    &::placeholder {
+      font-size: 14px;
+    }
   }
 `;
 

@@ -16,7 +16,6 @@ const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber }) => {
       userPhotosApi.putAvatar(formData)
       .then(
         (data) => {
-          console.log(data);
           setIsProfilePhotoEmpty(false);
         },
         (err) => {

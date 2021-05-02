@@ -13,7 +13,6 @@ const ProfilePhotos = ({ id, isMyProfile }) => {
       userPhotosApi.getPhotos(id)
       .then(
         ({ data }) => {
-            console.log(data);
           setPhotos(data.Content.photos);
         },
         (err) => {
@@ -21,10 +20,10 @@ const ProfilePhotos = ({ id, isMyProfile }) => {
             setAmIAuthorized(() => false);
             localStorage.clear();
           }
-          console.log("ERROR getProfileAvatar:", err)
+          console.error("ERROR getProfileAvatar:", err)
         }
       )
-      .catch((err) => console.log("ERROR getProfileAvatar:", err))
+      .catch((err) => console.error("ERROR getProfileAvatar:", err))
   }, []);
 
   if (!amIAuthorized) {

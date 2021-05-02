@@ -16,7 +16,6 @@ export default () => {
     usersAPI.confirmEmail(query.get("code"))
       .then(
         (data) => {
-          console.log(data);
           setIsConfirmed(true);
         },
         (err) => {
