@@ -1,0 +1,17 @@
+[Unit]
+Description=Matcha Server
+
+[Service]
+WorkingDirectory=/root/matcha/Matcha.Server/bin/Release/net5.0/linux-x64/publish/
+ExecStart=/usr/bin/dotnet /root/matcha/Matcha.Server/bin/Release/net5.0/linux-x64/Matcha.Server.dll
+ExecStop=
+
+Environment=DbConnectionString=Server=localhost;Port=3306;Database=matcha;Uid=dbendu;Pwd=Itoses80;CharSet=utf8;
+Environment=GmailLogin=mishayagudin2012@gmail.com
+Environment=GmailPassword=*Itoses80*
+
+Type=oneshot
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
