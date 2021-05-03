@@ -5,5 +5,5 @@
 	latitude DOUBLE,
 
     PRIMARY KEY(session_id),
-    FOREIGN KEY(user_id) REFERENCES user_data(id)
+    FOREIGN KEY(user_id) REFERENCES user_data(id) ON DELETE CASCADE
 );

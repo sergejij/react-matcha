@@ -1,6 +1,5 @@
 ﻿using Matcha.Server.Filters;
 using Matcha.Server.Models.Account;
-using Matcha.Server.Models.Profile;
 using Matcha.Server.Models.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -171,6 +170,9 @@ namespace Matcha.Server.Controllers
         }
 
         #endregion
+
+        //[HttpGet]
+        //public IActionResult
     }
 }
 

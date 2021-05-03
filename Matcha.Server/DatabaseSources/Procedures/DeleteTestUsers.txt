@@ -1,18 +1,9 @@
 ﻿CREATE PROCEDURE DeleteTestUsers ()
 
 BEGIN
-	
-	DECLARE min_test_user_id BIGINT;
 
-	SELECT id INTO min_test_user_id FROM user_data WHERE login like '%__test_user__' ORDER BY id LIMIT 1;
-
-	SET foreign_key_checks = 0;
-
-	DELETE FROM user_data WHERE id >= min_test_user_id;
-	DELETE FROM user_full_data WHERE id >= min_test_user_id;
-
-	DELETE FROM users_interests WHERE user_id >= min_test_user_id;
-
-	SET foreign_key_checks = 0;
+	DELETE 
+		FROM user_data
+		WHERE EXISTS (SELECT * FROM user_full_data WHERE user_full_data.id = user_data.id AND user_full_data.biography LIKE '%__test__');
 
 END;
