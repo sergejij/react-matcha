@@ -20,7 +20,6 @@ export default ({ userId }) => {
   const myId = localStorage.getItem('id');
   const isMyProfile = myId === id;
 
-
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
       .then(
