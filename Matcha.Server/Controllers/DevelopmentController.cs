@@ -66,6 +66,7 @@ namespace Matcha.Server.Controllers
             if (amount.HasValue is false)
                 amount = 50;
 
+            var avatars = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "MediaClient", "processed"));
             var webClient = new WebClient();
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             connection.Open();
