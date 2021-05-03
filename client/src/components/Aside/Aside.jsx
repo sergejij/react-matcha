@@ -12,7 +12,7 @@ import User from './User/User';
 import SettingsItem from './SettingsItem/SettingsItem';
 
 const Aside = ({
-  match, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setId, isChat, isMobile
+  url, isSettings, headline, isSearch, onClickFilter, activeSetting, users, setId, isChat, isMobile
 }) => {
     return (
         <ChatsAsideStyled>
@@ -30,16 +30,16 @@ const Aside = ({
                 {
                     isSettings ? (
                         <>
-                            <SettingsItem to={`${match.url}/user-data`} isActive={activeSetting === 0} textSetting={!isMobile && "Данные пользователя"}>
+                            <SettingsItem to={`${url}/user-data`} isActive={activeSetting === 0} textSetting={!isMobile && "Данные пользователя"}>
                                 <PersonOutlineIcon />
                             </SettingsItem>
-                            <SettingsItem to={`${match.url}/user-security`} isActive={activeSetting === 1} textSetting={!isMobile && "Безопасность пользователя"}>
+                            <SettingsItem to={`${url}/user-security`} isActive={activeSetting === 1} textSetting={!isMobile && "Безопасность пользователя"}>
                                 <SecurityIcon />
                             </SettingsItem>
-                            <SettingsItem to={`${match.url}/user-photos`} isActive={activeSetting === 3} textSetting={!isMobile && "Фото пользователя"}>
+                            <SettingsItem to={`${url}/user-photos`} isActive={activeSetting === 3} textSetting={!isMobile && "Фото пользователя"}>
                                 <CropOriginalIcon />
                             </SettingsItem>
-                            <SettingsItem to={`${match.url}/active-sessions`} isActive={activeSetting === 3} textSetting={!isMobile && "Активные сессии"}>
+                            <SettingsItem to={`${url}/active-sessions`} isActive={activeSetting === 3} textSetting={!isMobile && "Активные сессии"}>
                                 <SettingsInputCompositeIcon />
                             </SettingsItem>
 

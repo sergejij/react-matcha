@@ -10,12 +10,20 @@ import { Text } from '../../styled';
 import RegistrationForm from './RegistrationForm';
 import LoginForm from './LoginForm';
 import { useQuery } from '../../hooks';
+import {Redirect} from "react-router-dom";
 
 export default ({setSocket, setMessageToMe, setNotificationToMe}) => {
   const portalRoot = document.getElementById('portal');
   const [isShownLoginForm, setIsShownLoginForm] = React.useState(false);
   const [isShownRegistrationForm, setIsShownRegistrationForm] = React.useState(false);
+  const [amIAuth, setAmIAuth] = React.useState(false);
   const query = useQuery();
+
+  React.useEffect(() => {
+    if (localStorage.getItem('id')) {
+      setAmIAuth(true);
+    }
+  });
 
   React.useEffect(() => {
     if (query.get("openLogin")) {
@@ -31,6 +39,10 @@ export default ({setSocket, setMessageToMe, setNotificationToMe}) => {
   const toggleRegistrationForm = () => {
     setIsShownRegistrationForm((prevState) => !prevState);
   };
+
+  if (amIAuth) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <Landing>

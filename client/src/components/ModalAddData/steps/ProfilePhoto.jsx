@@ -6,7 +6,7 @@ import { MyLink } from '../../../styled';
 import COLORS from '../../../constants';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
-const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber }) => {
+const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber, setNeedToRefresh }) => {
   const uploadPhoto = (e) => {
     const formData = new FormData();
     const file = e.target.files[0];
@@ -17,6 +17,7 @@ const ProfilePhoto = ({ setIsProfilePhotoEmpty, setStepNumber }) => {
       .then(
         (data) => {
           setIsProfilePhotoEmpty(false);
+          setNeedToRefresh(true);
         },
         (err) => {
           console.error("ERROR upload avatar:", err);

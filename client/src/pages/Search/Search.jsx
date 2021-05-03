@@ -4,10 +4,9 @@ import { Content } from '../../styled';
 import Aside from '../../components/Aside/Aside';
 import Profile from '../Profile/Profile';
 import { FilterFormStyled } from './styled';
-import {userInterestsApi, usersAPI, usersApi} from '../../api/api';
+import {userInterestsApi, usersApi} from '../../api/api';
 import CloseIcon from '@material-ui/icons/Close';
 
-import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 
 import Nouislider from 'react-nouislider';
@@ -40,8 +39,11 @@ const FilterForm = ({
         setSelectedOption(e.currentTarget.value);
     }
 
-    if (selectedOption === "remoteLocation") {
-
+    if (selectedOption === "distance") {
+        setTimeout(() => {
+            setMax(9999);
+            setMin(0);
+        });
     } else if (selectedOption === "rating") {
         usersApi
             .getMaxRating()
@@ -77,12 +79,12 @@ const FilterForm = ({
       <h3>Сортировать по:</h3>
 
       <div>
-          <label htmlFor="remoteLocation">удаленности</label>
+          <label htmlFor="distance">удаленности</label>
           <input
-              id="remoteLocation"
+              id="distance"
               type="radio"
-              value="remoteLocation"
-              checked={selectedOption === "remoteLocation"}
+              value="distance"
+              checked={selectedOption === "distance"}
               onChange={radioChange}
           />
       </div>

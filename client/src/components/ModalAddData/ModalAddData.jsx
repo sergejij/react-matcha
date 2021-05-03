@@ -6,7 +6,7 @@ import CommonInfo from './steps/CommonInfo';
 import ProfilePhoto from './steps/ProfilePhoto';
 import Interests from './steps/Interests';
 
-const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty }) => {
+const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty, setNeedToRefresh }) => {
   const portalRoot = document.getElementById('portal');
   const [stepNumber, setStepNumber] = React.useState(1);
 
@@ -21,7 +21,7 @@ const ModalAddData = ({ userData, setIsProfilePhotoEmpty, setIsRequiredEmpty }) 
         )}
         {(stepNumber === 3) && (
           <>
-            <ProfilePhoto setStepNumber={setStepNumber} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} />
+            <ProfilePhoto setStepNumber={setStepNumber} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} setNeedToRefresh={setNeedToRefresh}/>
           </>
         )}
       </ModalAddDataStyled>
