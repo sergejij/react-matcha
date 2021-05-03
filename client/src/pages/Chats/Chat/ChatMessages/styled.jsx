@@ -28,7 +28,8 @@ export const MessageStyled = styled.div`
   margin: 5px 0;
   max-width: 90%;
   word-wrap: break-word;
-
+  white-space: pre-line;
+  
   @media (max-width: 500px) and (min-width: 100px){
     font-size: 14px;
   }
