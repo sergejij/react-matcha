@@ -8,22 +8,18 @@ import ProfileTabs from './ProfileTabs/ProfileTabs';
 import ProfileHeader from './ProfileHeader/ProfileHeader';
 import ModalAddData from '../../components/ModalAddData/ModalAddData';
 import {userInfoApi, userPhotosApi, usersApi} from '../../api/api';
-import socket from "../../api/socket";
 
 export default ({ userId }) => {
   const id = userId || useParams().id;
 
   const [isRequiredEmpty, setIsRequiredEmpty] = React.useState(false);
   const [isProfilePhotoEmpty, setIsProfilePhotoEmpty] = React.useState(false);
+  const [needToRefresh, setNeedToRefresh] = React.useState(false);
   const [userData, setUserData] = React.useState({});
   const [amIAuthorized, setAmIAuthorized] = React.useState(true);
   const myId = localStorage.getItem('id');
   const isMyProfile = myId === id;
 
-
-  const sendToken = () => {
-      socket.send("From profile");
-  }
 
   React.useEffect(() => {
     userInfoApi.getUserInfo(id)
@@ -71,6 +67,10 @@ export default ({ userId }) => {
     return <Redirect to="/login" />;
   }
 
+  if (needToRefresh) {
+      window.location.reload(true);
+  }
+
   React.useEffect(() => {
       if (!isMyProfile) {
           usersApi
@@ -85,11 +85,15 @@ export default ({ userId }) => {
       }
   }, []);
 
-
   return (
       (isRequiredEmpty || isProfilePhotoEmpty) && isMyProfile ? (
           (Object.keys(userData).length !== 0) &&
-          <ModalAddData setIsRequiredEmpty={setIsRequiredEmpty} setIsProfilePhotoEmpty={setIsProfilePhotoEmpty} userData={userData} />
+          <ModalAddData
+              setIsRequiredEmpty={setIsRequiredEmpty}
+              setIsProfilePhotoEmpty={setIsProfilePhotoEmpty}
+              userData={userData}
+              setNeedToRefresh={setNeedToRefresh}
+          />
       ) : (
         <ProfilePage>
           <ProfileHeader userData={userData} id={id} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { userInfoApi, userInterestsApi, usersAPI } from '../../../api/api';
+import { userInfoApi } from '../../../api/api';
 import { AddDataRow } from '../styled';
 import Button from '../../Button';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
@@ -55,6 +55,12 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
           }
         })
       .catch(err => console.error("ERROR getRelationshipsList:", err))
+
+      return () => {
+          setRelationshipsList([]);
+          setSexesList([]);
+          setAttitudesList([]);
+      };
   }, []);
 
   const sendInfo = () => {
@@ -120,7 +126,6 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
                 relationshipsList.map((name, index) =>
                   <option
                     value={name}
-                    selected={name === relationshipStatus && "selected"}
                     key={`${name}${index}`}
                   >
                     {name}
@@ -136,7 +141,6 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
                 sexesList.map((name, index) =>
                   <option
                     value={name}
-                    selected={name === sexPreference && "selected"}
                     key={`${name}${index}preference`}
                   >
                     {name}
@@ -155,7 +159,6 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
                 attitudesList.map((name, index) =>
                   <option
                     value={name}
-                    selected={name === attitudeToAlcohol && "selected"}
                     key={`${name}${index}alcoholAttitude`}
                   >
                     {name}
@@ -171,7 +174,6 @@ const CommonInfo = ({ userData, setStepNumber, setIsRequiredEmpty }) => {
                 attitudesList.map((name, index) =>
                   <option
                     value={name}
-                    selected={name === attitudeToSmoking && "selected"}
                     key={`${name}${index}smokingAttitude`}
                   >
                     {name}
