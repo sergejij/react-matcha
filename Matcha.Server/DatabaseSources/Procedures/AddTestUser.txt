@@ -1,8 +1,8 @@
 ﻿delimiter //
 
-DROP PROCEDURE IF EXISTS AddTestUser//
+DROP FUNCTION IF EXISTS AddTestUser//
 
-CREATE PROCEDURE AddTestUser (
+CREATE FUNCTION AddTestUser (
 	 name VARCHAR(128),
      surname VARCHAR(128),
      login VARCHAR(128),
@@ -18,7 +18,7 @@ CREATE PROCEDURE AddTestUser (
      sex VARCHAR(64),
      sexPreference VARCHAR(64),
      biography TEXT
-)
+) RETURNS BIGINT
 
 BEGIN
 
@@ -98,5 +98,7 @@ BEGIN
 
 		SET i = i + 1;
 	END WHILE;
+
+    RETURN user_id;
 
 END//

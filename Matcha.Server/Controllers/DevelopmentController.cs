@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Net;
+using Microsoft.AspNetCore.Http;
 
 namespace Matcha.Server.Controllers
 {
@@ -63,10 +64,12 @@ namespace Matcha.Server.Controllers
         [Route("test_users")]
         public IActionResult CreateTestUsers(int? amount)
         {
+            DeleteTestUsers();
+
             if (amount.HasValue is false)
                 amount = 50;
 
-            var avatars = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "MediaClient", "processed"));
+            var avatars = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "MediaClient", "avatars"));
             var webClient = new WebClient();
             using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
             connection.Open();
@@ -115,63 +118,18 @@ namespace Matcha.Server.Controllers
                     new MySqlParameter("post", post),
                     new MySqlParameter("sex", sex),
                     new MySqlParameter("sexPreference", sexPreference),
-                    new MySqlParameter("biography", biography)
+                    new MySqlParameter("biography", biography),
+
+                    new MySqlParameter("user_id", MySqlDbType.Int64) { Direction = ParameterDirection.ReturnValue }
                 });
                 
                 command.ExecuteNonQuery();
+
+                var userId = Convert.ToInt64(command.Parameters["user_id"].Value);
+                using var avatarStream = System.IO.File.OpenRead(avatars[i % avatars.Length]);
+
+                MediaClient.MediaClient.Image.SaveAvatar(userId, new FormFile(avatarStream, 0, avatarStream.Length, "avatar", "avatar"));
             }
-            /*
-            if (amount.HasValue is false)
-                amount = 50;
-            
-            for (var i = 0; i < amount; ++i)
-            {
-                var profile = new ProfileInfoModel();
-
-                FirstStep(i, amount, profile);
-
-                string src;
-
-                
-
-                var gluedNames = JsonConvert.DeserializeObject<List<string>>(src);
-                var names = gluedNames.Select(arg => arg.Split('_'));
-
-                var request = (HttpWebRequest)WebRequest.Create("https://random.api.randomkey.io/v1/location");
-                request.Method = "POST";
-                request.Headers.Add("Content-Type", "application/json");
-                request.Headers.Add("auth", "88f8de9d8150dfb2ec7d7c3b8202b107");
-
-                using (var stream = request.GetRequestStream())
-                {
-                    stream.Write(Encoding.UTF8.GetBytes("{\"region\": \"ru\", \"records\": 1}}"));
-                    stream.Close();
-                }
-
-                var response = request.GetResponse();
-
-                using (var responseStream = response.GetResponseStream())
-                {
-                    using var reader = new StreamReader(responseStream, Encoding.UTF8);
-
-                    var json = reader.ReadToEnd();
-                    
-                    var content = Regex.Replace(json, @"\\u([0-9A-Fa-f]{4})", m => "" + (char)Convert.ToInt32(m.Groups[1].Value, 16));
-
-                    var x = (JObject)JsonConvert.DeserializeObject(content);
-
-                    var location = x.GetValue("location").ToArray();
-                }
-            }*/
-            /*
-            using var connection = new MySqlConnection(AppConfig.Constants.DbConnectionString);
-            using var command = new MySqlCommand("CreateTestUsers", connection) { CommandType = System.Data.CommandType.StoredProcedure };
-
-            command.Parameters.Add(new MySqlParameter("amount", amount ?? 50));
-
-            connection.Open();
-            command.ExecuteNonQuery();
-            */
 
             return ResponseModel.OK.ToResult();
         }

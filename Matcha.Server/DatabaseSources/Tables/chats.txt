@@ -4,5 +4,5 @@
 	last_message BIGINT,
 
 	PRIMARY KEY(first, second),
-	FOREIGN KEY(last_message) REFERENCES messages(id)
+	FOREIGN KEY(last_message) REFERENCES messages(id) ON DELETE CASCADE
 );

@@ -2,5 +2,7 @@
 	user_id BIGINT NOT NULL,
 	interest_id BIGINT NOT NULL,
 
-	PRIMARY KEY(user_id, interest_id)
+	PRIMARY KEY(user_id, interest_id),
+	FOREIGN KEY(user_id) REFERENCES user_data(id) ON DELETE CASCADE,
+	FOREIGN KEY(interest_id) REFERENCES interests_list(id) ON DELETE CASCADE
 );
