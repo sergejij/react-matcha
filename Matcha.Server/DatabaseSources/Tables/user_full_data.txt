@@ -14,7 +14,7 @@
     rating INT NOT NULL DEFAULT 0,
 
     PRIMARY KEY(id),
-    FOREIGN KEY(id) REFERENCES user_data(id),
+    FOREIGN KEY(id) REFERENCES user_data(id) ON DELETE CASCADE,
     FOREIGN KEY(sex) REFERENCES sexes(id),
     FOREIGN KEY(sex_preference) REFERENCES sexes(id),
     FOREIGN KEY(attitude_to_alcohol) REFERENCES attitudes(id),

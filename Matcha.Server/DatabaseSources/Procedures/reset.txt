@@ -9,12 +9,12 @@ BEGIN
     TRUNCATE emails_for_confirm;
     TRUNCATE sessions;
     TRUNCATE visits;
-    TRUNCATE interests_list;
     TRUNCATE users_interests;
     TRUNCATE likes;
     TRUNCATE dislikes;
     TRUNCATE sessions_geopositions;
     TRUNCATE messages;
+    TRUNCATE chats;
 
     SET FOREIGN_KEY_CHECKS = 1;
 

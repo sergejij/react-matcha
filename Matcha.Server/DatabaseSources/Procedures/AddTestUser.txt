@@ -1,0 +1,102 @@
+﻿delimiter //
+
+DROP PROCEDURE IF EXISTS AddTestUser//
+
+CREATE PROCEDURE AddTestUser (
+	 name VARCHAR(128),
+     surname VARCHAR(128),
+     login VARCHAR(128),
+     email VARCHAR(128),
+     password BINARY(64),
+     salt BINARY(16),
+     location VARCHAR(128),
+     relStatus VARCHAR(128),
+     alc VARCHAR(128),
+     smoking VARCHAR(128),
+     age INT,
+     post VARCHAR(128),
+     sex VARCHAR(64),
+     sexPreference VARCHAR(64),
+     biography TEXT
+)
+
+BEGIN
+
+    DECLARE user_id BIGINT;
+    DECLARE interests_for_user BIGINT;
+	DECLARE interests_count BIGINT;
+    DECLARE I INT;
+    DECLARE interest_id BIGINT;
+
+    SELECT COUNT(*) INTO interests_count FROM interests_list;
+
+    DELETE FROM user_data WHERE user_data.email = email OR user_data.login = login;
+
+    INSERT
+        INTO user_data (login, email, password, salt)
+        VALUES (login, email, password, salt);
+
+    SET user_id = LAST_INSERT_ID();
+
+    INSERT
+        INTO user_full_data (
+            id,
+            name,
+            surname,
+            location,
+            relationship_status,
+            attitude_to_alcohol,
+            attitude_to_smoking,
+            age,
+            post,
+            sex,
+            sex_preference,
+            biography,
+            rating
+        )
+        VALUES (
+            user_id,
+            name,
+            surname,
+            location,
+            (SELECT id FROM relationship_statuses WHERE relationship_statuses.status = relStatus),
+            (SELECT id FROM attitudes WHERE attitudes.attitude = alc),
+            (SELECT id FROM attitudes WHERE attitudes.attitude = smoking),
+            age,
+            post,
+            (SELECT id FROM sexes WHERE sexes.sex = sex),
+            (SELECT id FROM sexes WHERE sexes.sex = sexPreference),
+            CONCAT(biography, '__test__'),
+            0
+        );
+
+    SET interests_for_user = random_integer(0, interests_count / 3 * 2);
+	IF (interests_for_user = 0)
+	THEN
+		SET interests_for_user = 1;
+	END IF;
+
+	SET i = 0;
+
+	WHILE i < interests_for_user
+	DO
+		SET interest_id = random_integer(1, interests_count);
+
+		IF NOT EXISTS(SELECT * FROM users_interests
+						WHERE users_interests.user_id = user_id
+							AND
+							users_interests.interest_id = interest_id)
+		THEN
+			INSERT INTO users_interests (
+				user_id,
+				interest_id
+			) VALUES (
+				user_id,
+				interest_id
+			);
+		END IF;
+
+		SET i = i + 1;
+	END WHILE;
+
+END//

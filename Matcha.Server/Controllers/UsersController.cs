@@ -208,7 +208,7 @@ namespace Matcha.Server.Controllers
                 null,
                 new Dictionary<string, object>
                 {
-                    { "profiles", profiles }
+                    { "profiles", profiles.Select(arg => new ProfileWrapper(arg)) }
                 })
                 .ToResult();
         }
