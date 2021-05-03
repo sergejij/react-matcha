@@ -67,7 +67,7 @@ BEGIN
             (SELECT id FROM sexes WHERE sexes.sex = sex),
             (SELECT id FROM sexes WHERE sexes.sex = sexPreference),
             CONCAT(biography, '__test__'),
-            0
+            random_integer(1, 1000)
         );
 
     SET interests_for_user = random_integer(0, interests_count / 3 * 2);
